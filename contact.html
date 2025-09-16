@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontakt – BALKAN MINING CORPORATION</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    :root { --bg:#f2f3f5; --paper:#ffffff; --ink:#101214; --muted:#6b7280; --line:#e5e7eb; --accent:#1c1c1e; --radius:14px; }
+    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--ink); }
+
+    /* NAV */
+    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
+    .nav-left img { height: 64px; width: auto; display: block; }
+    @media (max-width: 768px) { .nav-left img { height: 50px; } }
+    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
+    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
+    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
+    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
+    .nav-overlay.open { display: flex; }
+    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
+    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
+    .nav-links a:hover { opacity: 1; }
+    @media (max-width: 768px) {
+      .nav { left: 16px; right: 16px; top: 18px; }
+      .nav-left { font-size: 10px; letter-spacing: .14em; }
+      .nav-burger, .nav-close { width: 46px; height: 46px; }
+      .nav-links a { font-size: 22px; }
+    }
+    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: 120px; background: #1c1c1e; z-index: 120; }
+    @media (max-width: 768px){ .nav-band { height: 100px; } }
+
+    .page { min-height: 100vh; padding-top: 120px; }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* Footer */
+    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:40px; border-top:1px solid #1f2937; }
+    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
+    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .cta h3 { margin:0; color:#f9fafb; }
+    .cta p { margin:0; color:#9ca3af; }
+    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
+    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
+    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+    .links { display:flex; gap:18px; flex-wrap:wrap; }
+    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
+    .links a:hover { opacity:1; text-decoration:underline; }
+    .bottom { border-top:1px solid #1f2937; }
+    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
+
+    /* Social icons */
+    .social-icons { position: sticky; bottom: 20px; margin-left: 20px; z-index: 90; display: flex; flex-direction: column; gap: 10px; }
+    .social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; }
+    .social-icons a:hover { opacity: 1; }
+
+    /* Contact content */
+    .contact-hero { margin-top: 30px; margin-bottom: 20px; }
+    .contact-hero h1 { margin: 0 0 6px; font-size: 34px; }
+    .contact-hero p { margin: 0; color: var(--muted); }
+    .contact-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; }
+    @media (max-width: 960px) { .contact-grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--paper); border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 18px; position: relative; }
+    .contact-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+    .contact-list li { display: flex; align-items: flex-start; gap: 10px; }
+    .contact-list i { margin-top: 4px; }
+    .contact-list a { color: inherit; text-decoration: none; }
+    .contact-list a:hover { text-decoration: underline; }
+
+    /* Map */
+    .map { border: 0; width: 100%; height: 380px; border-radius: 12px; overflow: hidden; position: relative; z-index: 10; pointer-events: auto; touch-action: manipulation; }
+
+    /* Panel Chat (right column) */
+    .chat-panel { display:flex; flex-direction:column; gap:10px; height: 100%; min-height: 420px; }
+    .chat-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .chat-header h2 { margin:0; font-size: 20px; }
+    .chat-feed { border:1px solid var(--line); border-radius: 10px; padding: 10px; height: 300px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; background:#fafafa; }
+    .msg { display:flex; }
+    .msg .bubble { max-width: 85%; padding:8px 10px; border-radius: 10px; line-height:1.35; font-size: 14px; }
+    .msg.user { justify-content:flex-end; }
+    .msg.user .bubble { background:#e5e7eb; }
+    .msg.bot .bubble { background:#ffffff; border:1px solid #e5e7eb; }
+    .chat-input { display:flex; gap:8px; }
+    .chat-input input { flex:1; padding:12px; border:1px solid var(--line); border-radius:10px; }
+    .chat-input button { background:#1c1c1e; color:#fff; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; }
+    .chat-input button:disabled { opacity:.6; cursor:not-allowed; }
+    .note { font-size:12px; color: var(--muted); }
+
+    /* Floating widget (as on catalog.html) */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+    }
+    .chat-header-widget { background-color: #333; color: white; padding: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; display:flex; justify-content:space-between; align-items:center; }
+    .chat-header-widget button { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; margin-left: 10px; }
+    .chat-body-widget { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .chat-input-widget { display: flex; padding: 10px; border-top: 1px solid #ccc; }
+    .chat-input-widget input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-right: 5px; }
+    .chat-input-widget button { padding: 8px 12px; background-color: #d4a017; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .message.widget .bubble { padding: 10px 14px; border-radius: 16px; max-width: 80%; line-height: 1.35; word-wrap: break-word; white-space: pre-wrap; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+    .message.user.widget { text-align: right; display:flex; justify-content:flex-end; }
+    .message.bot.widget { text-align: left; display:flex; justify-content:flex-start; }
+    .message.user.widget .bubble { background: #f0f0f0; color: #111; }
+    .message.bot.widget .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
+    @media (max-width: 768px) { .chat-widget { width: 250px; height: 300px; } }
+  </style>
+</head>
+<body>
+  <div class="nav-band"></div>
+
+  <!-- NAV + Overlay -->
+  <div class="nav">
+    <div class="nav-left">
+      <a href="index.html"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Logo"></a>
+    </div>
+    <button class="nav-burger" id="navBurger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-overlay" id="navOverlay">
+    <button class="nav-close" id="navClose" aria-label="Close menu">×</button>
+    <nav class="nav-links">
+      <a href="index.html">Početna</a>
+      <a href="about.html">O nama</a>
+      <a href="catalog.html">Katalog</a>
+      <a href="blog.html">Blog</a>
+      <a href="contact.html">Kontakt</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="wrap">
+      <div class="contact-hero">
+        <h1>Kontakt</h1>
+        <p>Javite nam se — odgovaramo istog dana.</p>
+      </div>
+
+      <div class="contact-grid">
+        <!-- LEFT: Info + Map -->
+        <div class="panel">
+          <ul class="contact-list">
+            <li><i class="fa-solid fa-building"></i> <div><strong>BALKAN MINING CORPORATION</strong></div></li>
+            <li><i class="fa-solid fa-location-dot"></i> <div>Tvrdici bb, Požega, Srbija</div></li>
+            <li><i class="fa-solid fa-envelope"></i> <div><a href="mailto:office@mining.rs">office@mining.rs</a></div></li>
+            <li><i class="fa-solid fa-phone"></i> <div><a href="tel:+38169778239">+381 69 778 239</a></div></li>
+          </ul>
+          <div style="margin-top:14px;">
+            <iframe class="map"
+              src="https://www.google.com/maps?&q=BALKAN%20MINING%20CORPORATION%2C%20Tvrdici%20bb%2C%20Po%C5%BEega%2C%20Serbia&hl=sr&z=16&output=embed&iwloc=near"
+              loading="lazy" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"
+              aria-label="Mapa – BALKAN MINING CORPORATION"></iframe>
+          </div>
+        </div>
+
+        <!-- RIGHT: Chat with Grok -->
+        <div class="panel" id="chat">
+          <div class="chat-panel">
+            <div class="chat-header">
+              <h2><i class="fa-solid fa-comments"></i> Chat sa Grokom</h2>
+              <button id="clearBtn" class="btn-clear" style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;cursor:pointer;">Očisti</button>
+            </div>
+            <div id="panelFeed" class="chat-feed">
+              <div class="msg bot"><div class="bubble">Zdravo! Kako mogu da pomognem? Možete pitati o cenama, rokovima, isporuci ili tehničkim detaljima.</div></div>
+            </div>
+            <div class="chat-input">
+              <input id="panelInput" type="text" placeholder="Postavite pitanje…" />
+              <button id="panelSend">Pošalji</button>
+            </div>
+            <div class="note">Napomena: desni panel je stalni chat. U futeru je i plutajući chat (isti kao u katalogu).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social icons -->
+  <div class="social-icons">
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-tiktok"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+    <a href="#"><i class="fab fa-x-twitter"></i></a>
+    <a href="#"><i class="fab fa-whatsapp"></i></a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="cta">
+      <div class="inner">
+        <div>
+          <h3>Spremni za ponudu?</h3>
+          <p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
+        </div>
+        <div class="row">
+          <a class="btn-primary" href="contact.html">Kontakt</a>
+          <a class="btn-secondary" href="catalog.xlsx" download>Preuzmi cenovnik</a>
+          <a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="links">
+        <a href="about.html">O nama</a>
+        <a href="catalog.html">Katalog</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Kontakt</a>
+      </div>
+      <div class="links" style="justify-content:flex-end;">
+        <a href="privacy.html">Politika privatnosti</a>
+        <a href="terms.html">Uslovi korišćenja</a>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="inner">
+        <div>© 2025 Plavi tok</div><div></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Chat widget (as on catalog.html) -->
+  <div class="chat-widget" id="chatWidget">
+      <div class="chat-header-widget">Chat sa Grok-om
+          <div>
+            <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton">-</button>
+            <button onclick="closeChatWidget()">X</button>
+          </div>
+      </div>
+      <div class="chat-body-widget" id="chatBody"></div>
+      <div class="chat-input-widget">
+          <input type="text" id="chatInput" placeholder="Postavi pitanje...">
+          <button onclick="sendWidgetMessage()">Pošalji</button>
+      </div>
+  </div>
+
+  <script>
+    // Hamburger behavior
+    const navBurger = document.getElementById('navBurger');
+    const navOverlay = document.getElementById('navOverlay');
+    const navClose  = document.getElementById('navClose');
+    if (navBurger && navOverlay && navClose) {
+      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
+      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
+      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
+    }
+
+    // Shared API (as on index/catalog)
+    const apiKey = 'xai-2vXaWWEQtbrPxS2BdDkiSaLXuRfUKC94YSrIVuNXVO6STvvXMS2qnIIRPhXwWGPZbAFChnsaVGHHS6ei';
+    const endpoint = 'https://api.x.ai/v1/chat/completions';
+
+    /* ===== Panel Chat (right column) ===== */
+    const panelFeed = document.getElementById('panelFeed');
+    const panelInput = document.getElementById('panelInput');
+    const panelSend = document.getElementById('panelSend');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function addPanelMessage(role, text) {
+      const row = document.createElement('div');
+      row.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      panelFeed.appendChild(row);
+      panelFeed.scrollTop = panelFeed.scrollHeight;
+    }
+
+    async function askPanel(text) {
+      panelSend.disabled = true;
+      panelInput.disabled = true;
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apiKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'grok-4-latest',
+            messages: [
+              { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+              { role: 'user', content: text }
+            ],
+            stream: false,
+            temperature: 0
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error((data && data.error && data.error.message) || ('HTTP ' + res.status));
+        const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || 'Nema odgovora.';
+        addPanelMessage('bot', reply);
+      } catch (err) {
+        addPanelMessage('bot', 'Greška: ' + err.message);
+      } finally {
+        panelSend.disabled = false;
+        panelInput.disabled = false;
+        panelInput.focus();
+      }
+    }
+
+    function sendPanelMessage() {
+      const text = (panelInput.value || '').trim();
+      if (!text) return;
+      addPanelMessage('user', text);
+      panelInput.value = '';
+      askPanel(text);
+    }
+
+    panelSend.addEventListener('click', sendPanelMessage);
+    panelInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendPanelMessage();
+      }
+    });
+    clearBtn.addEventListener('click', () => {
+      panelFeed.innerHTML = '<div class="msg bot"><div class="bubble">Zdravo! Kako mogu da pomognem? Možete pitati o cenama, rokovima, isporuci ili tehničkim detaljima.</div></div>';
+    });
+
+    /* ===== Floating Chat Widget (catalog-like) ===== */
+    let chatOpen = false;
+    let isMinimized = false;
+
+    function openChatWidget() {
+        const chatWidget = document.getElementById('chatWidget');
+        chatOpen = !chatOpen;
+        chatWidget.style.display = chatOpen ? 'flex' : 'none';
+        if (chatOpen && isMinimized) {
+            minimizeMaximizeChatWidget();
+        }
+    }
+    function closeChatWidget() {
+        document.getElementById('chatWidget').style.display = 'none';
+        chatOpen = false;
+    }
+    function minimizeMaximizeChatWidget() {
+        const chatBody = document.getElementById('chatBody');
+        const chatInputWrap = document.querySelector('.chat-input-widget');
+        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
+        if (!isMinimized) {
+            chatBody.style.display = 'none';
+            chatInputWrap.style.display = 'none';
+            document.getElementById('chatWidget').style.height = '50px';
+            minimizeMaximizeButton.textContent = '+';
+            isMinimized = true;
+        } else {
+            chatBody.style.display = 'block';
+            chatInputWrap.style.display = 'flex';
+            document.getElementById('chatWidget').style.height = '400px';
+            minimizeMaximizeButton.textContent = '-';
+            isMinimized = false;
+        }
+    }
+    function addWidgetMessage(sender, message) {
+        const chatBody = document.getElementById('chatBody');
+        const wrap = document.createElement('div');
+        wrap.classList.add('message', sender, 'widget');
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.textContent = message;
+        wrap.appendChild(bubble);
+        chatBody.appendChild(wrap);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    async function sendWidgetMessage() {
+        const input = document.getElementById('chatInput');
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
+        addWidgetMessage('user', userMessage);
+        input.value = '';
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'grok-4-latest',
+                    messages: [
+                        { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+                        { role: 'user', content: userMessage }
+                    ],
+                    stream: false,
+                    temperature: 0
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                addWidgetMessage('bot', (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || 'Nema odgovora.');
+            } else {
+                addWidgetMessage('bot', 'Greška: ' + (data.error && data.error.message ? data.error.message : 'Server problem'));
+            }
+        } catch (error) {
+            addWidgetMessage('bot', 'Greška u konekciji: ' + error.message);
+        }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+<html lang="sr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Proizvod – Plavi tok</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+    :root { --headerH:120px;  --bg:#f2f3f5; --paper:#ffffff; --ink:#101214; --muted:#6b7280; --line:#e5e7eb; --accent:#3f3f46; --chip:#f4f4f5; --chip-ink:#0f172a; --radius:14px; }
+    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--ink); }
+
+    /* NAV clone */
+    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
+    .nav-left img { height: 64px; width: auto; display: block; }
+    @media (max-width: 768px) { .nav-left img { height: 50px; } }
+    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
+    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
+    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
+    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
+    .nav-overlay.open { display: flex; }
+    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
+    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
+    .nav-links a:hover { opacity: 1; }
+    @media (max-width: 768px) {
+      .nav { left: 16px; right: 16px; top: 18px; }
+      .nav-left { font-size: 10px; letter-spacing: .14em; }
+      .nav-burger, .nav-close { width: 46px; height: 46px; }
+      .nav-links a { font-size: 22px; }
+    }
+.page { min-height: calc(100vh + var(--headerH)); padding-top: calc(var(--headerH) + 30px); }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 80px; }
+
+    .breadcrumbs { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .breadcrumbs a { color: inherit; text-decoration: none; }
+    h1 { font-size: 34px; margin: 2px 0 6px; letter-spacing: .01em; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+
+    .layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 28px; }
+    @media (max-width: 980px){ .layout { grid-template-columns: 1fr; } }
+
+    .gallery { position: sticky; top: 100px; align-self: start; }
+    .frame { background: var(--paper); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .frame img { width: 100%; height: 560px; object-fit: cover; display: block; }
+    @media (max-width: 980px){ .frame img { height: 420px; } }
+
+    .thumbs-rail { display: grid; grid-auto-flow: column; gap: 10px; overflow-x: auto; padding: 10px 6px 2px; background: var(--paper); border-radius: var(--radius); margin-top: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .thumbs-rail img { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 2px solid transparent; }
+    .thumbs-rail img.active { border-color: var(--accent); }
+
+    .panel { background: var(--paper); border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+    .chip { background: var(--chip); color: var(--chip-ink); border-radius: 999px; padding: 8px 12px; font-size: 13px; }
+
+    .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+    .tab { padding: 10px 12px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); }
+    .tab.active { color: var(--ink); border-color: var(--accent); }
+    .tabpanes > section { display: none; padding-top: 14px; }
+    .tabpanes > section.active { display: block; }
+
+    .desc { line-height: 1.6; color: #1f2937; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); }
+    thead th { background: #fafafa; }
+
+    .ref-links { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    @media (max-width: 600px){ .ref-links { grid-template-columns: 1fr; } }
+    .ref { background: #f7f7f8; border-radius: 10px; padding: 12px 14px; text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 10px; border: 1px solid #eee; }
+    .ref i { opacity: .65; }
+
+    .back { margin-top: 20px; display: inline-block; text-decoration: none; color: #0f172a; }
+  
+
+/* --- injected from catalog.html --- */
+/* Dark top band behind logo & hamburger */
+    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: 120px; background: #1c1c1e; z-index: 120; }
+    @media (max-width: 768px){ .nav-band { height: 100px; } }
+
+/* --- injected from catalog.html --- */
+/* ===== Footer V9: CTA Bar Minimal ===== */
+    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:40px; border-top:1px solid #1f2937; }
+    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
+    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .cta h3 { margin:0; color:#f9fafb; }
+    .cta p { margin:0; color:#9ca3af; }
+    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
+    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
+    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px;  grid-template-columns:1fr 1fr; gap:28px; }
+    .links { display:flex; gap:18px; flex-wrap:wrap; }
+    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
+    .links a:hover { opacity:1; text-decoration:underline; }
+    .bottom { border-top:1px solid #1f2937; }
+    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
+    @media(max-width:800px){ .wrap{ grid-template-columns:1fr; } }
+
+/* --- injected from catalog.html --- */
+/* === CHAT WIDGET (copied from homepage) === */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+    }
+    .chat-header {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-header button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: 10px;
+    }
+    .chat-body {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+    }
+    .chat-input input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+    .chat-input button {
+        padding: 8px 12px;
+        background-color: #d4a017;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .message { margin-bottom: 0; }
+    .message.user { text-align: right; display:flex; justify-content:flex-end; }
+    .message.bot { text-align: left; display:flex; justify-content:flex-start; }
+    .message .bubble {
+        padding: 10px 14px;
+        border-radius: 16px;
+        max-width: 80%;
+        line-height: 1.35;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    .message.user .bubble { background: #f0f0f0; color: #111; }
+    .message.bot .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
+    @media (max-width: 768px) {
+        .chat-widget { width: 250px; height: 300px; }
+    }
+
+.page h1 { margin-top: 18px; }
+/* === Mobile fixes === */
+html, body {height:auto !important; min-height:100% !important; overflow-y:auto !important; overflow-x:hidden; max-width:100%; }
+
+
+
+/* === Mobile fixes: clamp width & footer edge-to-edge (do not affect desktop) === */
+html, body {height:auto !important; min-height:100% !important; overflow-y:auto !important; overflow-x:hidden; max-width:100%; }
+@supports (overflow-x: clip) { html, body { overflow-x: clip; overflow-y: auto !important; } }
+
+@media (max-width: 980px) {
+  /* Prevent any child from pushing wider than the viewport */
+  .page, .wrap, .layout, .panel, .gallery, .tabs, .tabpanes, .frame, .thumbs-rail,
+  .site-footer, .cta, .cta .inner, .site-footer .wrap, .bottom, .bottom .inner {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Sticky gallery can cause lateral drift on mobile; keep it static */
+  .gallery { position: static; top: auto; }
+
+  /* Main image: fluid height, never wider than viewport */
+  .frame img { height: auto; max-height: 70vh; width: 100%; object-fit: cover; }
+
+  /* Thumbs rail: scroll inside itself only, not the page */
+  .thumbs-rail {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .thumbs-rail::-webkit-scrollbar { display: none; }
+  .thumbs-rail img { max-width: 100%; }
+
+  /* Tabs: allow internal scroll without causing page overflow */
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab { white-space: nowrap; }
+
+  /* Footer: ensure sections span full width on mobile */
+  .site-footer { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+  .cta .inner, .bottom .inner { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .site-footer .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+
+  /* Minor type & spacing guards to avoid accidental overflow */
+  h1 { font-size: 28px; }
+  .links a { word-break: break-word; }
+}
+
+/* Extra guard: if any absolutely/fixed positioned element overlaps, do not extend layout width */
+@media (max-width: 768px) {
+  .nav { left: 16px; right: 16px; } /* already present but safe */
+}
+
+ /* half of typical 560px gallery height */
+
+.panel {
+  max-height: 560px;
+  overflow-y: auto;
+}
+@media (max-width: 980px){
+  .panel { max-height: 420px; }
+}
+/* === Social icons: fixed bottom-left, stop above footer === */
+.social-icons {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; text-decoration: none; }
+.social-icons a:hover { opacity: 1; }
+/* Mobile tweak: keep within safe area */
+@media (max-width: 768px){
+  .social-icons { left: 12px; bottom: 16px; }
+}
+
+
+/* Responsive gallery spacing */
+@media (min-width: 981px){
+  .gallery { margin-bottom: 280px; }
+}
+@media (max-width: 980px){
+  .gallery { margin-bottom: 24px; }
+}
+
+</style>
+<style id="thumbs-rail-hardfix">
+/* Force fixed-size thumbnails and horizontal scroll */
+.thumbs-rail{ display:flex !important; flex-wrap:nowrap !important; overflow-x:auto !important; overflow-y:hidden; padding:10px 12px 6px; }
+.thumbs-rail img{ flex:0 0 auto; width:140px !important; height:100px !important; object-fit:cover; border-radius:10px; }
+/* Mobile override: undo earlier overflow-x:hidden and prevent shrink */
+@media (max-width: 980px){
+  .thumbs-rail{ overflow-x:auto !important; }
+  .thumbs-rail img{ width:140px !important; height:100px !important; }
+}
+</style>
+<style id="desktop-thumbs-4-only">
+@media (min-width: 981px){
+  /* Allow grid columns to shrink properly (avoid pushing the panel) */
+  .gallery{ min-width: 0 !important; }
+  .panel{ min-width: 0 !important; }
+
+  /* Show at most 4 thumbs; the rest scroll horizontally */
+  .thumbs-rail{
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    /* width clamps so only 4 thumbs are visible even on wide screens */
+    max-width: calc(4 * 140px + 3 * 10px + 12px); /* 4 thumbs + 3 gaps + left/right padding (6px each) */
+    width: 100%;
+    scrollbar-gutter: stable;
+  }
+  .thumbs-rail img{
+    flex: 0 0 auto;
+    width: 140px !important;
+    height: 100px !important;
+    object-fit: cover;
+  }
+}
+</style>
+<style id="hide-social-mobile">
+@media (max-width: 768px){
+  /* Hide common social containers */
+  .social, .socials, .social-icons, .share, .share-links, .share-buttons { display: none !important; }
+  /* Hide anchors to known social domains */
+  a[href*="instagram.com"], a[href*="facebook.com"], a[href*="x.com"], a[href*="twitter.com"],
+  a[href*="linkedin.com"], a[href*="pinterest.com"], a[href*="tiktok.com"],
+  a[href*="youtube.com"], a[href*="youtu.be"], a[href*="whatsapp.com"],
+  a[href*="telegram"], a[href*="viber.com"] { display: none !important; }
+}
+</style>
+</head>
+<body>
+<!-- OVERFLOW GUARD -->
+<div class="nav-band"></div>
+<!-- NAV + Overlay -->
+<div class="nav">
+<div class="nav-left"><a href="https://ibb.co/QGRBCQd"><img alt="Logo" border="0" src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png"/></a></div>
+<button aria-label="Open menu" class="nav-burger" id="navBurger">
+<span></span><span></span><span></span>
+</button>
+</div>
+<div class="nav-overlay" id="navOverlay">
+<button aria-label="Close menu" class="nav-close" id="navClose">×</button>
+<nav class="nav-links">
+<a href="index.html">Početna</a>
+<a href="about.html">O nama</a>
+<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
+<a href="contact.html">Kontakt</a>
+</nav>
+</div>
+<div class="page">
+<div class="wrap">
+<div class="breadcrumbs" style="margin-top: 3px;"><a href="catalog.html">Katalog</a> / <span id="bcName"></span></div>
+<h1 id="pName"></h1>
+<div class="sub" id="pMeta"></div>
+<div class="layout">
+<!-- Left: Gallery -->
+<aside class="gallery">
+<div class="frame"><img alt="" id="mainImg" src=""/></div>
+<div class="thumbs-rail" id="thumbs"></div>
+</aside>
+<!-- Right: Tabs -->
+<main class="panel">
+<div class="chips">
+<span class="chip" id="chipColor"></span>
+<span class="chip" id="chipFinish"></span>
+<span class="chip" id="chipFromPrice"></span>
+<span class="chip" id="chipCategory"></span></div>
+<div class="tabs">
+<div class="tab active" data-tab="about">O proizvodu</div>
+<div class="tab" data-tab="dims">Dimenzije i cene</div>
+<div class="tab" data-tab="refs">Reference</div>
+</div>
+<div class="tabpanes">
+<section class="active" id="pane-about">
+<p class="desc" id="pDesc"></p>
+</section>
+<section id="pane-dims">
+<table id="dimTable">
+<thead><tr><th>Dimenzija</th><th>Cena (€)</th></tr></thead>
+<tbody></tbody>
+</table>
+</section>
+<section id="pane-refs">
+<div class="ref-links" id="refLinks"></div>
+</section>
+</div>
+<a class="back" href="catalog.html">← Nazad na katalog</a>
+</main>
+</div>
+</div>
+</div>
+<script>
+    // Hamburger behavior
+    const navBurger = document.getElementById('navBurger');
+    const navOverlay = document.getElementById('navOverlay');
+    const navClose  = document.getElementById('navClose');
+    if (navBurger && navOverlay && navClose) {
+      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
+      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
+      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
+    }
+
+    // Tabs
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('.tab');
+      if (!t) return;
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const key = t.dataset.tab;
+      document.querySelectorAll('.tabpanes > section').forEach(sec => {
+        sec.classList.toggle('active', sec.id === 'pane-' + key);
+      });
+    });
+
+    // Helpers
+    function qs(key) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(key);
+    }
+    function fmtPrice(n){ return isFinite(n) ? (n + '€') : ''; }
+
+    async function loadXlsx() {
+      const res = await fetch('catalog.xlsx');
+      if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
+      const buf = await res.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      return {
+        PRODUCTS: XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''}),
+        DIMENSIONS: XLSX.utils.sheet_to_json(wb.Sheets['Dimensions'] || {}, {defval: ''}),
+        IMAGES: XLSX.utils.sheet_to_json(wb.Sheets['Images'] || {}, {defval: ''}),
+        REFERENCES: XLSX.utils.sheet_to_json(wb.Sheets['References'] || {}, {defval: ''}),
+      };
+    }
+
+    function minPrice(dims){
+      const arr = dims.map(d => Number(d.price_eur || d.price || NaN)).filter(n => isFinite(n));
+      return arr.length ? Math.min(...arr) : null;
+    }
+
+    function render(p, dims, imgs, refs){
+      // Titles
+      document.getElementById('bcName').textContent = p.name || '';
+      document.getElementById('pName').textContent = p.name || '';
+      document.getElementById('pMeta').textContent = `Boja: ${p.color||'-'} · Obrade: ${p.finishes||'-'}`;
+      document.getElementById('pDesc').textContent = p.description || '';
+
+      // Chips
+      document.getElementById('chipColor').textContent = 'Boja: ' + (p.color||'-');
+      document.getElementById('chipFinish').textContent = 'Obrade: ' + (p.finishes||'-');
+      const mp = minPrice(dims);
+      document.getElementById('chipFromPrice').textContent = mp!=null ? ('Od ' + mp + '€') : 'Cena na upit';
+      document.getElementById('chipCategory').textContent = p.category || '';
+
+      // Gallery
+      const main = document.getElementById('mainImg');
+      const thumbs = document.getElementById('thumbs');
+      thumbs.innerHTML = '';
+      const allImgs = imgs.length ? imgs.map(i=>i.image_url) : (p.base_image ? [p.base_image] : []);
+      if (allImgs.length) { main.src = allImgs[0]; }
+      allImgs.forEach((u, idx) => {
+        const im = document.createElement('img');
+        im.src = u; im.alt = p.name || '';
+        if (idx===0) im.classList.add('active');
+        im.addEventListener('click', () => {
+          main.src = u;
+          document.querySelectorAll('.thumbs-rail img').forEach(x=>x.classList.remove('active'));
+          im.classList.add('active');
+        });
+        thumbs.appendChild(im);
+      });
+
+      // Dimensions table
+      const tbody = document.querySelector('#dimTable tbody');
+      tbody.innerHTML = '';
+      dims.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${d.dimension}</td><td>${fmtPrice(Number(d.price_eur || d.price))}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      // References
+      const refBox = document.getElementById('refLinks');
+      refBox.innerHTML = '';
+      refs.forEach(r => {
+        const a = document.createElement('a');
+        a.href = r.ref_url || ('references.html?ref=' + encodeURIComponent(r.ref_slug||r.ref_name||''));
+        a.className = 'ref';
+        a.innerHTML = `<i class="fa-regular fa-building"></i><span>${r.ref_name||'Referenca'}</span>`;
+        refBox.appendChild(a);
+      });
+    }
+
+    (async function(){
+      const id = qs('id');
+      const db = await loadXlsx();
+      const p = db.PRODUCTS.find(x => String(x.id) === String(id));
+      if (!p) { document.querySelector('.wrap').innerHTML = '<p>Proizvod nije pronađen.</p>'; return; }
+      const dims = db.DIMENSIONS.filter(d => String(d.product_id||d.productId) === String(id));
+      const imgs = db.IMAGES.filter(i => String(i.product_id||i.productId) === String(id));
+      const refs = db.REFERENCES.filter(r => String(r.product_id||r.productId) === String(id));
+      render(p, dims, imgs, refs);
+    })();
+  </script>
+<!-- Social icons: visible from load, follow scroll, stop above footer -->
+<div aria-label="Društvene mreže" class="social-icons" id="socialIcons">
+<a href="#"><i aria-hidden="true" class="fab fa-instagram"></i><span class="sr-only">Instagram</span></a>
+<a href="#"><i aria-hidden="true" class="fab fa-facebook-f"></i><span class="sr-only">Facebook</span></a>
+<a href="#"><i aria-hidden="true" class="fab fa-tiktok"></i><span class="sr-only">TikTok</span></a>
+<a href="#"><i aria-hidden="true" class="fab fa-youtube"></i><span class="sr-only">YouTube</span></a>
+<a href="#"><i aria-hidden="true" class="fab fa-x-twitter"></i><span class="sr-only">X</span></a>
+<a href="#"><i aria-hidden="true" class="fab fa-whatsapp"></i><span class="sr-only">WhatsApp</span></a>
+</div>
+<footer class="site-footer">
+<div class="cta">
+<div class="inner">
+<div>
+<h3>Spremni za ponudu?</h3>
+<p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
+</div>
+<div class="row"><a class="btn-primary" href="contact.html">Kontakt</a><a class="btn-secondary" download="" href="catalog.xlsx">Preuzmi cenovnik</a><a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a></div>
+</div>
+</div>
+<div class="wrap">
+<div class="links">
+<a href="about.html">O nama</a>
+<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
+<a href="contact.html">Kontakt</a>
+</div>
+<div class="links" style="justify-content:flex-end;">
+<a href="privacy.html">Politika privatnosti</a>
+<a href="terms.html">Uslovi korišćenja</a>
+</div>
+</div>
+<div class="bottom"><div class="inner"><div>© 2025 Plavi tok</div><div></div></div></div>
+</footer>
+<!-- Chat widget (same behavior as na početnoj) -->
+<div class="chat-widget" id="chatWidget">
+<div class="chat-header">Chat sa Grok-om
+            <button id="minimizeMaximizeButton" onclick="minimizeMaximizeChatWidget()">-</button>
+<button onclick="closeChatWidget()">X</button>
+</div>
+<div class="chat-body" id="chatBody"></div>
+<div class="chat-input">
+<input id="chatInput" placeholder="Postavi pitanje..." type="text"/>
+<button onclick="sendMessage()">Pošalji</button>
+</div>
+</div>
+<script>
+    const apiKey = 'xai-2vXaWWEQtbrPxS2BdDkiSaLXuRfUKC94YSrIVuNXVO6STvvXMS2qnIIRPhXwWGPZbAFChnsaVGHHS6ei';
+    const endpoint = 'https://api.x.ai/v1/chat/completions';
+    let chatOpen = false;
+    let isMinimized = false;
+
+    function openChatWidget() {
+        const chatWidget = document.getElementById('chatWidget');
+        chatOpen = !chatOpen;
+        chatWidget.style.display = chatOpen ? 'flex' : 'none';
+        if (chatOpen && isMinimized) {
+            minimizeMaximizeChatWidget();
+        }
+    }
+    function closeChatWidget() {
+        document.getElementById('chatWidget').style.display = 'none';
+        chatOpen = false;
+    }
+    function minimizeMaximizeChatWidget() {
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.querySelector('.chat-input');
+        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
+        if (!isMinimized) {
+            chatBody.style.display = 'none';
+            chatInput.style.display = 'none';
+            document.getElementById('chatWidget').style.height = '50px';
+            minimizeMaximizeButton.textContent = '+';
+            isMinimized = true;
+        } else {
+            chatBody.style.display = 'block';
+            chatInput.style.display = 'flex';
+            document.getElementById('chatWidget').style.height = '400px';
+            minimizeMaximizeButton.textContent = '-';
+            isMinimized = false;
+        }
+    }
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const userMessage = input.value.trim();
+        if (userMessage) {
+            addMessage('user', userMessage);
+            input.value = '';
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'grok-4-latest',
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+                            { role: 'user', content: userMessage }
+                        ],
+                        stream: false,
+                        temperature: 0
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    addMessage('bot', data.choices[0].message.content || 'Nema odgovora.');
+                } else {
+                    addMessage('bot', 'Greška: ' + (data.error?.message || 'Server problem'));
+                }
+            } catch (error) {
+                addMessage('bot', 'Greška u konekciji: ' + error.message);
+            }
+        }
+    }
+    function addMessage(sender, message) {
+        const chatBody = document.getElementById('chatBody');
+        const wrap = document.createElement('div');
+        wrap.classList.add('message', sender);
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        bubble.textContent = message;
+        wrap.appendChild(bubble);
+        chatBody.appendChild(wrap);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    </script>
+<script>
+(function(){
+  const icons = document.getElementById('socialIcons');
+  const footer = document.querySelector('footer');
+  if (!icons || !footer) return;
+  const margin = 20; // space above footer
+
+  function update(){
+    const rect = footer.getBoundingClientRect();
+    const footerTopDoc = rect.top + window.scrollY;
+    const iconsH = icons.offsetHeight;
+    const stopTop = footerTopDoc - margin - iconsH;
+
+    // Current bottom position of icons if fixed:
+    const currentBottomDoc = window.scrollY + window.innerHeight - margin;
+
+    if (currentBottomDoc >= footerTopDoc) {
+      // Switch to absolute and freeze above footer
+      icons.style.position = 'absolute';
+      icons.style.bottom = 'auto';
+      icons.style.left = (window.innerWidth <= 768 ? '12px' : '20px');
+      icons.style.top = stopTop + 'px';
+    } else {
+      // Keep fixed at bottom-left
+      icons.style.position = 'fixed';
+      icons.style.top = 'auto';
+      icons.style.left = (window.innerWidth <= 768 ? '12px' : '20px');
+      icons.style.bottom = (window.innerWidth <= 768 ? '16px' : '20px');
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  document.addEventListener('DOMContentLoaded', update);
+  update();
+})();
+</script>
+<script>
+    async function loadProductData() {
+        const res = await fetch('/mnt/data/products_data.json');  // Fetch the JSON file with product categories
+        if (!res.ok) throw new Error('Ne mogu da učitam products_data.json');
+        const products = await res.json();  // Parse the JSON data
+        
+        const productId = new URLSearchParams(window.location.search).get('id');  // Get product ID from the URL
+        const product = products.find(p => String(p.id) === productId);  // Find the product by ID
+
+        if (product) {
+            // Insert the category into the new panel
+            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: ' + product.category + '</span>';
+        } else {
+            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: Nema podataka</span>';
+        }
+    }
+    
+    // Load product data on page load
+    window.onload = loadProductData;
+</script>
+<script>
+    async function loadProductData() {
+        const res = await fetch('/mnt/data/catalog.xlsx');  // Fetch the Excel file containing product categories
+        if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
+        const buf = await res.arrayBuffer();
+        const wb = XLSX.read(buf, { type: 'array' });
+        const products = XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''});
+        
+        const productId = new URLSearchParams(window.location.search).get('id');  // Get product ID from the URL
+        const product = products.find(p => String(p.id) === productId);  // Find the product by ID
+
+        if (product) {
+            // Insert the category into the new panel
+            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: ' + product.category + '</span>';
+        } else {
+            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: Nema podataka</span>';
+        }
+    }
+    
+    // Load product data on page load
+    window.onload = loadProductData;
+</script>
+</body>
+</html>
