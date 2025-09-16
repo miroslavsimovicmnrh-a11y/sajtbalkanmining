@@ -1,2 +1,0 @@
-Ovde upiši svoje informacije (cenovnik, opisi proizvoda, pitanja/odgovori...). 
-Možeš slobodno menjati ovaj fajl – chat.php ga učitava pri svakom pitanju.
