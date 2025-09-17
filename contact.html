@@ -1,561 +1,1054 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kontakt – BALKAN MINING CORPORATION</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <style>
-    :root { --bg:#f2f3f5; --paper:#ffffff; --ink:#101214; --muted:#6b7280; --line:#e5e7eb; --accent:#1c1c1e; --radius:14px; }
-    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--ink); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt – Balkan Mining · Mermer Invest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0e141f;
+            --bg-soft: #111b2a;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --surface-light: rgba(148, 163, 184, 0.12);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
+        }
 
-    /* NAV */
-    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
-    .nav-left img { height: 64px; width: auto; display: block; }
-    @media (max-width: 768px) { .nav-left img { height: 50px; } }
-    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
-    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
-    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
-    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
-    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
-    .nav-overlay.open { display: flex; }
-    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
-    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
-    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
-    .nav-links a:hover { opacity: 1; }
-    @media (max-width: 768px) {
-      .nav { left: 16px; right: 16px; top: 18px; }
-      .nav-left { font-size: 10px; letter-spacing: .14em; }
-      .nav-burger, .nav-close { width: 46px; height: 46px; }
-      .nav-links a { font-size: 22px; }
-    }
-    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: 120px; background: #1c1c1e; z-index: 120; }
-    @media (max-width: 768px){ .nav-band { height: 100px; } }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-    .page { min-height: 100vh; padding-top: 120px; }
-    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 80px; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    /* Footer */
-    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:40px; border-top:1px solid #1f2937; }
-    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
-    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    .cta h3 { margin:0; color:#f9fafb; }
-    .cta p { margin:0; color:#9ca3af; }
-    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
-    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
-    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
-    .links { display:flex; gap:18px; flex-wrap:wrap; }
-    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
-    .links a:hover { opacity:1; text-decoration:underline; }
-    .bottom { border-top:1px solid #1f2937; }
-    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-    /* Social icons */
-    .social-icons { position: sticky; bottom: 20px; margin-left: 20px; z-index: 90; display: flex; flex-direction: column; gap: 10px; }
-    .social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; }
-    .social-icons a:hover { opacity: 1; }
+        main {
+            flex: 1;
+        }
 
-    /* Contact content */
-    .contact-hero { margin-top: 30px; margin-bottom: 20px; }
-    .contact-hero h1 { margin: 0 0 6px; font-size: 34px; }
-    .contact-hero p { margin: 0; color: var(--muted); }
-    .contact-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; }
-    @media (max-width: 960px) { .contact-grid { grid-template-columns: 1fr; } }
-    .panel { background: var(--paper); border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 18px; position: relative; }
-    .contact-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-    .contact-list li { display: flex; align-items: flex-start; gap: 10px; }
-    .contact-list i { margin-top: 4px; }
-    .contact-list a { color: inherit; text-decoration: none; }
-    .contact-list a:hover { text-decoration: underline; }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
-    /* Map */
-    .map { border: 0; width: 100%; height: 380px; border-radius: 12px; overflow: hidden; position: relative; z-index: 10; pointer-events: auto; touch-action: manipulation; }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-    /* Panel Chat (right column) */
-    .chat-panel { display:flex; flex-direction:column; gap:10px; height: 100%; min-height: 420px; }
-    .chat-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .chat-header h2 { margin:0; font-size: 20px; }
-    .chat-feed { border:1px solid var(--line); border-radius: 10px; padding: 10px; height: 300px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; background:#fafafa; }
-    .msg { display:flex; }
-    .msg .bubble { max-width: 85%; padding:8px 10px; border-radius: 10px; line-height:1.35; font-size: 14px; }
-    .msg.user { justify-content:flex-end; }
-    .msg.user .bubble { background:#e5e7eb; }
-    .msg.bot .bubble { background:#ffffff; border:1px solid #e5e7eb; }
-    .chat-input { display:flex; gap:8px; }
-    .chat-input input { flex:1; padding:12px; border:1px solid var(--line); border-radius:10px; }
-    .chat-input button { background:#1c1c1e; color:#fff; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; }
-    .chat-input button:disabled { opacity:.6; cursor:not-allowed; }
-    .note { font-size:12px; color: var(--muted); }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Floating widget (as on catalog.html) */
-    .chat-widget {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        height: 400px;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-        flex-direction: column;
-    }
-    .chat-header-widget { background-color: #333; color: white; padding: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; display:flex; justify-content:space-between; align-items:center; }
-    .chat-header-widget button { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; margin-left: 10px; }
-    .chat-body-widget { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    .chat-input-widget { display: flex; padding: 10px; border-top: 1px solid #ccc; }
-    .chat-input-widget input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-right: 5px; }
-    .chat-input-widget button { padding: 8px 12px; background-color: #d4a017; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .message.widget .bubble { padding: 10px 14px; border-radius: 16px; max-width: 80%; line-height: 1.35; word-wrap: break-word; white-space: pre-wrap; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
-    .message.user.widget { text-align: right; display:flex; justify-content:flex-end; }
-    .message.bot.widget { text-align: left; display:flex; justify-content:flex-start; }
-    .message.user.widget .bubble { background: #f0f0f0; color: #111; }
-    .message.bot.widget .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
-    @media (max-width: 768px) { .chat-widget { width: 250px; height: 300px; } }
-  </style>
+        h1, h2, h3 {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 3.6rem);
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        h3 {
+            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--accent-soft);
+            opacity: 0.8;
+        }
+
+        .site-header {
+            position: relative;
+            z-index: 40;
+        }
+
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-left a {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .nav-left img {
+            height: 58px;
+            width: auto;
+        }
+
+        .nav-tagline {
+            font-size: 0.72rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-inline {
+            display: none;
+            align-items: center;
+            gap: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        .nav-inline a {
+            color: var(--muted);
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-inline a:hover,
+        .nav-inline a:focus-visible {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-inline .nav-cta {
+            color: var(--accent-soft);
+        }
+
+        .nav-burger {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
+
+        .nav-burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 9, 18, 0.92);
+            display: none;
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-overlay.open {
+            display: flex;
+        }
+
+        .nav-close {
+            position: absolute;
+            top: 28px;
+            right: 40px;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #fff;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-soft);
+        }
+
+        @media (min-width: 900px) {
+            .nav-inline {
+                display: flex;
+            }
+            .nav-burger {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav {
+                width: calc(100% - 24px);
+                padding: 12px 16px;
+            }
+            .nav-left img {
+                height: 48px;
+            }
+            .nav-tagline {
+                display: none;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.95rem 1.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            box-shadow: 0 18px 32px rgba(212, 160, 23, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.36);
+        }
+
+        .btn-light {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            border-color: rgba(255, 255, 255, 0.22);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            border-color: rgba(148, 163, 184, 0.18);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus-visible {
+            background: rgba(212, 160, 23, 0.12);
+        }
+
+        .btn-light:hover,
+        .btn-light:focus-visible {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-ghost:hover,
+        .btn-ghost:focus-visible {
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .btn + .btn {
+            margin-left: 0.5rem;
+        }
+
+        .section {
+            padding: clamp(4rem, 10vw, 6.5rem) 0;
+        }
+
+        .section-heading {
+            max-width: 720px;
+            margin: 0 auto 3rem;
+            text-align: center;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .page-hero {
+            padding: clamp(6rem, 12vw, 8rem) 0 clamp(3rem, 8vw, 5rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(212, 160, 23, 0.18), transparent 55%);
+            pointer-events: none;
+        }
+
+        .page-hero > .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (min-width: 960px) {
+            .hero-grid {
+                grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            }
+        }
+
+        .hero-intro {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .hero-note {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1rem 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: rgba(148, 163, 184, 0.08);
+            color: var(--muted);
+        }
+
+        .hero-note i {
+            color: var(--accent-soft);
+        }
+
+        .contact-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 2.2rem;
+            box-shadow: var(--shadow-card);
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .contact-card ul {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .contact-card li {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            color: var(--muted);
+        }
+
+        .contact-card i {
+            color: var(--accent-soft);
+            font-size: 1.1rem;
+        }
+
+        .contact-channels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .contact-channels a {
+            padding: 0.7rem 1.1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(148, 163, 184, 0.08);
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .contact-channels a:hover {
+            background: rgba(212, 160, 23, 0.18);
+            border-color: rgba(212, 160, 23, 0.4);
+        }
+
+        .contact-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        @media (min-width: 960px) {
+            .contact-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                align-items: start;
+            }
+        }
+
+        .info-panel, .form-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-card);
+            padding: 2.2rem;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-card {
+            background: var(--surface-strong);
+        }
+
+        .info-group {
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .info-group strong {
+            color: #fff;
+        }
+
+        .info-group p {
+            color: var(--muted);
+        }
+
+        .info-group a {
+            color: var(--accent-soft);
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-grid.two-col {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-grid label {
+            display: grid;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--muted);
+        }
+
+        .form-grid input,
+        .form-grid textarea {
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(5, 10, 18, 0.45);
+            padding: 0.85rem 1rem;
+            color: #fff;
+            font-family: var(--font-sans);
+        }
+
+        .form-grid textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-grid input:focus,
+        .form-grid textarea:focus {
+            outline: none;
+            border-color: rgba(212, 160, 23, 0.5);
+            box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.16);
+        }
+
+        .map-shell {
+            margin-top: 2.8rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        .map-shell iframe {
+            width: 100%;
+            height: 420px;
+            border: none;
+            filter: saturate(1.05) contrast(1.05);
+        }
+
+        @media (max-width: 720px) {
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .map-shell iframe {
+                height: 320px;
+            }
+        }
+
+        .cta-section {
+            padding: clamp(4rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 5rem);
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: var(--shadow-lg);
+            padding: clamp(2.4rem, 6vw, 3.4rem);
+            display: grid;
+            gap: 1.6rem;
+        }
+
+        @media (min-width: 860px) {
+            .cta-card {
+                grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+                align-items: center;
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        footer {
+            padding: 1.8rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(5, 10, 18, 0.65);
+        }
+
+        footer a {
+            color: var(--accent-soft);
+        }
+
+        .social-icons {
+            position: fixed;
+            left: 28px;
+            bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 30;
+        }
+
+        .social-icons a {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(17, 27, 42, 0.88);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-4px);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.45);
+        }
+
+        @media (max-width: 720px) {
+            .social-icons {
+                left: 16px;
+                bottom: 18px;
+            }
+            .social-icons a {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 320px;
+            height: 430px;
+            background: rgba(11, 18, 29, 0.94);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            z-index: 80;
+        }
+
+        .chat-header {
+            padding: 1rem 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(17, 27, 42, 0.88);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .chat-header button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 999px;
+            width: 34px;
+            height: 34px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+        }
+
+        .message .bubble {
+            padding: 0.85rem 1.1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            font-size: 0.88rem;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .bubble {
+            background: rgba(212, 160, 23, 0.2);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.35);
+        }
+
+        .chat-input {
+            padding: 1rem;
+            display: flex;
+            gap: 0.6rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(11, 18, 29, 0.88);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(4, 9, 18, 0.4);
+            color: #fff;
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.4rem;
+            border-radius: 14px;
+            border: none;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            cursor: pointer;
+        }
+
+        @media (max-width: 520px) {
+            .chat-widget {
+                width: calc(100% - 32px);
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="nav-band"></div>
-
-  <!-- NAV + Overlay -->
-  <div class="nav">
-    <div class="nav-left">
-      <a href="index.html"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Logo"></a>
-    </div>
-    <button class="nav-burger" id="navBurger" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="nav-overlay" id="navOverlay">
-    <button class="nav-close" id="navClose" aria-label="Close menu">×</button>
-    <nav class="nav-links">
-      <a href="index.html">Početna</a>
-      <a href="about.html">O nama</a>
-      <a href="catalog.html">Katalog</a>
-      <a href="blog.html">Blog</a>
-      <a href="contact.html">Kontakt</a>
-    </nav>
-  </div>
-
-  <div class="page">
-    <div class="wrap">
-      <div class="contact-hero">
-        <h1>Kontakt</h1>
-        <p>Javite nam se — odgovaramo istog dana.</p>
-      </div>
-
-      <div class="contact-grid">
-        <!-- LEFT: Info + Map -->
-        <div class="panel">
-          <ul class="contact-list">
-            <li><i class="fa-solid fa-building"></i> <div><strong>BALKAN MINING CORPORATION</strong></div></li>
-            <li><i class="fa-solid fa-location-dot"></i> <div>Tvrdici bb, Požega, Srbija</div></li>
-            <li><i class="fa-solid fa-envelope"></i> <div><a href="mailto:office@mining.rs">office@mining.rs</a></div></li>
-            <li><i class="fa-solid fa-phone"></i> <div><a href="tel:+38169778239">+381 69 778 239</a></div></li>
-          </ul>
-          <div style="margin-top:14px;">
-            <iframe class="map"
-              src="https://www.google.com/maps?&q=BALKAN%20MINING%20CORPORATION%2C%20Tvrdici%20bb%2C%20Po%C5%BEega%2C%20Serbia&hl=sr&z=16&output=embed&iwloc=near"
-              loading="lazy" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"
-              aria-label="Mapa – BALKAN MINING CORPORATION"></iframe>
-          </div>
-        </div>
-
-        <!-- RIGHT: Chat with Grok -->
-        <div class="panel" id="chat">
-          <div class="chat-panel">
-            <div class="chat-header">
-              <h2><i class="fa-solid fa-comments"></i> Chat sa Grokom</h2>
-              <button id="clearBtn" class="btn-clear" style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;cursor:pointer;">Očisti</button>
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo">
+                    <img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo">
+                </a>
+                <span class="nav-tagline">Mermer Invest</span>
             </div>
-            <div id="panelFeed" class="chat-feed">
-              <div class="msg bot"><div class="bubble">Zdravo! Kako mogu da pomognem? Možete pitati o cenama, rokovima, isporuci ili tehničkim detaljima.</div></div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <div class="chat-input">
-              <input id="panelInput" type="text" placeholder="Postavite pitanje…" />
-              <button id="panelSend">Pošalji</button>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
+    </div>
+
+    <main>
+        <section class="page-hero contact-hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-intro">
+                        <span class="eyebrow">Kontakt centar</span>
+                        <h1>Tu smo za sva pitanja o projektima i isporukama</h1>
+                        <p>Naš tim odgovara u roku od 24 sata, bilo da tražite ponudu za nove projekte, dodatne količine ili tehničku podršku na gradilištu.</p>
+                        <div class="hero-actions">
+                            <a href="mailto:office@balkanmining.rs" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Pišite nam</a>
+                            <a href="tel:+38169778239" class="btn btn-outline"><i class="fa-solid fa-phone"></i> +381 69 778 239</a>
+                            <button type="button" class="btn btn-ghost" onclick="openChatWidget()"><i class="fa-solid fa-comment"></i> Live chat</button>
+                        </div>
+                        <div class="hero-note">
+                            <i class="fa-solid fa-clock"></i>
+                            <p>Radno vreme podrške: ponedeljak–petak od 08:00 do 18:00 (CET). Hitne intervencije dostupne su i vikendom.</p>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <h3>Direktne linije</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-location-dot"></i> Tvrdici bb, 31210 Požega, Srbija</li>
+                            <li><i class="fa-solid fa-phone"></i> <a href="tel:+38169778239">+381 69 778 239</a></li>
+                            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a></li>
+                            <li><i class="fa-solid fa-user-tie"></i> <a href="mailto:projects@balkanmining.rs">projects@balkanmining.rs</a> – projektni tim</li>
+                        </ul>
+                        <div class="contact-channels">
+                            <a href="https://wa.me/38169778239" target="_blank" rel="noopener">WhatsApp</a>
+                            <a href="#">Viber</a>
+                            <a href="#">Teams</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="note">Napomena: desni panel je stalni chat. U futeru je i plutajući chat (isti kao u katalogu).</div>
-          </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="info-panel">
+                        <h3>Posetite nas</h3>
+                        <div class="info-group">
+                            <strong>Showroom i logistički centar – Požega</strong>
+                            <p>Pregledajte raspoložive ploče, blokove i elemente, uz mogućnost rezervacije na licu mesta.</p>
+                        </div>
+                        <div class="info-group">
+                            <strong>Termini za video obilazak</strong>
+                            <p>Svakog utorka i četvrtka organizujemo live turu kroz skladišta. Pošaljite nam projektnu specifikaciju i pripremićemo selekciju prema vašim zahtevima.</p>
+                        </div>
+                        <div class="info-group">
+                            <strong>Administracija i finansije</strong>
+                            <p><a href="mailto:finance@balkanmining.rs">finance@balkanmining.rs</a><br> <a href="tel:+38131571220">+381 31 571 220</a></p>
+                        </div>
+                    </div>
+                    <form class="form-card" action="mailto:office@balkanmining.rs" method="post">
+                        <div class="form-grid two-col">
+                            <label>Ime i prezime
+                                <input type="text" name="name" placeholder="Vaše ime" required>
+                            </label>
+                            <label>Kompanija
+                                <input type="text" name="company" placeholder="Naziv firme">
+                            </label>
+                            <label>Email
+                                <input type="email" name="email" placeholder="primer@domen.com" required>
+                            </label>
+                            <label>Telefon
+                                <input type="tel" name="phone" placeholder="+381...">
+                            </label>
+                        </div>
+                        <div class="form-grid">
+                            <label>Poruka
+                                <textarea name="message" placeholder="Navedite projekat, količine ili dodatna pitanja" required></textarea>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="justify-self:flex-start;">Pošaljite upit</button>
+                    </form>
+                </div>
+                <div class="map-shell">
+                    <iframe title="Mapa lokacije Balkan Mining" loading="lazy" allowfullscreen src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2803.320064712868!2d20.05543077723081!3d43.846547439896565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x475a5d1b2775a7a5%3A0xf6fe379fffc8dba!2sTvrdici%20bb%2C%2031205%20Po%C5%BEega!5e0!3m2!1ssr!2srs!4v1719830400000!5m2!1ssr!2srs"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-card">
+                    <div>
+                        <span class="eyebrow">Spremni za saradnju</span>
+                        <h2>Rezervišite termin za uzorke ili konsultaciju sa projektnim timom</h2>
+                        <p>Ukoliko nam pošaljete tehničku dokumentaciju do 12h, dobićete predlog materijala, rok isporuke i logistički plan isti dan.</p>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="catalog.html" class="btn btn-light">Preuzmite katalog</a>
+                        <a href="tel:+38169778239" class="btn btn-primary">Pozovite odmah</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>
+    </footer>
+
+    <div class="social-icons" aria-label="Društvene mreže">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">Chat sa Grok-om
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Social icons -->
-  <div class="social-icons">
-    <a href="#"><i class="fab fa-instagram"></i></a>
-    <a href="#"><i class="fab fa-facebook-f"></i></a>
-    <a href="#"><i class="fab fa-tiktok"></i></a>
-    <a href="#"><i class="fab fa-youtube"></i></a>
-    <a href="#"><i class="fab fa-x-twitter"></i></a>
-    <a href="#"><i class="fab fa-whatsapp"></i></a>
-  </div>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="cta">
-      <div class="inner">
-        <div>
-          <h3>Spremni za ponudu?</h3>
-          <p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Postavi pitanje...">
+            <button onclick="sendMessage()">Pošalji</button>
         </div>
-        <div class="row">
-          <a class="btn-primary" href="contact.html">Kontakt</a>
-          <a class="btn-secondary" href="catalog.xlsx" download>Preuzmi cenovnik</a>
-          <a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a>
-        </div>
-      </div>
     </div>
-    <div class="wrap">
-      <div class="links">
-        <a href="about.html">O nama</a>
-        <a href="catalog.html">Katalog</a>
-        <a href="blog.html">Blog</a>
-        <a href="contact.html">Kontakt</a>
-      </div>
-      <div class="links" style="justify-content:flex-end;">
-        <a href="privacy.html">Politika privatnosti</a>
-        <a href="terms.html">Uslovi korišćenja</a>
-      </div>
-    </div>
-    <div class="bottom">
-      <div class="inner">
-        <div>© 2025 Plavi tok</div><div></div>
-      </div>
-    </div>
-  </footer>
 
-  <!-- Floating Chat widget (as on catalog.html) -->
-  <div class="chat-widget" id="chatWidget">
-      <div class="chat-header-widget">Chat sa Grok-om
-          <div>
-            <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton">-</button>
-            <button onclick="closeChatWidget()">X</button>
-          </div>
-      </div>
-      <div class="chat-body-widget" id="chatBody"></div>
-      <div class="chat-input-widget">
-          <input type="text" id="chatInput" placeholder="Postavi pitanje...">
-          <button onclick="sendWidgetMessage()">Pošalji</button>
-      </div>
-  </div>
+    <script>
+        const apiKey = window.GROK_API_KEY || '';
+        const endpoint = 'https://api.x.ai/v1/chat/completions';
+        let chatOpen = false;
+        let isMinimized = false;
 
-  <script>
-    // Hamburger behavior
-    const navBurger = document.getElementById('navBurger');
-    const navOverlay = document.getElementById('navOverlay');
-    const navClose  = document.getElementById('navClose');
-    if (navBurger && navOverlay && navClose) {
-      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
-      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
-      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
-    }
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
 
-    // Shared API (as on index/catalog)
-    /* removed apiKey */
-    const endpoint = 'https://api.x.ai/v1/chat/completions';
-
-    /* ===== Panel Chat (right column) ===== */
-    const panelFeed = document.getElementById('panelFeed');
-    const panelInput = document.getElementById('panelInput');
-    const panelSend = document.getElementById('panelSend');
-    const clearBtn = document.getElementById('clearBtn');
-
-    function addPanelMessage(role, text) {
-      const row = document.createElement('div');
-      row.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-      bubble.textContent = text;
-      row.appendChild(bubble);
-      panelFeed.appendChild(row);
-      panelFeed.scrollTop = panelFeed.scrollHeight;
-    }
-
-    async function askPanel(text) {
-      panelSend.disabled = true;
-      panelInput.disabled = true;
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + apiKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'grok-4-latest',
-            messages: [
-              { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
-              { role: 'user', content: text }
-            ],
-            stream: false,
-            temperature: 0
-          })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error((data && data.error && data.error.message) || ('HTTP ' + res.status));
-        const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || 'Nema odgovora.';
-        addPanelMessage('bot', reply);
-      } catch (err) {
-        addPanelMessage('bot', 'Greška: ' + err.message);
-      } finally {
-        panelSend.disabled = false;
-        panelInput.disabled = false;
-        panelInput.focus();
-      }
-    }
-
-    function sendPanelMessage() {
-      const text = (panelInput.value || '').trim();
-      if (!text) return;
-      addPanelMessage('user', text);
-      panelInput.value = '';
-      askPanel(text);
-    }
-
-    panelSend.addEventListener('click', sendPanelMessage);
-    panelInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendPanelMessage();
-      }
-    });
-    clearBtn.addEventListener('click', () => {
-      panelFeed.innerHTML = '<div class="msg bot"><div class="bubble">Zdravo! Kako mogu da pomognem? Možete pitati o cenama, rokovima, isporuci ili tehničkim detaljima.</div></div>';
-    });
-
-    /* ===== Floating Chat Widget (catalog-like) ===== */
-    let chatOpen = false;
-    let isMinimized = false;
-
-    function openChatWidget() {
-        const chatWidget = document.getElementById('chatWidget');
-        chatOpen = !chatOpen;
-        chatWidget.style.display = chatOpen ? 'flex' : 'none';
-        if (chatOpen && isMinimized) {
-            minimizeMaximizeChatWidget();
-        }
-    }
-    function closeChatWidget() {
-        document.getElementById('chatWidget').style.display = 'none';
-        chatOpen = false;
-    }
-    function minimizeMaximizeChatWidget() {
-        const chatBody = document.getElementById('chatBody');
-        const chatInputWrap = document.querySelector('.chat-input-widget');
-        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
-        if (!isMinimized) {
-            chatBody.style.display = 'none';
-            chatInputWrap.style.display = 'none';
-            document.getElementById('chatWidget').style.height = '50px';
-            minimizeMaximizeButton.textContent = '+';
-            isMinimized = true;
-        } else {
-            chatBody.style.display = 'block';
-            chatInputWrap.style.display = 'flex';
-            document.getElementById('chatWidget').style.height = '400px';
-            minimizeMaximizeButton.textContent = '-';
-            isMinimized = false;
-        }
-    }
-    function addWidgetMessage(sender, message) {
-        const chatBody = document.getElementById('chatBody');
-        const wrap = document.createElement('div');
-        wrap.classList.add('message', sender, 'widget');
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.textContent = message;
-        wrap.appendChild(bubble);
-        chatBody.appendChild(wrap);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-    async function sendWidgetMessage() {
-        const input = document.getElementById('chatInput');
-        const userMessage = input.value.trim();
-        if (!userMessage) return;
-        addWidgetMessage('user', userMessage);
-        input.value = '';
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'grok-4-latest',
-                    messages: [
-                        { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
-                        { role: 'user', content: userMessage }
-                    ],
-                    stream: false,
-                    temperature: 0
-                })
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => {
+                navOverlay.classList.add('open');
             });
-            const data = await response.json();
-            if (response.ok) {
-                addWidgetMessage('bot', (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || 'Nema odgovora.');
-            } else {
-                addWidgetMessage('bot', 'Greška: ' + (data.error && data.error.message ? data.error.message : 'Server problem'));
+            navClose.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+            });
+            navOverlay.addEventListener('click', (e) => {
+                if (e.target === navOverlay) {
+                    navOverlay.classList.remove('open');
+                }
+            });
+        }
+
+        function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatOpen = !chatOpen;
+            chatWidget.style.display = chatOpen ? 'flex' : 'none';
+            if (chatOpen && isMinimized) {
+                minimizeMaximizeChatWidget();
             }
-        } catch (error) {
-            addWidgetMessage('bot', 'Greška u konekciji: ' + error.message);
-        }
-    }
-  </script>
-
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
-
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
-
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
-
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
-
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
-
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
-
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
-
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
-
-<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
-<script>
-(function(){
-  try {
-    // Avoid ReferenceError in legacy code
-    if (typeof window.apiKey === 'undefined') {
-      window.apiKey = 'proxied';
-    }
-
-    const ORIG_FETCH = window.fetch.bind(window);
-    window.fetch = async function(input, init){
-      try{
-        const url = (typeof input === 'string') ? input : (input && input.url) || '';
-        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
-        if (!isModelApi) {
-          return ORIG_FETCH(input, init);
         }
 
-        // Try to extract user's message from the original body if present
-        let userMsg = '';
-        try {
-          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          if (bodyStr) {
-            const payload = JSON.parse(bodyStr);
-            userMsg = payload?.message 
-                   || payload?.prompt 
-                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
-          }
-        } catch(e){ /* ignore parse errors */ }
+        function closeChatWidget() {
+            document.getElementById('chatWidget').style.display = 'none';
+            chatOpen = false;
+        }
 
-        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg || '' })
-        });
-        return resp;
-      }catch(err){
-        // Fallback to original fetch if anything goes wrong
-        return ORIG_FETCH(input, init);
-      }
-    };
-  } catch(e) {
-    console.error('Proxy bootstrap error:', e);
-  }
-})();
-</script>
+        function minimizeMaximizeChatWidget() {
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.querySelector('.chat-input');
+            const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
+            if (!isMinimized) {
+                chatBody.style.display = 'none';
+                chatInput.style.display = 'none';
+                document.getElementById('chatWidget').style.height = '60px';
+                minimizeMaximizeButton.textContent = '+';
+                isMinimized = true;
+            } else {
+                chatBody.style.display = 'flex';
+                chatInput.style.display = 'flex';
+                document.getElementById('chatWidget').style.height = '430px';
+                minimizeMaximizeButton.textContent = '-';
+                isMinimized = false;
+            }
+        }
 
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) {
+                return;
+            }
+            addMessage('user', userMessage);
+            input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'grok-4-latest',
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+                            { role: 'user', content: userMessage }
+                        ],
+                        stream: false,
+                        temperature: 0
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    addMessage('bot', data.choices[0].message.content || 'Nema odgovora.');
+                } else {
+                    addMessage('bot', 'Greška: ' + (data.error?.message || 'Server problem'));
+                }
+            } catch (error) {
+                addMessage('bot', 'Greška u konekciji: ' + error.message);
+            }
+        }
+
+        function addMessage(sender, message) {
+            const chatBody = document.getElementById('chatBody');
+            const wrap = document.createElement('div');
+            wrap.classList.add('message', sender);
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            wrap.appendChild(bubble);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
