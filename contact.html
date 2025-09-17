@@ -256,7 +256,7 @@
     }
 
     // Shared API (as on index/catalog)
-    const apiKey = 'xai-2vXaWWEQtbrPxS2BdDkiSaLXuRfUKC94YSrIVuNXVO6STvvXMS2qnIIRPhXwWGPZbAFChnsaVGHHS6ei';
+    /* removed apiKey */
     const endpoint = 'https://api.x.ai/v1/chat/completions';
 
     /* ===== Panel Chat (right column) ===== */
@@ -407,5 +407,155 @@
         }
     }
   </script>
+
+<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
+<script>
+(function(){
+  const $ = (s, root=document)=>root.querySelector(s);
+  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
+  const endpoint = '/sajt/xapi/chat.php';
+
+  function ensureHamburger(){
+    const hamb = $('.hamburger');
+    const menu = $('.nav-menu');
+    const close = $('.close-btn');
+    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
+    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
+  }
+
+  function getChatParts(){
+    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
+    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
+    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
+    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
+    return {panel, body, input, send};
+  }
+
+  function openChat(){
+    const {panel} = getChatParts();
+    if (!panel) return;
+    if (getComputedStyle(panel).display === 'none') {
+      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
+    }
+    panel.classList.add('open');
+  }
+  function closeChat(){
+    const {panel} = getChatParts();
+    if (!panel) return;
+    panel.classList.remove('open');
+    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
+  }
+  window.openChat = openChat;
+
+  function wireOpeners(){
+    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
+    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
+    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
+    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
+  }
+
+  function addMessage(role, text){
+    const {body} = getChatParts();
+    if (!body) return;
+    const row = document.createElement('div');
+    row.className = 'msg ' + role;
+    row.textContent = String(text ?? '');
+    body.appendChild(row);
+    body.scrollTop = body.scrollHeight;
+  }
+  window.addMessage = window.addMessage || addMessage;
+
+  async function sendMessage(){
+    const {input} = getChatParts();
+    if (!input) return;
+    const msg = (input.value || '').trim();
+    if (!msg) return;
+    addMessage('user', msg);
+    input.value='';
+    try{
+      const res = await fetch(endpoint, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ message: msg })
+      });
+      let text = '';
+      try {
+        const data = await res.json();
+        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
+      } catch(_) {
+        text = await res.text();
+      }
+      addMessage('bot', text || 'Prazan odgovor.');
+    }catch(err){
+      console.error(err);
+      addMessage('bot','Greška: server nije dostupan.');
+    }
+  }
+  window.sendMessage = window.sendMessage || sendMessage;
+
+  function wireSenders(){
+    const {input, send} = getChatParts();
+    const form = (input && input.closest('form'));
+    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
+    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
+    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureHamburger();
+    wireOpeners();
+    wireSenders();
+  });
+})();
+</script>
+
+
+<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
+<script>
+(function(){
+  try {
+    // Avoid ReferenceError in legacy code
+    if (typeof window.apiKey === 'undefined') {
+      window.apiKey = 'proxied';
+    }
+
+    const ORIG_FETCH = window.fetch.bind(window);
+    window.fetch = async function(input, init){
+      try{
+        const url = (typeof input === 'string') ? input : (input && input.url) || '';
+        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
+        if (!isModelApi) {
+          return ORIG_FETCH(input, init);
+        }
+
+        // Try to extract user's message from the original body if present
+        let userMsg = '';
+        try {
+          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
+          if (bodyStr) {
+            const payload = JSON.parse(bodyStr);
+            userMsg = payload?.message 
+                   || payload?.prompt 
+                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
+          }
+        } catch(e){ /* ignore parse errors */ }
+
+        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMsg || '' })
+        });
+        return resp;
+      }catch(err){
+        // Fallback to original fetch if anything goes wrong
+        return ORIG_FETCH(input, init);
+      }
+    };
+  } catch(e) {
+    console.error('Proxy bootstrap error:', e);
+  }
+})();
+</script>
+
 </body>
 </html>
