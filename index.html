@@ -1,612 +1,1167 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Balkan Mining - Mermer Invest</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" async>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+            return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                    var filteredData = jsonData.filter(function (row) {
+                        return row.some(filledCell);
+                    });
+                    var headerRowIndex = filteredData.findIndex(function (row, index) {
+                        var current = row.filter(filledCell).length;
+                        var next = filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0;
+                        return current >= next;
+                    });
+                    if (headerRowIndex === -1 || headerRowIndex > 25) {
+                        headerRowIndex = 0;
+                    }
+                    var trimmed = filteredData.slice(headerRowIndex);
+                    var csvSheet = XLSX.utils.aoa_to_sheet(trimmed);
+                    return XLSX.utils.sheet_to_csv(csvSheet, { header: 1 });
+                } catch (e) {
+                    console.error(e);
+                    return "";
+                }
+            }
+            return gk_fileData[filename] || "";
+        }
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: #f5f5f5; overflow: hidden; }
-        .hero { 
-            height: 100vh; 
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url('https://i.ibb.co/YFfbbNfy/IMG-3423.jpg') no-repeat center/cover; 
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        .nav-container {
-            position: absolute;
-            top: 20px;
-            left: 60px;
-            right: 60px;
-            background-color: white;
-            padding: 8px 30px;
-            border-radius: 5px;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            white-space: nowrap;
-            max-width: calc(100% - 120px);
-        }
-        .logo-space {
-            margin-right: 20px;
-        }
-        .logo-space img {
-            height: 70px;
-            vertical-align: middle;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 2.5rem;
-            flex-wrap: nowrap;
-            overflow: hidden;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .nav-buttons a {
-            color: #333;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-            padding: 0.3rem 0.7rem;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-        }
-        .nav-buttons a:hover { opacity: 1; }
-
-        /* Mobilni stilovi (manje od 768px) */
-        @media (max-width: 768px) {
-            .nav-container {
-                left: 15px;
-                right: 15px;
-                padding: 8px 15px;
-                justify-content: space-between;
-            }
-            .nav-buttons {
-                display: none;
-            }
-            .hamburger {
-                font-size: 1.5rem;
-                cursor: pointer;
-                color: #333;
-            }
-            .nav-menu {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: #000;
-                width: 200px;
-                padding: 10px;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-            }
-            .nav-menu.active {
-                display: flex;
-                flex-direction: column;
-                animation: slideDown 0.3s ease-out;
-            }
-            .nav-menu a {
-                color: #fff;
-                text-decoration: none;
-                font-size: 1rem;
-                padding: 0.5rem;
-                text-align: center;
-                transition: background-color 0.3s;
-            }
-            .nav-menu a:hover {
-                background-color: #333;
-            }
-            .close-btn {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                font-size: 1.2rem;
-                color: #fff;
-                background: none;
-                border: none;
-                cursor: pointer;
-            }
-            .hero {
-                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url('https://i.ibb.co/gbZmV9BM/IMG-3425.jpg') no-repeat center/cover;
-            }
-            .hero-text h1 {
-                font-size: 1.4rem;
-            }
-            .hero-text p {
-                font-size: 0.7rem;
-            }
-            .hero-buttons a {
-                font-size: 0.63rem;
-            }
-            @keyframes slideDown {
-                from { opacity: 0; transform: translate(-50%, -10px); }
-                to { opacity: 1; transform: translate(-50%, 0); }
-            }
+        :root {
+            --bg: #0e141f;
+            --bg-soft: #111b2a;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --surface-light: rgba(148, 163, 184, 0.12);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
         }
 
-        /* Desktop stilovi (769px i veći) */
-        @media (min-width: 769px) {
-            .hamburger { display: none; }
-            .nav-menu { display: none; }
-            .hero-text h1 {
-                font-size: 3rem;
-            }
-            .hero-text p {
-                font-size: 1.5rem;
-            }
-            .hero-buttons a {
-                font-size: 1.35rem;
-            }
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
-        .hero-text {
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            z-index: 2;
-            color: white;
-            text-align: right;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
         }
-        .hero-buttons {
-            position: relative;
-            display: flex;
-            gap: 20px;
-            justify-content: flex-end;
-            align-items: flex-end;
-            flex-wrap: nowrap;
-            overflow: hidden;
-            margin-top: 10px;
+
+        main {
+            flex: 1;
         }
-        .hero-buttons a {
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 5vw, 3.8rem);
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-family: var(--font-display);
+        }
+
+        h3 {
+            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .eyebrow {
             display: inline-flex;
             align-items: center;
-            padding: 12px 22.5px;
-            border-radius: 7.5px;
-            text-decoration: none;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--accent-soft);
+            opacity: 0.8;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        /* === Navigacija === */
+        .site-header {
+            position: relative;
+            z-index: 40;
+        }
+
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-left a {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .nav-left img {
+            height: 58px;
+            width: auto;
+        }
+
+        .nav-tagline {
+            font-size: 0.72rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: var(--muted);
             font-weight: 600;
-            transition: background-color 0.3s;
         }
-        .hero-buttons a:hover { background-color: #e0e0e0; }
-        .hero-buttons a.catalog-button {
-            background-color: rgba(255, 255, 255, 0.3);
-            color: white;
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
         }
-        .hero-buttons a.chat-button {
-            background-color: #fff;
-            color: #333;
+
+        .nav-inline {
+            display: none;
+            align-items: center;
+            gap: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        .nav-inline a {
+            color: var(--muted);
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-inline a:hover,
+        .nav-inline a:focus-visible {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-inline .nav-cta {
+            color: var(--accent-soft);
+        }
+
+        .nav-burger {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
             cursor: pointer;
         }
-        .hero-buttons a.chat-button i { margin-right: 7.5px; }
-        .social-icons {
+
+        .nav-burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .nav-overlay {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 100;
+            inset: 0;
+            background: rgba(5, 9, 18, 0.92);
+            display: none;
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-overlay.open {
+            display: flex;
+        }
+
+        .nav-close {
+            position: absolute;
+            top: 28px;
+            right: 40px;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-links {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 18px;
+            align-items: center;
         }
+
+        .nav-links a {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #fff;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-soft);
+        }
+
+        @media (min-width: 900px) {
+            .nav-inline {
+                display: flex;
+            }
+            .nav-burger {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav {
+                width: calc(100% - 24px);
+                padding: 12px 16px;
+            }
+            .nav-left img {
+                height: 48px;
+            }
+            .nav-tagline {
+                display: none;
+            }
+        }
+
+        /* === Dugmad === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.95rem 1.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            box-shadow: 0 18px 32px rgba(212, 160, 23, 0.35);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            box-shadow: 0 26px 46px rgba(212, 160, 23, 0.45);
+        }
+
+        .btn-outline {
+            border-color: rgba(255, 255, 255, 0.35);
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus-visible {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-ghost {
+            color: var(--accent-soft);
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .btn-ghost:hover,
+        .btn-ghost:focus-visible {
+            color: #fff;
+        }
+
+        button.btn {
+            cursor: pointer;
+        }
+
+        .link-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            color: var(--accent-soft);
+            margin-top: 1.6rem;
+        }
+
+        .link-arrow i {
+            transition: transform 0.3s ease;
+        }
+
+        .link-arrow:hover i {
+            transform: translateX(6px);
+        }
+
+        /* === Hero === */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: clamp(6.5rem, 16vw, 9rem) 0 clamp(6rem, 12vw, 9rem);
+            color: #fff;
+            background: linear-gradient(rgba(4, 9, 18, 0.55), rgba(4, 9, 18, 0.78)), url('https://i.ibb.co/YFfbbNfy/IMG-3423.jpg') center/cover no-repeat;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(212, 160, 23, 0.18), transparent 55%),
+                        linear-gradient(140deg, rgba(6, 12, 24, 0.75), rgba(6, 12, 24, 0.35));
+            mix-blend-mode: screen;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+            display: grid;
+            gap: clamp(2.5rem, 5vw, 4rem);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            align-items: center;
+        }
+
+        .hero-right {
+            max-width: 560px;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.36em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+            font-weight: 700;
+        }
+
+        .hero-kicker::before {
+            content: '';
+            width: 42px;
+            height: 1px;
+            background: rgba(241, 201, 107, 0.65);
+        }
+
+        .hero-right p {
+            margin-top: 1.4rem;
+            font-size: 1.02rem;
+            max-width: 52ch;
+        }
+
+        .hero-buttons {
+            margin-top: 2.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .hero-meta {
+            margin-top: 2.6rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .meta-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-md);
+            padding: 1.2rem 1.4rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .meta-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .meta-label {
+            margin-top: 0.4rem;
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(226, 232, 240, 0.78);
+            line-height: 1.4;
+        }
+
+        .hero-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: clamp(2rem, 5vw, 2.8rem);
+            box-shadow: var(--shadow-card);
+            display: grid;
+            gap: 1.4rem;
+        }
+
+        .hero-card h3 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+        }
+
+        .hero-card p {
+            font-size: 0.95rem;
+            color: rgba(226, 232, 240, 0.75);
+        }
+
+        .hero-card ul {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .hero-card li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.9rem;
+            align-items: start;
+            font-size: 0.95rem;
+            color: rgba(241, 245, 249, 0.85);
+        }
+
+        .hero-card li i {
+            color: var(--accent-soft);
+            font-size: 1.1rem;
+            margin-top: 2px;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.74rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.65);
+        }
+
+        /* === Sekcije === */
+        section.section {
+            padding: clamp(4.5rem, 10vw, 6.5rem) 0;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 3.2rem;
+            display: grid;
+            gap: 1.1rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 1.8rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .feature-card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 2.2rem 2rem;
+            display: grid;
+            gap: 1rem;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(212, 160, 23, 0.18), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(212, 160, 23, 0.35);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: rgba(212, 160, 23, 0.16);
+            color: var(--accent-soft);
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: rgba(226, 232, 240, 0.78);
+        }
+
+        .story-grid {
+            display: grid;
+            gap: clamp(2.5rem, 6vw, 4rem);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            align-items: center;
+        }
+
+        .story-copy p {
+            font-size: 1rem;
+            margin-top: 1.4rem;
+        }
+
+        .story-steps {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 2.4rem 2rem;
+            display: grid;
+            gap: 1.6rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .story-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.4rem;
+            align-items: start;
+        }
+
+        .step-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(212, 160, 23, 0.16);
+            color: var(--accent-soft);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+
+        .step-content h3 {
+            font-size: 1.1rem;
+        }
+
+        .step-content p {
+            margin-top: 0.4rem;
+            font-size: 0.93rem;
+        }
+
+        .project-grid {
+            display: grid;
+            gap: 1.8rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        }
+
+        .project-card {
+            position: relative;
+            background: var(--surface-strong);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: var(--radius-lg);
+            padding: 2.4rem 2.1rem;
+            display: grid;
+            gap: 1.1rem;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(212, 160, 23, 0.2), transparent 60%);
+            opacity: 0.85;
+            mix-blend-mode: screen;
+        }
+
+        .project-card h3 {
+            position: relative;
+            font-size: 1.4rem;
+        }
+
+        .project-card p,
+        .project-card span {
+            position: relative;
+            color: rgba(226, 232, 240, 0.8);
+        }
+
+        .project-icon {
+            position: relative;
+            font-size: 1.6rem;
+            color: var(--accent-soft);
+        }
+
+        .cta-section {
+            position: relative;
+            padding: clamp(4.8rem, 11vw, 7rem) 0;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(212, 160, 23, 0.18), rgba(33, 43, 62, 0.9));
+            border: 1px solid rgba(212, 160, 23, 0.35);
+            border-radius: var(--radius-lg);
+            padding: clamp(2.6rem, 6vw, 3.4rem);
+            display: grid;
+            gap: 1.8rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-card p {
+            margin-top: 1.2rem;
+            font-size: 1rem;
+            color: rgba(15, 20, 32, 0.85);
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-light {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-light:hover,
+        .btn-light:focus-visible {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        footer {
+            padding: 3.2rem 0 4rem;
+            text-align: center;
+            color: rgba(148, 163, 184, 0.8);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-soft);
+        }
+
+        /* === Društvene mreže === */
+        .social-icons {
+            position: fixed;
+            bottom: 28px;
+            left: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 80;
+        }
+
         .social-icons a {
-            color: white;
-            font-size: 1.7rem;
-            opacity: 0.9;
-            transition: opacity 0.3s;
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-soft);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 12px 24px rgba(6, 10, 20, 0.32);
+            transition: transform 0.3s ease, background 0.3s ease;
         }
-        .social-icons a:hover { opacity: 1; }
+
+        .social-icons a:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        @media (max-width: 640px) {
+            .social-icons {
+                flex-direction: row;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 18px;
+            }
+        }
+
+        /* === Chat widget === */
         .chat-widget {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            height: 400px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+            bottom: 32px;
+            right: 32px;
+            width: 320px;
+            height: 430px;
+            background: var(--surface-strong);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            box-shadow: var(--shadow-lg);
+            z-index: 120;
             display: none;
             flex-direction: column;
+            overflow: hidden;
         }
+
         .chat-header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            text-align: center;
+            background: linear-gradient(135deg, rgba(212, 160, 23, 0.85), rgba(15, 23, 42, 0.92));
+            color: #10141c;
+            padding: 14px 16px;
+            font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         .chat-header button {
-            background: none;
+            background: rgba(0, 0, 0, 0.25);
             border: none;
-            color: white;
+            color: #f8fafc;
             cursor: pointer;
-            font-size: 1.2rem;
-            margin-left: 10px;
+            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
         }
+
         .chat-body {
             flex: 1;
-            padding: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
             overflow-y: auto;
+            background: rgba(8, 13, 22, 0.65);
         }
+
         .chat-input {
             display: flex;
-            padding: 10px;
-            border-top: 1px solid #ccc;
+            gap: 0.6rem;
+            padding: 14px;
+            border-top: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(10, 15, 24, 0.85);
         }
+
         .chat-input input {
             flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 5px;
+            padding: 0.7rem 0.9rem;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(17, 27, 42, 0.85);
+            color: #f8fafc;
         }
+
+        .chat-input input::placeholder {
+            color: rgba(148, 163, 184, 0.6);
+        }
+
         .chat-input button {
-            padding: 8px 12px;
-            background-color: #d4a017;
-            color: white;
+            padding: 0.7rem 1rem;
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1f1a0f;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
             cursor: pointer;
         }
+
         .message {
-            margin-bottom: 10px;
+            display: flex;
         }
+
+        .message .bubble {
+            padding: 0.85rem 1.1rem;
+            border-radius: 16px;
+            max-width: 80%;
+            line-height: 1.35;
+            font-size: 0.9rem;
+        }
+
         .message.user {
-            text-align: right;
+            justify-content: flex-end;
         }
+
+        .message.user .bubble {
+            background: rgba(212, 160, 23, 0.22);
+            color: var(--accent-soft);
+        }
+
         .message.bot {
-            text-align: left;
+            justify-content: flex-start;
         }
+
+        .message.bot .bubble {
+            background: rgba(255, 255, 255, 0.08);
+            color: #f8fafc;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .chat-body .msg {
+            align-self: flex-start;
+            padding: 0.85rem 1.1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            color: #f8fafc;
+            max-width: 80%;
+        }
+
+        .chat-body .msg.user {
+            align-self: flex-end;
+            background: rgba(212, 160, 23, 0.22);
+            color: var(--accent-soft);
+        }
+
         @media (max-width: 768px) {
-            .nav-container {
-                padding: 5px 15px;
+            .hero {
+                padding: 7.5rem 0 6.5rem;
+                background: linear-gradient(rgba(4, 9, 18, 0.65), rgba(4, 9, 18, 0.78)), url('https://i.ibb.co/gbZmV9BM/IMG-3425.jpg') center/cover no-repeat;
+            }
+            .hero-card {
+                order: -1;
+            }
+            .hero-scroll {
+                display: none;
             }
             .chat-widget {
-                width: 250px;
-                height: 300px;
+                right: 16px;
+                bottom: 16px;
+                width: 280px;
+                height: 380px;
             }
-            .hero {
-                background-size: cover;
-                background-position: center;
-                width: 100vw;
-                overflow-x: hidden;
+        }
+
+        @media (max-width: 520px) {
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .chat-widget {
+                width: calc(100% - 32px);
             }
         }
     </style>
-
-<style>
-
-/* === NOVI NAV (Slider Revolution / minimal style) === */
-
-.nav-left a {
-  display: inline-block;
-  background: #ffffff;
-  padding: 6px 10px;
-  border-radius: 10px;
-}
-.nav-left img {
-  height: 64px;
-  width: auto;
-  display: block;
-}
-@media (max-width: 768px) {
-  .nav-left img {
-    height: 50px;
-  }
-}
-
-.nav {
-  position: absolute;
-  top: 28px;
-  left: 40px;
-  right: 40px;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  pointer-events: none;
-}
-
-.nav-left {
-  font-size: 12px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: #fff;
-  opacity: .9;
-  pointer-events: auto;
-  user-select: none;
-}
-
-.nav-burger {
-  width: 54px;
-  height: 54px;
-  border: 0;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.96);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  pointer-events: auto;
-}
-.nav-burger span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: #111;
-  margin: 3px 0;
-  transition: transform .25s ease, opacity .25s ease;
-}
-
-.nav-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.88);
-  display: none;
-  z-index: 300;
-}
-.nav-overlay.open { display: flex; }
-
-.nav-close {
-  position: absolute;
-  top: 28px;
-  right: 40px;
-  width: 54px;
-  height: 54px;
-  border: 0;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.96);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.nav-links {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  align-items: center;
-}
-.nav-links a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: .02em;
-  opacity: .95;
-}
-.nav-links a:hover { opacity: 1; }
-
-@media (max-width: 768px) {
-  .nav { left: 16px; right: 16px; top: 18px; }
-  .nav-left { font-size: 10px; letter-spacing: .14em; }
-  .nav-burger, .nav-close { width: 46px; height: 46px; }
-  .nav-links a { font-size: 22px; }
-}
-
-</style>
-<style>
-/* override removed; JS will set right dynamically to hamburger edge */
-</style>
-<style>
-
-/* === Alignment via CSS variable from JS === */
-:root { --burger-right-offset: 40px; } /* default, will be updated by JS */
-.hero-text {
-  position: absolute;
-  top: 50%;
-  right: var(--burger-right-offset);
-  transform: translateY(-50%);
-  text-align: right;
-  max-width: min(780px, 46vw);
-  padding-right: 0; /* no extra gap */
-  margin-right: 0;
-}
-.hero-buttons {
-  justify-content: flex-end;
-}
-.hero-buttons a {
-  display: inline-block; /* ensures button right edge = container right edge */
-}
-@media (max-width: 768px) {
-  :root { --burger-right-offset: 16px; }
-  .hero-text { left: 16px; max-width: unset; }
-}
-
-</style>
-<style>
-
-/* === Override: keep hero-text fixed at 40px; align only H1 with burger === */
-.hero-text {
-  right: 40px !important;
-  text-align: right;
-}
-.hero-text h1 {
-  display: block;
-}
-
-</style>
-<style>
-
-/* === CLEAN HERO (right-aligned, aligned to burger) === */
-.hero { 
-  height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.hero-right {
-  position: absolute;
-  top: 40%; /* slightly higher to avoid chat widget */
-  right: calc(var(--burger-right-offset, 40px) + 320px); /* shift left by chat widget width + spacing */
-  transform: translateY(-50%);
-  text-align: right;
-  color: #fff;
-  max-width: min(780px, 46vw);
-  text-shadow: 2px 2px 4px rgba(0,0,0,.7);
-}
-.hero-right h1 { font-size: 3rem; line-height: 1.05; font-weight: 800; }
-.hero-right p  { font-size: 1.5rem; margin-top: .5rem; }
-.hero-right .hero-buttons { display: flex; gap: 20px; justify-content: flex-end; margin-top: 10px; }
-.hero-right .hero-buttons a { display: inline-flex; align-items: center; padding: 12px 22.5px; border-radius: 7.5px; font-weight: 600; text-decoration: none; transition: background-color .3s; }
-.hero-right .catalog-button { background: rgba(255,255,255,.3); color: #fff; }
-.hero-right .chat-button { background: #fff; color: #333; cursor: pointer; }
-.hero-right .chat-button i { margin-right: 7.5px; }
-
-@media (max-width: 768px) {
-  .hero-right { right: var(--burger-right-offset, 16px); left: 16px; max-width: unset; }
-  .hero-right h1 { font-size: 1.4rem; }
-  .hero-right p  { font-size: .8rem; }
-  .hero-right .hero-buttons a { font-size: .72rem; }
-}
-
-</style>
-<style>
-
-/* === FINAL MOBILE HERO FIX: center vertically + align to burger right === */
-@media (max-width: 768px){
-  .hero{ min-height: 100vh; position: relative; }
-  .hero-right{
-    position: absolute !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    right: var(--burger-right-offset, 16px) !important; /* match burger offset */
-    left: 16px !important;
-    max-width: unset !important;
-    text-align: right !important;
-    z-index: 1 !important;
-  }
-}
-
-</style>
-
-<style>
-/* === CHAT BUBBLES === */
-.chat-body { display: flex; flex-direction: column; gap: 8px; }
-.message { display: flex; }
-.message.user { justify-content: flex-end; }
-.message.bot  { justify-content: flex-start; }
-.message .bubble {
-  padding: 10px 14px;
-  border-radius: 16px;
-  max-width: 80%;
-  line-height: 1.35;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-}
-.message.user .bubble { background: #f0f0f0; color: #111; }
-.message.bot  .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
-</style>
-
-
-<style>
-/* === DESKTOP-ONLY: align hero with hamburger, no other changes === */
-@media (min-width: 769px){
-  .hero-right{
-    right: var(--burger-right-offset) !important;
-  }
-}
-</style>
-
 </head>
 <body>
-    <!-- === NOVI NAV === -->
-<div class="nav">
-  <div class="nav-left"><a href="https://ibb.co/QGRBCQd"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Screenshot-1" border="0"></a></div>
-  <button class="nav-burger" id="navBurger" aria-label="Open menu">
-    <span></span><span></span><span></span>
-  </button>
-</div>
-
-<!-- Fullscreen overlay meni -->
-<div class="nav-overlay" id="navOverlay">
-  <button class="nav-close" id="navClose" aria-label="Close menu">×</button>
-  <nav class="nav-links">
-    <a href="index.html">Početna</a>
-    <a href="about.html">O nama</a>
-    <a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-    <a href="contact.html">Kontakt</a>
-  </nav>
-</div>
-
-    <div class="hero">
-  <div class="hero-right" id="heroRight">
-    <h1>PLAVI TOK<br>MERMER IZ SRCA SRBIJE<br>DIZAJNIRAN ZA SVET</h1>
-    <p>autentičan kamen za enterijere, fasade<br>i projekte koji ostavljaju trag</p>
-    <div class="hero-buttons">
-      <a href="catalog.html" class="catalog-button">Pogledaj katalog</a>
-      <a class="chat-button" onclick="openChatWidget()"><i class="fas fa-comment"></i> Postavi pitanje</a>
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo">
+                    <img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo">
+                </a>
+                <span class="nav-tagline">Mermer Invest</span>
+            </div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
     </div>
-  </div>
-</div></div>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-card">
+                    <span class="eyebrow">Premium selekcija</span>
+                    <h3>Za arhitekte i izvođače</h3>
+                    <p>Precizno sortirane ploče, digitalni pregledi i sertifikati spremni za vaš sledeći tender.</p>
+                    <ul>
+                        <li><i class="fa-solid fa-circle-check"></i>Digitalna evidencija svakog bloka i ploče</li>
+                        <li><i class="fa-solid fa-circle-check"></i>Kontrola tona i teksture kroz 3D skeniranje</li>
+                        <li><i class="fa-solid fa-circle-check"></i>Logistička podrška od rezerve do montaže</li>
+                    </ul>
+                    <a class="link-arrow" href="references.html">Preuzmite reference <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="hero-right" id="heroRight">
+                    <span class="hero-kicker">Plavi tok mermer</span>
+                    <h1>Mermer iz srca Srbije, spreman za projekte širom sveta</h1>
+                    <p>Autentičan kamen za enterijere, fasade i prostore koji ostavljaju trag. Naš tim prati svaki blok od kamenoloma do završne obrade, pružajući vam potpunu kontrolu nad kvalitetom i rokovima isporuke.</p>
+                    <div class="hero-buttons">
+                        <a href="catalog.html" class="btn btn-primary">Pogledaj katalog</a>
+                        <a href="contact.html" class="btn btn-outline">Zatraži ponudu</a>
+                        <button type="button" class="btn btn-ghost chat-button" onclick="openChatWidget()"><i class="fas fa-comment"></i> Postavi pitanje</button>
+                    </div>
+                    <div class="hero-meta">
+                        <div class="meta-card">
+                            <span class="meta-number">120&nbsp;000 m²</span>
+                            <span class="meta-label">isporučenih ploča i fasadnih panela poslednjih godina</span>
+                        </div>
+                        <div class="meta-card">
+                            <span class="meta-number">25+</span>
+                            <span class="meta-label">zemalja u kojima se nalazi naš Plavi tok</span>
+                        </div>
+                        <div class="meta-card">
+                            <span class="meta-number">72h</span>
+                            <span class="meta-label">za pripremu kompletne tehničke dokumentacije</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-scroll">scroll</div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Zašto plavi tok</span>
+                    <h2>Mermer koji spaja prirodnu eleganciju i savremenu tehnologiju</h2>
+                    <p>Naša proizvodnja kombinuje višedecenijsko iskustvo sa digitalnim alatima koji omogućavaju kontrolu kvaliteta u svakom koraku – od sortiranja blokova do konačne montaže.</p>
+                </div>
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <span class="feature-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                        <h3>Standardizovan kvalitet</h3>
+                        <p>Proizvodnja u skladu sa evropskim standardima, uz laboratorijska ispitivanja i sledljivost svakog komada mermera.</p>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-icon"><i class="fa-solid fa-gem"></i></span>
+                        <h3>Autentičan vizuelni identitet</h3>
+                        <p>Jedinstvena plavo-siva šara Plavog toka unosi mir i profinjenost u enterijere, lobby prostore i fasade visokog ranga.</p>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-icon"><i class="fa-solid fa-truck-fast"></i></span>
+                        <h3>Globalna logistika</h3>
+                        <p>Planiranje isporuke, carinska dokumentacija i nadzor utovara – obezbeđujemo da vaša narudžbina stigne sigurno i na vreme.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container story-grid">
+                <div class="story-copy">
+                    <span class="eyebrow">Naša metodologija</span>
+                    <h2>Od kamenoloma do fasade bez kompromisa</h2>
+                    <p>Sa sopstvenim kamenolomom i modernim pogonom za obradu mermera, garantujemo kontinuitet boje i teksture. Svaki blok prolazi selekciju, rezanje, 3D skeniranje i završnu obradu pre nego što krene ka vašem gradilištu.</p>
+                    <a class="link-arrow" href="about.html">Upoznajte naš tim <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <ol class="story-steps">
+                    <li>
+                        <span class="step-badge">01</span>
+                        <div class="step-content">
+                            <h3>Selekcija na izvoru</h3>
+                            <p>Inženjeri na licu mesta kontrolišu strukturu i tonalitet svakog bloka. Samo najkvalitetniji ulazi u proizvodnju.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-badge">02</span>
+                        <div class="step-content">
+                            <h3>Digitalno planiranje</h3>
+                            <p>3D skeniranje ploča i optimizacija sečenja omogućavaju precizno uklapanje prema vašim nacrtima i minimalan otpad.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-badge">03</span>
+                        <div class="step-content">
+                            <h3>Logistika bez zastoja</h3>
+                            <p>Koordinacija prevoza, zaštite i skladištenja u saradnji sa našim partnerima širom Evrope i sveta.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Reference</span>
+                    <h2>Projekti kojima se ponosimo</h2>
+                    <p>Plavi tok krasi hotele, poslovne komplekse, wellness centre i privatne rezidencije. Naš mermer biraju arhitekte koje traže konzistentnost, trajnost i luksuznu estetiku.</p>
+                </div>
+                <div class="project-grid">
+                    <article class="project-card">
+                        <span class="project-icon"><i class="fa-solid fa-hotel"></i></span>
+                        <h3>Hotelski i spa kompleksi</h3>
+                        <p>Lobby prostori, wellness zone i apartmani koji odišu elegancijom i dugotrajnom izdržljivošću.</p>
+                        <span>Klijenti: Kempinski, Falkensteiner, boutique resorti.</span>
+                    </article>
+                    <article class="project-card">
+                        <span class="project-icon"><i class="fa-solid fa-landmark"></i></span>
+                        <h3>Javne institucije</h3>
+                        <p>Kompozicije mermera i stakla u muzejima, poslovnim centrima i ambasadama širom Evrope.</p>
+                        <span>Klijenti: državne institucije, kulturni centri, banke.</span>
+                    </article>
+                    <article class="project-card">
+                        <span class="project-icon"><i class="fa-solid fa-house-chimney"></i></span>
+                        <h3>Privatne rezidencije</h3>
+                        <p>Kompletne fasade, stepeništa i kuhinjske radne ploče izrađene po meri projekata visokog standarda.</p>
+                        <span>Klijenti: investitori premium vila i penthausa.</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-card">
+                    <div>
+                        <span class="eyebrow">Spremni za saradnju</span>
+                        <h2>Kontaktirajte nas za probne ploče i uslove isporuke</h2>
+                        <p>Naš tim odgovara u roku od 24 sata sa konkretnim predlozima materijala, logistikom i proračunom troškova.</p>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="contact.html" class="btn btn-primary">Pošaljite upit</a>
+                        <a href="catalog.html" class="btn btn-light">Preuzmite katalog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. Sva prava zadržana. <a href="references.html">Pogledajte detaljne reference</a> ili nam pišite na <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>.
+    </footer>
+
     <div class="social-icons">
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-tiktok"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
-        <a href="#"><i class="fab fa-x-twitter"></i></a>
-        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
+
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header">Chat sa Grok-om
-            <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton">-</button>
-            <button onclick="closeChatWidget()">X</button>
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
         </div>
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-input">
@@ -614,49 +1169,31 @@
             <button onclick="sendMessage()">Pošalji</button>
         </div>
     </div>
+
     <script defer>
-        /* removed apiKey */
+        const apiKey = window.GROK_API_KEY || '';
         const endpoint = 'https://api.x.ai/v1/chat/completions';
         let chatOpen = false;
         let isMinimized = false;
 
-        // Hamburger meni funkcionalnost
-        
-const navBurger = document.getElementById('navBurger');
-const navOverlay = document.getElementById('navOverlay');
-const navClose  = document.getElementById('navClose');
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
 
-if (navBurger && navOverlay && navClose) {
-  navBurger.addEventListener('click', () => {
-    navOverlay.classList.add('open');
-  });
-  navClose.addEventListener('click', () => {
-    navOverlay.classList.remove('open');
-  });
-  navOverlay.addEventListener('click', (e) => {
-    if (e.target === navOverlay) navOverlay.classList.remove('open');
-  });
-}
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => {
+                navOverlay.classList.add('open');
+            });
+            navClose.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+            });
+            navOverlay.addEventListener('click', (e) => {
+                if (e.target === navOverlay) {
+                    navOverlay.classList.remove('open');
+                }
+            });
+        }
 
-
-
-
-function alignHeroToBurger() {
-  const burger = document.getElementById('navBurger');
-  const heroText = document.querySelector('.hero-text');
-  const h1 = document.querySelector('.hero-text h1');
-  if (!burger || !heroText || !h1) return;
-  // fixed right for heroText is 40px; compute delta needed to match burger edge
-  const rect = burger.getBoundingClientRect();
-  const burgerOffset = Math.max(0, Math.round(window.innerWidth - rect.right)); // px from right edge
-  const baseOffset = 40; // hero-text right
-  const delta = Math.max(0, burgerOffset - baseOffset);
-  h1.style.marginRight = delta + 'px';
-}
-window.addEventListener('load', alignHeroToBurger);
-window.addEventListener('resize', alignHeroToBurger);
-
-// Chat funkcionalnost
         function openChatWidget() {
             const chatWidget = document.getElementById('chatWidget');
             chatOpen = !chatOpen;
@@ -678,13 +1215,13 @@ window.addEventListener('resize', alignHeroToBurger);
             if (!isMinimized) {
                 chatBody.style.display = 'none';
                 chatInput.style.display = 'none';
-                document.getElementById('chatWidget').style.height = '50px';
+                document.getElementById('chatWidget').style.height = '60px';
                 minimizeMaximizeButton.textContent = '+';
                 isMinimized = true;
             } else {
-                chatBody.style.display = 'block';
+                chatBody.style.display = 'flex';
                 chatInput.style.display = 'flex';
-                document.getElementById('chatWidget').style.height = '400px';
+                document.getElementById('chatWidget').style.height = '430px';
                 minimizeMaximizeButton.textContent = '-';
                 isMinimized = false;
             }
@@ -693,35 +1230,42 @@ window.addEventListener('resize', alignHeroToBurger);
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const userMessage = input.value.trim();
-            if (userMessage) {
-                addMessage('user', userMessage);
-                input.value = '';
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${apiKey}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: 'grok-4-latest',
-                            messages: [
-                                { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
-                                { role: 'user', content: userMessage }
-                            ],
-                            stream: false,
-                            temperature: 0
-                        })
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        addMessage('bot', data.choices[0].message.content || 'Nema odgovora.');
-                    } else {
-                        addMessage('bot', 'Greška: ' + (data.error?.message || 'Server problem'));
-                    }
-                } catch (error) {
-                    addMessage('bot', 'Greška u konekciji: ' + error.message);
+            if (!userMessage) {
+                return;
+            }
+            addMessage('user', userMessage);
+            input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'grok-4-latest',
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+                            { role: 'user', content: userMessage }
+                        ],
+                        stream: false,
+                        temperature: 0
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    addMessage('bot', data.choices[0].message.content || 'Nema odgovora.');
+                } else {
+                    addMessage('bot', 'Greška: ' + (data.error?.message || 'Server problem'));
                 }
+            } catch (error) {
+                addMessage('bot', 'Greška u konekciji: ' + error.message);
             }
         }
 
@@ -736,121 +1280,129 @@ window.addEventListener('resize', alignHeroToBurger);
             chatBody.appendChild(wrap);
             chatBody.scrollTop = chatBody.scrollHeight;
         }
-</script>
 
-<script>
-function setBurgerRightOffset() {
-  const burger = document.getElementById('navBurger');
-  if (!burger) return;
-  const rect = burger.getBoundingClientRect();
-  const rightSpace = Math.max(0, Math.round(window.innerWidth - rect.right));
-  document.documentElement.style.setProperty('--burger-right-offset', rightSpace + 'px');
-}
-window.addEventListener('load', setBurgerRightOffset);
-window.addEventListener('resize', setBurgerRightOffset);
-</script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 
+    <script>
+        (function () {
+            const $ = (s, root = document) => root.querySelector(s);
+            const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+            const endpoint = '/sajt/xapi/chat.php';
 
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
+            function ensureHamburger() {
+                const hamb = $('.hamburger');
+                const menu = $('.nav-menu');
+                const close = $('.close-btn');
+                if (hamb && menu) {
+                    hamb.addEventListener('click', () => menu.classList.add('active'));
+                }
+                if (close && menu) {
+                    close.addEventListener('click', () => menu.classList.remove('active'));
+                }
+            }
 
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
+            function getChatParts() {
+                const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
+                const body = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
+                const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
+                const send = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
+                return { panel, body, input, send };
+            }
 
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
+            function openChat() {
+                const { panel } = getChatParts();
+                if (!panel) return;
+                if (getComputedStyle(panel).display === 'none') {
+                    panel.style.display = panel.classList.contains('chat-widget') ? 'flex' : 'block';
+                }
+                panel.classList.add('open');
+            }
+            function closeChat() {
+                const { panel } = getChatParts();
+                if (!panel) return;
+                panel.classList.remove('open');
+                if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
+            }
+            window.openChat = window.openChat || openChat;
 
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
+            function wireOpeners() {
+                const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
+                openers.forEach(el => el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openChat();
+                }));
+                const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
+                if (closer) closer.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    closeChat();
+                });
+            }
 
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
+            function addMessage(role, text) {
+                const { body } = getChatParts();
+                if (!body) return;
+                const row = document.createElement('div');
+                row.className = 'msg ' + role;
+                row.textContent = String(text ?? '');
+                body.appendChild(row);
+                body.scrollTop = body.scrollHeight;
+            }
+            window.addMessage = window.addMessage || addMessage;
 
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
+            async function sendMessage() {
+                const { input } = getChatParts();
+                if (!input) return;
+                const msg = (input.value || '').trim();
+                if (!msg) return;
+                addMessage('user', msg);
+                input.value = '';
+                try {
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: msg })
+                    });
+                    let text = '';
+                    try {
+                        const data = await res.json();
+                        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
+                    } catch (_) {
+                        text = await res.text();
+                    }
+                    addMessage('bot', text || 'Prazan odgovor.');
+                } catch (err) {
+                    console.error(err);
+                    addMessage('bot', 'Greška: server nije dostupan.');
+                }
+            }
+            window.sendMessage = window.sendMessage || sendMessage;
 
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
+            function wireSenders() {
+                const { input, send } = getChatParts();
+                const form = input && input.closest('form');
+                if (send) send.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sendMessage();
+                });
+                if (input) input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                if (form) form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    sendMessage();
+                });
+            }
 
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
+            document.addEventListener('DOMContentLoaded', function () {
+                ensureHamburger();
+                wireOpeners();
+                wireSenders();
+            });
+        })();
+    </script>
 </body>
 </html>
