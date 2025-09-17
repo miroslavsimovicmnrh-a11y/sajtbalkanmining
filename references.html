@@ -1,255 +1,503 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Balkan Mining - Reference</title>
+    <title>Reference – Balkan Mining · Mermer Invest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: #f5f5f5; }
-        nav { background-color: #333; padding: 1rem; position: sticky; top: 0; z-index: 100; }
-        nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; }
-        nav a { color: white; text-decoration: none; font-size: 1.1rem; }
-        .menu-toggle { display: none; font-size: 1.5rem; color: white; cursor: pointer; }
-        .section { padding: 4rem 2rem; text-align: center; }
-        footer { background-color: #333; color: white; padding: 2rem; text-align: center; }
-        #chatbot { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            nav ul { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background-color: #333; }
-            nav ul.active { display: flex; }
-            nav a { padding: 1rem; font-size: 1rem; }
+        :root {
+            --bg: #0e141f;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --surface-light: rgba(148, 163, 184, 0.12);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
         }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        main { flex: 1; }
+        img { max-width: 100%; display: block; border-radius: var(--radius-sm); }
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; margin: 0; padding: 0; }
+        h1, h2, h3 { margin: 0; line-height: 1.2; }
+        h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 5vw, 3.8rem); letter-spacing: -0.02em; }
+        h2 { font-family: var(--font-display); font-size: clamp(2.1rem, 4vw, 3.2rem); }
+        h3 { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 700; }
+        p { margin: 0; color: var(--muted); }
+        .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--accent-soft); }
+        .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--accent-soft); opacity: 0.8; }
+
+        .site-header { position: relative; z-index: 40; }
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
+        .nav-left { display: flex; align-items: center; gap: 16px; }
+        .nav-left a { display: inline-flex; align-items: center; background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 14px; border: 1px solid rgba(148,163,184,0.18); }
+        .nav-left img { height: 58px; width: auto; }
+        .nav-tagline { font-size: 0.72rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+        .nav-right { display: flex; align-items: center; gap: 18px; }
+        .nav-inline { display: none; align-items: center; gap: 22px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; }
+        .nav-inline a { color: var(--muted); padding-bottom: 6px; border-bottom: 2px solid transparent; transition: color .3s ease, border-color .3s ease; }
+        .nav-inline a:hover, .nav-inline a:focus-visible { color: var(--text); border-bottom-color: var(--accent); }
+        .nav-inline .nav-cta { color: var(--accent-soft); }
+        .nav-burger { width: 50px; height: 50px; border-radius: 16px; border: 1px solid rgba(148,163,184,0.22); background: rgba(255,255,255,0.06); display: grid; place-items: center; cursor: pointer; }
+        .nav-burger span { display: block; width: 22px; height: 2px; background: #fff; margin: 3px 0; }
+        .nav-overlay { position: fixed; inset: 0; background: rgba(5,9,18,0.92); display: none; z-index: 60; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .nav-overlay.open { display: flex; }
+        .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border-radius: 18px; border: 1px solid rgba(148,163,184,0.3); background: rgba(255,255,255,0.1); font-size: 28px; color: #fff; cursor: pointer; }
+        .nav-links { display: flex; flex-direction: column; gap: 18px; align-items: center; }
+        .nav-links a { font-size: 2rem; font-weight: 700; letter-spacing: 0.08em; color: #fff; }
+        .nav-links a:hover { color: var(--accent-soft); }
+        @media (min-width:900px){ .nav-inline{display:flex;} .nav-burger{display:none;} }
+        @media (max-width:640px){ .nav{width:calc(100% - 24px); padding:12px 16px;} .nav-left img{height:48px;} .nav-tagline{display:none;} }
+
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.95rem 1.8rem; border-radius:999px; border:1px solid transparent; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.22em; transition:transform .3s ease, background .3s ease, color .3s ease, box-shadow .3s ease; }
+        .btn:hover,.btn:focus-visible{ transform:translateY(-3px); }
+        .btn-primary{ background:linear-gradient(135deg,#f8e29c,#d4a017); color:#1d1b14; box-shadow:0 18px 32px rgba(212,160,23,0.35); }
+        .btn-light{ background:rgba(255,255,255,0.12); color:var(--text); border:1px solid rgba(255,255,255,0.22); }
+        .btn-ghost{ background:rgba(255,255,255,0.04); color:var(--text); border:1px solid rgba(148,163,184,0.18); }
+        .btn + .btn { margin-left: 0.5rem; }
+
+        .page-hero { padding: clamp(6rem, 12vw, 8rem) 0 clamp(3rem, 8vw, 5rem); position: relative; overflow: hidden; }
+        .page-hero::after { content:''; position:absolute; inset:0; background: radial-gradient(circle at top right, rgba(212,160,23,0.18), transparent 55%); }
+        .page-hero > .container { position: relative; z-index: 1; }
+        .hero-grid { display:grid; gap:3rem; align-items:center; }
+        @media (min-width:960px){ .hero-grid{ grid-template-columns: minmax(0,1.2fr) minmax(0,0.9fr); } }
+        .hero-intro { display:grid; gap:1.2rem; }
+        .hero-actions { display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.8rem; }
+        .hero-note { display:flex; gap:1rem; align-items:center; margin-top:1.4rem; padding:1rem 1.4rem; border-radius:var(--radius-md); border:1px solid var(--line); background:rgba(148,163,184,0.08); color:var(--muted); }
+        .hero-note i { color: var(--accent-soft); }
+        .hero-stats { display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); }
+        .stat-card { background: var(--surface); border-radius: var(--radius-lg); border:1px solid var(--line); padding:1.8rem; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:0.6rem; }
+        .stat-card span { font-size:0.75rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--accent-soft); }
+        .stat-card strong { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight:800; color:#fff; }
+
+        .section { padding: clamp(4rem, 10vw, 6.5rem) 0; }
+        .section-heading { max-width: 720px; margin: 0 auto 3rem; text-align:center; display:grid; gap:1rem; }
+        .glass-grid { display:grid; gap:1.6rem; }
+        @media (min-width:960px){ .glass-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .glass-card { background: var(--surface); border-radius: var(--radius-lg); border:1px solid var(--line); padding:2.1rem; box-shadow:var(--shadow-card); display:grid; gap:1rem; }
+        .glass-card i { font-size:1.8rem; color:var(--accent-soft); }
+        .glass-card span { color: var(--muted); font-size:0.9rem; }
+
+        .project-grid { display:grid; gap:1.6rem; }
+        @media (min-width:960px){ .project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .project-card { background: var(--surface); border-radius: var(--radius-lg); border:1px solid var(--line); box-shadow:var(--shadow-card); overflow:hidden; display:grid; }
+        .project-card img { width:100%; height:200px; object-fit:cover; }
+        .project-card div { padding:1.6rem; display:grid; gap:0.8rem; }
+        .project-card h3 { color:#fff; }
+
+        .timeline { position:relative; margin-top:2.8rem; }
+        .timeline::before { content:''; position:absolute; left:18px; top:0; bottom:0; width:2px; background:rgba(148,163,184,0.22); }
+        .timeline-item { position:relative; padding-left:72px; margin-bottom:2.4rem; }
+        .timeline-item:last-child { margin-bottom:0; }
+        .timeline-marker { position:absolute; left:0; top:0.2rem; width:42px; height:42px; border-radius:14px; background:var(--surface-light); border:1px solid var(--line); display:grid; place-items:center; color:var(--accent-soft); font-weight:700; }
+
+        .download-cards { display:grid; gap:1.4rem; margin-top:2.4rem; }
+        @media (min-width:720px){ .download-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .download-card { background: linear-gradient(135deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78)); border-radius: var(--radius-lg); border:1px solid rgba(148,163,184,0.22); padding:1.8rem; box-shadow:var(--shadow-card); display:grid; gap:0.8rem; }
+        .download-card p { color: rgba(241, 250, 255, 0.75); }
+
+        .cta-section { padding: clamp(4rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 5rem); }
+        .cta-card { background: linear-gradient(135deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78)); border-radius: var(--radius-lg); border:1px solid rgba(148,163,184,0.22); box-shadow: var(--shadow-lg); padding: clamp(2.4rem, 6vw, 3.4rem); display:grid; gap:1.6rem; }
+        @media (min-width:860px){ .cta-card { grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); align-items:center; } }
+        .cta-buttons { display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:flex-end; }
+
+        footer { padding:1.8rem; text-align:center; font-size:0.85rem; color:var(--muted); border-top:1px solid rgba(148,163,184,0.12); background:rgba(5,10,18,0.65); }
+        footer a { color: var(--accent-soft); }
+
+        .social-icons { position:fixed; left:28px; bottom:28px; display:flex; flex-direction:column; gap:12px; z-index:30; }
+        .social-icons a { width:42px; height:42px; border-radius:14px; background:rgba(17,27,42,0.88); border:1px solid rgba(148,163,184,0.18); display:grid; place-items:center; color:var(--muted); transition:transform .3s ease, color .3s ease, border-color .3s ease; }
+        .social-icons a:hover { transform:translateY(-4px); color:var(--accent-soft); border-color:rgba(212,160,23,0.45); }
+        @media (max-width:720px){ .social-icons{left:16px; bottom:18px;} .social-icons a{width:36px; height:36px;} .hero-actions{flex-direction:column; align-items:stretch;} }
+
+        .chat-widget { position:fixed; bottom:24px; right:24px; width:320px; height:430px; background:rgba(11,18,29,0.94); border-radius:24px; border:1px solid rgba(148,163,184,0.22); box-shadow:var(--shadow-lg); display:none; flex-direction:column; overflow:hidden; backdrop-filter:blur(18px); z-index:80; }
+        .chat-header { padding:1rem 1.4rem; display:flex; align-items:center; justify-content:space-between; background:rgba(17,27,42,0.88); color:#fff; font-weight:600; }
+        .chat-header button { background:rgba(255,255,255,0.08); border:1px solid rgba(148,163,184,0.18); border-radius:999px; width:34px; height:34px; color:#fff; cursor:pointer; }
+        .chat-body { flex:1; padding:1.1rem; display:flex; flex-direction:column; gap:0.8rem; overflow-y:auto; }
+        .message { display:flex; }
+        .message .bubble { padding:0.85rem 1.1rem; border-radius:18px; border:1px solid rgba(148,163,184,0.2); background:rgba(255,255,255,0.06); color:var(--text); font-size:0.88rem; line-height:1.4; max-width:80%; }
+        .message.user { justify-content:flex-end; }
+        .message.user .bubble { background:rgba(212,160,23,0.2); color:var(--accent-soft); border-color:rgba(212,160,23,0.35); }
+        .chat-input { padding:1rem; display:flex; gap:0.6rem; border-top:1px solid rgba(148,163,184,0.18); background:rgba(11,18,29,0.88); }
+        .chat-input input { flex:1; padding:0.75rem 1rem; border-radius:14px; border:1px solid rgba(148,163,184,0.26); background:rgba(4,9,18,0.4); color:#fff; }
+        .chat-input button { padding:0.75rem 1.4rem; border-radius:14px; border:none; font-weight:600; background:linear-gradient(135deg,#f8e29c,#d4a017); color:#1d1b14; cursor:pointer; }
+        @media (max-width:520px){ .chat-widget{width:calc(100% - 32px); right:16px; bottom:16px;} }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-        <ul>
-            <li><a href="index.html">Početna</a></li>
-            <li><a href="about.html">O nama</a></li>
-            <li><a href="catalog.html">Katalog</a></li>
-            <li><a href="references.html">Reference</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Kontakt</a></li>
-        </ul>
-    </nav>
-    <section class="section" id="references">
-        <h2>Reference</h2>
-        <p>Ova stranica je u izradi. Uskoro će biti dodan sadržaj.</p>
-    </section>
-    <footer>
-        <p>&copy; 2025 Balkan Mining. Sva prava zadržana. info@balkanmining.com</p>
-    </footer>
-    <div id="chatbot">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/YOUR_TAWK_ID/default';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo"></a>
+                <span class="nav-tagline">Mermer Invest</span>
+            </div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
     </div>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-intro">
+                        <span class="eyebrow">Reference</span>
+                        <h1>Mermer Plavi tok u hotelima, javnim zdanjima i privatnim rezidencijama širom sveta</h1>
+                        <p>Više od dve decenije pratimo projekte od prve specifikacije do montaže. Naša baza referenci obuhvata hotele sa pet zvezdica, wellness centre, poslovne komplekse i luksuzne vile koje traže konzistentnost i pouzdanu logistiku.</p>
+                        <div class="hero-actions">
+                            <a href="catalog.html" class="btn btn-primary">Preuzmi katalog</a>
+                            <a href="contact.html" class="btn btn-light">Zatraži portfolio</a>
+                        </div>
+                        <div class="hero-note"><i class="fa-solid fa-diagram-project"></i><p>Detaljan portfolio i BIM biblioteka dostupni su na zahtev za arhitekte i izvođače.</p></div>
+                    </div>
+                    <div class="hero-stats">
+                        <article class="stat-card">
+                            <span>Realizovanih projekata</span>
+                            <strong>280+</strong>
+                            <p>Od hotelskih lanaca u Evropi do luksuznih vila na Bliskom istoku.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Zadovoljstvo klijenata</span>
+                            <strong>96%</strong>
+                            <p>Prema post-projektnoj anketi sa investitorima i izvođačima.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Kontinenti</span>
+                            <strong>4</strong>
+                            <p>Mermer Plavi tok ugrađen je u Evropi, Aziji, Africi i Severnoj Americi.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Istaknuti projekti</span>
+                    <h2>Mermer koji oblikuje prostore sa potpisom</h2>
+                    <p>Pregled najtraženijih kategorija i projekata u kojima je mermer Plavi tok dao prepoznatljiv pečat interijerima i eksterijerima.</p>
+                </div>
+                <div class="project-grid">
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80" alt="Hotelski lobby">
+                        <div>
+                            <h3>Hotelski lanci i resorti</h3>
+                            <p>Lobby prostori, spa zone i suite apartmani za brendove poput Kempinski, Hilton i Falkensteiner.</p>
+                            <span>Usluge: selekcija ploča, prilagođeni elementi, onsite supervizija.</span>
+                        </div>
+                    </article>
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1529429617124-aee3121ef395?auto=format&fit=crop&w=900&q=80" alt="Javna institucija">
+                        <div>
+                            <h3>Javne i kulturne institucije</h3>
+                            <p>Muzeji, koncertne dvorane i ambasade koje kombinuju mermer i staklo za savremenu eleganciju.</p>
+                            <span>Usluge: digitalni katalog, rezervni blokovi, logistika po fazama gradnje.</span>
+                        </div>
+                    </article>
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80" alt="Privatna rezidencija">
+                        <div>
+                            <h3>Privatne rezidencije</h3>
+                            <p>Enterijeri i fasade luksuznih vila u Londonu, Dubaiju i Moskvi sa custom elementima i rezervnim serijama.</p>
+                            <span>Usluge: 3D skeniranje, plan sečenja, logistika sa kontrolisanim temperaturama.</span>
+                        </div>
+                    </article>
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=900&q=80" alt="Wellness centar">
+                        <div>
+                            <h3>Wellness i spa centri</h3>
+                            <p>Otpornost na vlagu i termalna stabilnost mermera čine ga idealnim za luksuzne spa prostore.</p>
+                            <span>Usluge: hidrofobna zaštita, rezervne ploče, stalni monitoring kvaliteta.</span>
+                        </div>
+                    </article>
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80" alt="Poslovni kompleks">
+                        <div>
+                            <h3>Poslovni kompleksi</h3>
+                            <p>Lobby i fasade poslovnih centara koji zahtevaju konzistentnost tona i brzu montažu.</p>
+                            <span>Usluge: digitalni twin fasade, koordinacija sa montažerima, just-in-time isporuke.</span>
+                        </div>
+                    </article>
+                    <article class="project-card">
+                        <img src="https://images.unsplash.com/photo-1451976426598-a7593bd6d0b2?auto=format&fit=crop&w=900&q=80" alt="Javni trg">
+                        <div>
+                            <h3>Urbanistički projekti</h3>
+                            <p>Trgovi, fontane i javni prostori sa naglaskom na dugotrajnost i lako održavanje.</p>
+                            <span>Usluge: testovi otpornosti, prilagođeni formati, obuka za održavanje.</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Proces</span>
+                    <h2>Kako pripremamo referentni paket za vaš projekat</h2>
+                    <p>Transparentan proces omogućava arhitektama, investitorima i izvođačima da od prve prezentacije imaju jasnu sliku o materijalu, količinama i logistici.</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">01</div>
+                        <h3>Analiza projekta</h3>
+                        <p>Razumevanje koncepta, budžeta i dinamike gradilišta. Predlažemo uzorke i referentne projekte koji odgovaraju estetici.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">02</div>
+                        <h3>Digitalni katalog ploča</h3>
+                        <p>Dostavljamo HD fotografije, 3D modele i plan sečenja sa predlogom rasporeda ploča po prostorijama.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">03</div>
+                        <h3>Rezervacija i logistika</h3>
+                        <p>Obezbeđujemo rezervni materijal, pripremamo dokumentaciju i koordiniramo transport u skladu sa dinamikom radova.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">04</div>
+                        <h3>Onsite podrška</h3>
+                        <p>Prisutni smo na montaži kako bismo obezbedili kvalitet završne obrade i rešili eventualne korekcije.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Dokumentacija</span>
+                    <h2>Preuzmite sertifikate i tehničke listove</h2>
+                    <p>Svi dokumenti su dostupni u PDF formatu i mogu se prilagoditi specifičnostima vašeg projekta.</p>
+                </div>
+                <div class="download-cards">
+                    <div class="download-card">
+                        <h3>Sertifikat o poreklu</h3>
+                        <p>Dokaz o poreklu mermera Plavi tok, laboratorijske analize i geološki izvještaji.</p>
+                        <a href="#" class="btn btn-light">Preuzmi PDF</a>
+                    </div>
+                    <div class="download-card">
+                        <h3>Tehnički list mermera</h3>
+                        <p>Fizčko-mehaničke karakteristike, preporuke za ugradnju i održavanje.</p>
+                        <a href="#" class="btn btn-light">Preuzmi PDF</a>
+                    </div>
+                    <div class="download-card">
+                        <h3>Standardi završne obrade</h3>
+                        <p>Pregled dostupnih obrada, završnih efekata i preporučenih primena.</p>
+                        <a href="#" class="btn btn-light">Preuzmi PDF</a>
+                    </div>
+                    <div class="download-card">
+                        <h3>Lista referenci</h3>
+                        <p>Kompletan portfolio projekata sa fotografijama, lokacijama i kontaktima investitora.</p>
+                        <a href="#" class="btn btn-light">Zatraži kompletnu listu</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-card">
+                    <div>
+                        <span class="eyebrow">Zatražite portfolio</span>
+                        <h2>Pripremićemo referentni paket prilagođen vašem projektu</h2>
+                        <p>Ukoliko nam pošaljete osnovne crteže i plan dinamike, dostavljamo selekciju ploča, uzorke i logistički plan u roku od 24 sata.</p>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="mailto:projects@balkanmining.rs" class="btn btn-primary">Kontaktiraj tim</a>
+                        <a href="catalog.html" class="btn btn-light">Preuzmi katalog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>
+    </footer>
+
+    <div class="social-icons" aria-label="Društvene mreže">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">Chat sa Grok-om
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Postavi pitanje...">
+            <button onclick="sendMessage()">Pošalji</button>
+        </div>
+    </div>
+
     <script>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navUl = document.querySelector('nav ul');
-        menuToggle.addEventListener('click', () => {
-            navUl.classList.toggle('active');
-        });
-    </script>
+        const apiKey = window.GROK_API_KEY || '';
+        const endpoint = 'https://api.x.ai/v1/chat/completions';
+        let chatOpen = false;
+        let isMinimized = false;
 
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
 
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
-
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
-
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
-
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
-
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
-
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
-
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
-
-<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
-<script>
-(function(){
-  try {
-    // Avoid ReferenceError in legacy code
-    if (typeof window.apiKey === 'undefined') {
-      window.apiKey = 'proxied';
-    }
-
-    const ORIG_FETCH = window.fetch.bind(window);
-    window.fetch = async function(input, init){
-      try{
-        const url = (typeof input === 'string') ? input : (input && input.url) || '';
-        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
-        if (!isModelApi) {
-          return ORIG_FETCH(input, init);
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => navOverlay.classList.add('open'));
+            navClose.addEventListener('click', () => navOverlay.classList.remove('open'));
+            navOverlay.addEventListener('click', e => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
         }
 
-        // Try to extract user's message from the original body if present
-        let userMsg = '';
-        try {
-          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          if (bodyStr) {
-            const payload = JSON.parse(bodyStr);
-            userMsg = payload?.message 
-                   || payload?.prompt 
-                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
-          }
-        } catch(e){ /* ignore parse errors */ }
+        function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatOpen = !chatOpen;
+            chatWidget.style.display = chatOpen ? 'flex' : 'none';
+            if (chatOpen && isMinimized) minimizeMaximizeChatWidget();
+        }
 
-        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg || '' })
-        });
-        return resp;
-      }catch(err){
-        // Fallback to original fetch if anything goes wrong
-        return ORIG_FETCH(input, init);
-      }
-    };
-  } catch(e) {
-    console.error('Proxy bootstrap error:', e);
-  }
-})();
-</script>
+        function closeChatWidget() {
+            document.getElementById('chatWidget').style.display = 'none';
+            chatOpen = false;
+        }
 
+        function minimizeMaximizeChatWidget() {
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.querySelector('.chat-input');
+            const toggle = document.getElementById('minimizeMaximizeButton');
+            if (!isMinimized) {
+                chatBody.style.display = 'none';
+                chatInput.style.display = 'none';
+                document.getElementById('chatWidget').style.height = '60px';
+                toggle.textContent = '+';
+                isMinimized = true;
+            } else {
+                chatBody.style.display = 'flex';
+                chatInput.style.display = 'flex';
+                document.getElementById('chatWidget').style.height = '430px';
+                toggle.textContent = '-';
+                isMinimized = false;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
+            addMessage('user', userMessage);
+            input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'grok-4-latest',
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant for Balkan Mining - Mermer Invest.' },
+                            { role: 'user', content: userMessage }
+                        ],
+                        stream: false,
+                        temperature: 0
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    addMessage('bot', data.choices[0].message.content || 'Nema odgovora.');
+                } else {
+                    addMessage('bot', 'Greška: ' + (data.error?.message || 'Server problem'));
+                }
+            } catch (error) {
+                addMessage('bot', 'Greška u konekciji: ' + error.message);
+            }
+        }
+
+        function addMessage(sender, message) {
+            const chatBody = document.getElementById('chatBody');
+            const wrap = document.createElement('div');
+            wrap.classList.add('message', sender);
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            wrap.appendChild(bubble);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>

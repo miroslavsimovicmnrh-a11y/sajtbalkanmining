@@ -1,578 +1,986 @@
 <!DOCTYPE html>
-
 <html lang="sr">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Proizvod – Plavi tok</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-    :root { --headerH:120px;  --bg:#f2f3f5; --paper:#ffffff; --ink:#101214; --muted:#6b7280; --line:#e5e7eb; --accent:#3f3f46; --chip:#f4f4f5; --chip-ink:#0f172a; --radius:14px; }
-    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--ink); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proizvod – Balkan Mining · Mermer Invest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg: #0e141f;
+            --bg-soft: #111b2a;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --surface-light: rgba(148, 163, 184, 0.12);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
+        }
 
-    /* NAV clone */
-    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
-    .nav-left img { height: 64px; width: auto; display: block; }
-    @media (max-width: 768px) { .nav-left img { height: 50px; } }
-    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
-    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
-    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
-    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
-    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
-    .nav-overlay.open { display: flex; }
-    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
-    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
-    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
-    .nav-links a:hover { opacity: 1; }
-    @media (max-width: 768px) {
-      .nav { left: 16px; right: 16px; top: 18px; }
-      .nav-left { font-size: 10px; letter-spacing: .14em; }
-      .nav-burger, .nav-close { width: 46px; height: 46px; }
-      .nav-links a { font-size: 22px; }
-    }
-.page { min-height: calc(100vh + var(--headerH)); padding-top: calc(var(--headerH) + 30px); }
-    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 80px; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-    .breadcrumbs { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    .breadcrumbs a { color: inherit; text-decoration: none; }
-    h1 { font-size: 34px; margin: 2px 0 6px; letter-spacing: .01em; }
-    .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 28px; }
-    @media (max-width: 980px){ .layout { grid-template-columns: 1fr; } }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-    .gallery { position: sticky; top: 100px; align-self: start; }
-    .frame { background: var(--paper); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
-    .frame img { width: 100%; height: 560px; object-fit: cover; display: block; }
-    @media (max-width: 980px){ .frame img { height: 420px; } }
+        main {
+            flex: 1;
+        }
 
-    .thumbs-rail { display: grid; grid-auto-flow: column; gap: 10px; overflow-x: auto; padding: 10px 6px 2px; background: var(--paper); border-radius: var(--radius); margin-top: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
-    .thumbs-rail img { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 2px solid transparent; }
-    .thumbs-rail img.active { border-color: var(--accent); }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
-    .panel { background: var(--paper); border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 16px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
-    .chip { background: var(--chip); color: var(--chip-ink); border-radius: 999px; padding: 8px 12px; font-size: 13px; }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-    .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
-    .tab { padding: 10px 12px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); }
-    .tab.active { color: var(--ink); border-color: var(--accent); }
-    .tabpanes > section { display: none; padding-top: 14px; }
-    .tabpanes > section.active { display: block; }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    .desc { line-height: 1.6; color: #1f2937; }
+        h1, h2, h3 {
+            margin: 0;
+            line-height: 1.2;
+        }
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); }
-    thead th { background: #fafafa; }
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 3.6rem);
+            letter-spacing: -0.02em;
+        }
 
-    .ref-links { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
-    @media (max-width: 600px){ .ref-links { grid-template-columns: 1fr; } }
-    .ref { background: #f7f7f8; border-radius: 10px; padding: 12px 14px; text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 10px; border: 1px solid #eee; }
-    .ref i { opacity: .65; }
+        h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
 
-    .back { margin-top: 20px; display: inline-block; text-decoration: none; color: #0f172a; }
-  
+        h3 {
+            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+            font-weight: 700;
+        }
 
-/* --- injected from catalog.html --- */
-/* Dark top band behind logo & hamburger */
-    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: 120px; background: #1c1c1e; z-index: 120; }
-    @media (max-width: 768px){ .nav-band { height: 100px; } }
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
 
-/* --- injected from catalog.html --- */
-/* ===== Footer V9: CTA Bar Minimal ===== */
-    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:40px; border-top:1px solid #1f2937; }
-    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
-    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    .cta h3 { margin:0; color:#f9fafb; }
-    .cta p { margin:0; color:#9ca3af; }
-    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
-    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
-    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px;  grid-template-columns:1fr 1fr; gap:28px; }
-    .links { display:flex; gap:18px; flex-wrap:wrap; }
-    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
-    .links a:hover { opacity:1; text-decoration:underline; }
-    .bottom { border-top:1px solid #1f2937; }
-    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
-    @media(max-width:800px){ .wrap{ grid-template-columns:1fr; } }
+        .container {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+        }
 
-/* --- injected from catalog.html --- */
-/* === CHAT WIDGET (copied from homepage) === */
-    .chat-widget {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        height: 400px;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-        flex-direction: column;
-    }
-    .chat-header {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        text-align: center;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .chat-header button {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 10px;
-    }
-    .chat-body {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .chat-input {
-        display: flex;
-        padding: 10px;
-        border-top: 1px solid #ccc;
-    }
-    .chat-input input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 5px;
-    }
-    .chat-input button {
-        padding: 8px 12px;
-        background-color: #d4a017;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .message { margin-bottom: 0; }
-    .message.user { text-align: right; display:flex; justify-content:flex-end; }
-    .message.bot { text-align: left; display:flex; justify-content:flex-start; }
-    .message .bubble {
-        padding: 10px 14px;
-        border-radius: 16px;
-        max-width: 80%;
-        line-height: 1.35;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    }
-    .message.user .bubble { background: #f0f0f0; color: #111; }
-    .message.bot .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
-    @media (max-width: 768px) {
-        .chat-widget { width: 250px; height: 300px; }
-    }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
 
-.page h1 { margin-top: 18px; }
-/* === Mobile fixes === */
-html, body {height:auto !important; min-height:100% !important; overflow-y:auto !important; overflow-x:hidden; max-width:100%; }
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--accent-soft);
+            opacity: 0.8;
+        }
 
+        .site-header {
+            position: relative;
+            z-index: 40;
+        }
 
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
 
-/* === Mobile fixes: clamp width & footer edge-to-edge (do not affect desktop) === */
-html, body {height:auto !important; min-height:100% !important; overflow-y:auto !important; overflow-x:hidden; max-width:100%; }
-@supports (overflow-x: clip) { html, body { overflow-x: clip; overflow-y: auto !important; } }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-@media (max-width: 980px) {
-  /* Prevent any child from pushing wider than the viewport */
-  .page, .wrap, .layout, .panel, .gallery, .tabs, .tabpanes, .frame, .thumbs-rail,
-  .site-footer, .cta, .cta .inner, .site-footer .wrap, .bottom, .bottom .inner {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
+        .nav-left a {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
 
-  /* Sticky gallery can cause lateral drift on mobile; keep it static */
-  .gallery { position: static; top: auto; }
+        .nav-left img {
+            height: 58px;
+            width: auto;
+        }
 
-  /* Main image: fluid height, never wider than viewport */
-  .frame img { height: auto; max-height: 70vh; width: 100%; object-fit: cover; }
+        .nav-tagline {
+            font-size: 0.72rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+        }
 
-  /* Thumbs rail: scroll inside itself only, not the page */
-  .thumbs-rail {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-  }
-  .thumbs-rail::-webkit-scrollbar { display: none; }
-  .thumbs-rail img { max-width: 100%; }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
 
-  /* Tabs: allow internal scroll without causing page overflow */
-  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tab { white-space: nowrap; }
+        .nav-inline {
+            display: none;
+            align-items: center;
+            gap: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
 
-  /* Footer: ensure sections span full width on mobile */
-  .site-footer { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-  .cta .inner, .bottom .inner { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
-  .site-footer .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+        .nav-inline a {
+            color: var(--muted);
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
 
-  /* Minor type & spacing guards to avoid accidental overflow */
-  h1 { font-size: 28px; }
-  .links a { word-break: break-word; }
-}
+        .nav-inline a:hover,
+        .nav-inline a:focus-visible {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
 
-/* Extra guard: if any absolutely/fixed positioned element overlaps, do not extend layout width */
-@media (max-width: 768px) {
-  .nav { left: 16px; right: 16px; } /* already present but safe */
-}
+        .nav-inline .nav-cta {
+            color: var(--accent-soft);
+        }
 
- /* half of typical 560px gallery height */
+        .nav-burger {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
 
-.panel {
-  max-height: 560px;
-  overflow-y: auto;
-}
-@media (max-width: 980px){
-  .panel { max-height: 420px; }
-}
-/* === Social icons: fixed bottom-left, stop above footer === */
-.social-icons {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; text-decoration: none; }
-.social-icons a:hover { opacity: 1; }
-/* Mobile tweak: keep within safe area */
-@media (max-width: 768px){
-  .social-icons { left: 12px; bottom: 16px; }
-}
+        .nav-burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
 
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 9, 18, 0.92);
+            display: none;
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+        }
 
-/* Responsive gallery spacing */
-@media (min-width: 981px){
-  .gallery { margin-bottom: 280px; }
-}
-@media (max-width: 980px){
-  .gallery { margin-bottom: 24px; }
-}
+        .nav-overlay.open {
+            display: flex;
+        }
 
-</style>
-<style id="thumbs-rail-hardfix">
-/* Force fixed-size thumbnails and horizontal scroll */
-.thumbs-rail{ display:flex !important; flex-wrap:nowrap !important; overflow-x:auto !important; overflow-y:hidden; padding:10px 12px 6px; }
-.thumbs-rail img{ flex:0 0 auto; width:140px !important; height:100px !important; object-fit:cover; border-radius:10px; }
-/* Mobile override: undo earlier overflow-x:hidden and prevent shrink */
-@media (max-width: 980px){
-  .thumbs-rail{ overflow-x:auto !important; }
-  .thumbs-rail img{ width:140px !important; height:100px !important; }
-}
-</style>
-<style id="desktop-thumbs-4-only">
-@media (min-width: 981px){
-  /* Allow grid columns to shrink properly (avoid pushing the panel) */
-  .gallery{ min-width: 0 !important; }
-  .panel{ min-width: 0 !important; }
+        .nav-close {
+            position: absolute;
+            top: 28px;
+            right: 40px;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+        }
 
-  /* Show at most 4 thumbs; the rest scroll horizontally */
-  .thumbs-rail{
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden;
-    /* width clamps so only 4 thumbs are visible even on wide screens */
-    max-width: calc(4 * 140px + 3 * 10px + 12px); /* 4 thumbs + 3 gaps + left/right padding (6px each) */
-    width: 100%;
-    scrollbar-gutter: stable;
-  }
-  .thumbs-rail img{
-    flex: 0 0 auto;
-    width: 140px !important;
-    height: 100px !important;
-    object-fit: cover;
-  }
-}
-</style>
-<style id="hide-social-mobile">
-@media (max-width: 768px){
-  /* Hide common social containers */
-  .social, .socials, .social-icons, .share, .share-links, .share-buttons { display: none !important; }
-  /* Hide anchors to known social domains */
-  a[href*="instagram.com"], a[href*="facebook.com"], a[href*="x.com"], a[href*="twitter.com"],
-  a[href*="linkedin.com"], a[href*="pinterest.com"], a[href*="tiktok.com"],
-  a[href*="youtube.com"], a[href*="youtu.be"], a[href*="whatsapp.com"],
-  a[href*="telegram"], a[href*="viber.com"] { display: none !important; }
-}
-</style>
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #fff;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-soft);
+        }
+
+        @media (min-width: 900px) {
+            .nav-inline {
+                display: flex;
+            }
+            .nav-burger {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav {
+                width: calc(100% - 24px);
+                padding: 12px 16px;
+            }
+            .nav-left img {
+                height: 48px;
+            }
+            .nav-tagline {
+                display: none;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.95rem 1.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            box-shadow: 0 18px 32px rgba(212, 160, 23, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.36);
+        }
+
+        .btn-light {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            border-color: rgba(255, 255, 255, 0.22);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            border-color: rgba(148, 163, 184, 0.18);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus-visible {
+            background: rgba(212, 160, 23, 0.12);
+        }
+
+        .btn-light:hover,
+        .btn-light:focus-visible {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-ghost:hover,
+        .btn-ghost:focus-visible {
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .btn + .btn {
+            margin-left: 0.5rem;
+        }
+
+        .page-hero {
+            padding: clamp(6rem, 12vw, 8rem) 0 clamp(3rem, 8vw, 5rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(212, 160, 23, 0.18), transparent 55%);
+            pointer-events: none;
+        }
+
+        .page-hero > .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (min-width: 960px) {
+            .hero-grid {
+                grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            }
+        }
+
+        .hero-intro {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.6rem;
+        }
+
+        .hero-meta {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .hero-meta li {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--muted);
+        }
+
+        .hero-meta i {
+            color: var(--accent-soft);
+        }
+
+        .hero-stats {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 1.8rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .stat-card span {
+            font-size: 0.75rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .stat-card strong {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .section {
+            padding: clamp(4rem, 10vw, 6.5rem) 0;
+        }
+
+        .product-layout {
+            display: grid;
+            gap: 2.4rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1080px) {
+            .product-layout {
+                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            }
+        }
+
+        .product-gallery {
+            display: grid;
+            gap: 1rem;
+            position: sticky;
+            top: 120px;
+        }
+
+        @media (max-width: 1080px) {
+            .product-gallery {
+                position: static;
+            }
+        }
+
+        .product-frame {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .product-frame img {
+            width: 100%;
+            height: clamp(340px, 50vw, 520px);
+            object-fit: cover;
+        }
+
+        .thumbs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .thumbs img {
+            width: 108px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .thumbs img:hover {
+            transform: translateY(-3px);
+        }
+
+        .thumbs img.active {
+            border-color: rgba(212, 160, 23, 0.65);
+        }
+
+        .product-details {
+            display: grid;
+            gap: 1.8rem;
+        }
+
+        .info-card,
+        .spec-card,
+        .reference-card,
+        .download-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-card);
+            padding: 2rem;
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .chip {
+            padding: 0.55rem 0.95rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(148, 163, 184, 0.08);
+            font-size: 0.78rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .spec-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .spec-table th,
+        .spec-table td {
+            padding: 0.75rem 0;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .spec-table th {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            color: var(--accent-soft);
+        }
+
+        .reference-card ul {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .reference-card a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1.1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(148, 163, 184, 0.08);
+            color: var(--muted);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .reference-card a:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 160, 23, 0.4);
+            color: var(--accent-soft);
+        }
+
+        .download-card {
+            background: linear-gradient(135deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.22);
+        }
+
+        .download-card p {
+            color: rgba(241, 250, 255, 0.75);
+        }
+
+        footer {
+            padding: 1.8rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(5, 10, 18, 0.65);
+        }
+
+        footer a {
+            color: var(--accent-soft);
+        }
+
+        .social-icons {
+            position: fixed;
+            left: 28px;
+            bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 30;
+        }
+
+        .social-icons a {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(17, 27, 42, 0.88);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-4px);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.45);
+        }
+
+        @media (max-width: 720px) {
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .social-icons {
+                left: 16px;
+                bottom: 18px;
+            }
+            .social-icons a {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 320px;
+            height: 430px;
+            background: rgba(11, 18, 29, 0.94);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            z-index: 80;
+        }
+
+        .chat-header {
+            padding: 1rem 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(17, 27, 42, 0.88);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .chat-header button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 999px;
+            width: 34px;
+            height: 34px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+        }
+
+        .message .bubble {
+            padding: 0.85rem 1.1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            font-size: 0.88rem;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .bubble {
+            background: rgba(212, 160, 23, 0.2);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.35);
+        }
+
+        .chat-input {
+            padding: 1rem;
+            display: flex;
+            gap: 0.6rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(11, 18, 29, 0.88);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(4, 9, 18, 0.4);
+            color: #fff;
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.4rem;
+            border-radius: 14px;
+            border: none;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            cursor: pointer;
+        }
+
+        @media (max-width: 520px) {
+            .chat-widget {
+                width: calc(100% - 32px);
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-<!-- OVERFLOW GUARD -->
-<div class="nav-band"></div>
-<!-- NAV + Overlay -->
-<div class="nav">
-<div class="nav-left"><a href="https://ibb.co/QGRBCQd"><img alt="Logo" border="0" src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png"/></a></div>
-<button aria-label="Open menu" class="nav-burger" id="navBurger">
-<span></span><span></span><span></span>
-</button>
-</div>
-<div class="nav-overlay" id="navOverlay">
-<button aria-label="Close menu" class="nav-close" id="navClose">×</button>
-<nav class="nav-links">
-<a href="index.html">Početna</a>
-<a href="about.html">O nama</a>
-<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-<a href="contact.html">Kontakt</a>
-</nav>
-</div>
-<div class="page">
-<div class="wrap">
-<div class="breadcrumbs" style="margin-top: 3px;"><a href="catalog.html">Katalog</a> / <span id="bcName"></span></div>
-<h1 id="pName"></h1>
-<div class="sub" id="pMeta"></div>
-<div class="layout">
-<!-- Left: Gallery -->
-<aside class="gallery">
-<div class="frame"><img alt="" id="mainImg" src=""/></div>
-<div class="thumbs-rail" id="thumbs"></div>
-</aside>
-<!-- Right: Tabs -->
-<main class="panel">
-<div class="chips">
-<span class="chip" id="chipColor"></span>
-<span class="chip" id="chipFinish"></span>
-<span class="chip" id="chipFromPrice"></span>
-<span class="chip" id="chipCategory"></span></div>
-<div class="tabs">
-<div class="tab active" data-tab="about">O proizvodu</div>
-<div class="tab" data-tab="dims">Dimenzije i cene</div>
-<div class="tab" data-tab="refs">Reference</div>
-</div>
-<div class="tabpanes">
-<section class="active" id="pane-about">
-<p class="desc" id="pDesc"></p>
-</section>
-<section id="pane-dims">
-<table id="dimTable">
-<thead><tr><th>Dimenzija</th><th>Cena (€)</th></tr></thead>
-<tbody></tbody>
-</table>
-</section>
-<section id="pane-refs">
-<div class="ref-links" id="refLinks"></div>
-</section>
-</div>
-<a class="back" href="catalog.html">← Nazad na katalog</a>
-</main>
-</div>
-</div>
-</div>
-<script>
-    // Hamburger behavior
-    const navBurger = document.getElementById('navBurger');
-    const navOverlay = document.getElementById('navOverlay');
-    const navClose  = document.getElementById('navClose');
-    if (navBurger && navOverlay && navClose) {
-      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
-      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
-      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
-    }
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo">
+                    <img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo">
+                </a>
+                <span class="nav-tagline">Mermer Invest</span>
+            </div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
+    </div>
 
-    // Tabs
-    document.addEventListener('click', (e) => {
-      const t = e.target.closest('.tab');
-      if (!t) return;
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      const key = t.dataset.tab;
-      document.querySelectorAll('.tabpanes > section').forEach(sec => {
-        sec.classList.toggle('active', sec.id === 'pane-' + key);
-      });
-    });
+    <main>
+        <section class="page-hero product-hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-intro">
+                        <span class="eyebrow">Detalj proizvoda</span>
+                        <h1 id="pName">Proizvod</h1>
+                        <p id="pSummary">Detalji o proizvodu biće prikazani nakon učitavanja podataka.</p>
+                        <div class="hero-actions">
+                            <a href="catalog.html" class="btn btn-light"><i class="fa-solid fa-arrow-left"></i> Nazad u katalog</a>
+                            <a href="contact.html" class="btn btn-primary">Zatraži ponudu</a>
+                            <button type="button" class="btn btn-ghost" onclick="openChatWidget()"><i class="fa-solid fa-comment"></i> Pitaj savetnika</button>
+                        </div>
+                        <ul class="hero-meta" id="pMetaList"></ul>
+                    </div>
+                    <div class="hero-stats">
+                        <article class="stat-card">
+                            <span>Minimalna cena</span>
+                            <strong id="pMinPrice">—</strong>
+                            <p>Cena zavisi od dimenzije, obrade i količine. Kontaktirajte nas za detaljnu kalkulaciju.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Rok isporuke</span>
+                            <strong id="pLeadTime">Na upit</strong>
+                            <p>Standardni rok za EU tržište. Ekspresna obrada i transport moguće su uz prioritetnu rezervaciju.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    // Helpers
-    function qs(key) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(key);
-    }
-    function fmtPrice(n){ return isFinite(n) ? (n + '€') : ''; }
+        <section class="section">
+            <div class="container">
+                <div class="product-layout" id="productLayout">
+                    <div class="product-gallery">
+                        <div class="product-frame">
+                            <img src="https://via.placeholder.com/800x600?text=U%C4%8Ditavanje" alt="Prikaz proizvoda" id="mainImg">
+                        </div>
+                        <div class="thumbs" id="thumbs"></div>
+                    </div>
+                    <div class="product-details">
+                        <div class="info-card">
+                            <h3>Specifikacija proizvoda</h3>
+                            <div class="chip-row">
+                                <span class="chip" id="chipColor">Boja: —</span>
+                                <span class="chip" id="chipFinish">Obrade: —</span>
+                                <span class="chip" id="chipCategory">Program: —</span>
+                                <span class="chip" id="chipStock">Dostupnost: Na upit</span>
+                            </div>
+                            <p id="pDesc">Učitavanje detalja...</p>
+                        </div>
+                        <div class="spec-card spec-table">
+                            <h3>Dimenzije i cene</h3>
+                            <table id="dimTable">
+                                <thead>
+                                    <tr>
+                                        <th>Dimenzija</th>
+                                        <th>Cena (€)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="2">Podaci se učitavaju...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="reference-card" id="refPanel">
+                            <h3>Reference sa ovim materijalom</h3>
+                            <ul id="refLinks">
+                                <li>Učitavanje referenci...</li>
+                            </ul>
+                        </div>
+                        <div class="download-card">
+                            <h3>Treba vam tehnički list?</h3>
+                            <p>Pošaljite nam projektni plan i dobićete PDF sa detaljnom specifikacijom, predlogom reza i logističkim planom.</p>
+                            <div class="hero-actions" style="margin-top:0;">
+                                <a href="mailto:projects@balkanmining.rs" class="btn btn-primary">Pošalji projekat</a>
+                                <a href="catalog.xlsx" class="btn btn-light" download><i class="fa-solid fa-file-arrow-down"></i> XLSX katalog</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    async function loadXlsx() {
-      const res = await fetch('catalog.xlsx');
-      if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, { type: 'array' });
-      return {
-        PRODUCTS: XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''}),
-        DIMENSIONS: XLSX.utils.sheet_to_json(wb.Sheets['Dimensions'] || {}, {defval: ''}),
-        IMAGES: XLSX.utils.sheet_to_json(wb.Sheets['Images'] || {}, {defval: ''}),
-        REFERENCES: XLSX.utils.sheet_to_json(wb.Sheets['References'] || {}, {defval: ''}),
-      };
-    }
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>
+    </footer>
 
-    function minPrice(dims){
-      const arr = dims.map(d => Number(d.price_eur || d.price || NaN)).filter(n => isFinite(n));
-      return arr.length ? Math.min(...arr) : null;
-    }
+    <div class="social-icons" aria-label="Društvene mreže">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
 
-    function render(p, dims, imgs, refs){
-      // Titles
-      document.getElementById('bcName').textContent = p.name || '';
-      document.getElementById('pName').textContent = p.name || '';
-      document.getElementById('pMeta').textContent = `Boja: ${p.color||'-'} · Obrade: ${p.finishes||'-'}`;
-      document.getElementById('pDesc').textContent = p.description || '';
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">Chat sa Grok-om
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Postavi pitanje...">
+            <button onclick="sendMessage()">Pošalji</button>
+        </div>
+    </div>
 
-      // Chips
-      document.getElementById('chipColor').textContent = 'Boja: ' + (p.color||'-');
-      document.getElementById('chipFinish').textContent = 'Obrade: ' + (p.finishes||'-');
-      const mp = minPrice(dims);
-      document.getElementById('chipFromPrice').textContent = mp!=null ? ('Od ' + mp + '€') : 'Cena na upit';
-      document.getElementById('chipCategory').textContent = p.category || '';
+    <script>
+        const apiKey = window.GROK_API_KEY || '';
+        const endpoint = 'https://api.x.ai/v1/chat/completions';
+        let chatOpen = false;
+        let isMinimized = false;
 
-      // Gallery
-      const main = document.getElementById('mainImg');
-      const thumbs = document.getElementById('thumbs');
-      thumbs.innerHTML = '';
-      const allImgs = imgs.length ? imgs.map(i=>i.image_url) : (p.base_image ? [p.base_image] : []);
-      if (allImgs.length) { main.src = allImgs[0]; }
-      allImgs.forEach((u, idx) => {
-        const im = document.createElement('img');
-        im.src = u; im.alt = p.name || '';
-        if (idx===0) im.classList.add('active');
-        im.addEventListener('click', () => {
-          main.src = u;
-          document.querySelectorAll('.thumbs-rail img').forEach(x=>x.classList.remove('active'));
-          im.classList.add('active');
-        });
-        thumbs.appendChild(im);
-      });
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
 
-      // Dimensions table
-      const tbody = document.querySelector('#dimTable tbody');
-      tbody.innerHTML = '';
-      dims.forEach(d => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${d.dimension}</td><td>${fmtPrice(Number(d.price_eur || d.price))}</td>`;
-        tbody.appendChild(tr);
-      });
-
-      // References
-      const refBox = document.getElementById('refLinks');
-      refBox.innerHTML = '';
-      refs.forEach(r => {
-        const a = document.createElement('a');
-        a.href = r.ref_url || ('references.html?ref=' + encodeURIComponent(r.ref_slug||r.ref_name||''));
-        a.className = 'ref';
-        a.innerHTML = `<i class="fa-regular fa-building"></i><span>${r.ref_name||'Referenca'}</span>`;
-        refBox.appendChild(a);
-      });
-    }
-
-    (async function(){
-      const id = qs('id');
-      const db = await loadXlsx();
-      const p = db.PRODUCTS.find(x => String(x.id) === String(id));
-      if (!p) { document.querySelector('.wrap').innerHTML = '<p>Proizvod nije pronađen.</p>'; return; }
-      const dims = db.DIMENSIONS.filter(d => String(d.product_id||d.productId) === String(id));
-      const imgs = db.IMAGES.filter(i => String(i.product_id||i.productId) === String(id));
-      const refs = db.REFERENCES.filter(r => String(r.product_id||r.productId) === String(id));
-      render(p, dims, imgs, refs);
-    })();
-  </script>
-<!-- Social icons: visible from load, follow scroll, stop above footer -->
-<div aria-label="Društvene mreže" class="social-icons" id="socialIcons">
-<a href="#"><i aria-hidden="true" class="fab fa-instagram"></i><span class="sr-only">Instagram</span></a>
-<a href="#"><i aria-hidden="true" class="fab fa-facebook-f"></i><span class="sr-only">Facebook</span></a>
-<a href="#"><i aria-hidden="true" class="fab fa-tiktok"></i><span class="sr-only">TikTok</span></a>
-<a href="#"><i aria-hidden="true" class="fab fa-youtube"></i><span class="sr-only">YouTube</span></a>
-<a href="#"><i aria-hidden="true" class="fab fa-x-twitter"></i><span class="sr-only">X</span></a>
-<a href="#"><i aria-hidden="true" class="fab fa-whatsapp"></i><span class="sr-only">WhatsApp</span></a>
-</div>
-<footer class="site-footer">
-<div class="cta">
-<div class="inner">
-<div>
-<h3>Spremni za ponudu?</h3>
-<p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
-</div>
-<div class="row"><a class="btn-primary" href="contact.html">Kontakt</a><a class="btn-secondary" download="" href="catalog.xlsx">Preuzmi cenovnik</a><a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a></div>
-</div>
-</div>
-<div class="wrap">
-<div class="links">
-<a href="about.html">O nama</a>
-<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-<a href="contact.html">Kontakt</a>
-</div>
-<div class="links" style="justify-content:flex-end;">
-<a href="privacy.html">Politika privatnosti</a>
-<a href="terms.html">Uslovi korišćenja</a>
-</div>
-</div>
-<div class="bottom"><div class="inner"><div>© 2025 Plavi tok</div><div></div></div></div>
-</footer>
-<!-- Chat widget (same behavior as na početnoj) -->
-<div class="chat-widget" id="chatWidget">
-<div class="chat-header">Chat sa Grok-om
-            <button id="minimizeMaximizeButton" onclick="minimizeMaximizeChatWidget()">-</button>
-<button onclick="closeChatWidget()">X</button>
-</div>
-<div class="chat-body" id="chatBody"></div>
-<div class="chat-input">
-<input id="chatInput" placeholder="Postavi pitanje..." type="text"/>
-<button onclick="sendMessage()">Pošalji</button>
-</div>
-</div>
-<script>
-    /* removed apiKey */
-    const endpoint = 'https://api.x.ai/v1/chat/completions';
-    let chatOpen = false;
-    let isMinimized = false;
-
-    function openChatWidget() {
-        const chatWidget = document.getElementById('chatWidget');
-        chatOpen = !chatOpen;
-        chatWidget.style.display = chatOpen ? 'flex' : 'none';
-        if (chatOpen && isMinimized) {
-            minimizeMaximizeChatWidget();
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => {
+                navOverlay.classList.add('open');
+            });
+            navClose.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+            });
+            navOverlay.addEventListener('click', (e) => {
+                if (e.target === navOverlay) {
+                    navOverlay.classList.remove('open');
+                }
+            });
         }
-    }
-    function closeChatWidget() {
-        document.getElementById('chatWidget').style.display = 'none';
-        chatOpen = false;
-    }
-    function minimizeMaximizeChatWidget() {
-        const chatBody = document.getElementById('chatBody');
-        const chatInput = document.querySelector('.chat-input');
-        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
-        if (!isMinimized) {
-            chatBody.style.display = 'none';
-            chatInput.style.display = 'none';
-            document.getElementById('chatWidget').style.height = '50px';
-            minimizeMaximizeButton.textContent = '+';
-            isMinimized = true;
-        } else {
-            chatBody.style.display = 'block';
-            chatInput.style.display = 'flex';
-            document.getElementById('chatWidget').style.height = '400px';
-            minimizeMaximizeButton.textContent = '-';
-            isMinimized = false;
+
+        function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatOpen = !chatOpen;
+            chatWidget.style.display = chatOpen ? 'flex' : 'none';
+            if (chatOpen && isMinimized) {
+                minimizeMaximizeChatWidget();
+            }
         }
-    }
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const userMessage = input.value.trim();
-        if (userMessage) {
+
+        function closeChatWidget() {
+            document.getElementById('chatWidget').style.display = 'none';
+            chatOpen = false;
+        }
+
+        function minimizeMaximizeChatWidget() {
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.querySelector('.chat-input');
+            const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
+            if (!isMinimized) {
+                chatBody.style.display = 'none';
+                chatInput.style.display = 'none';
+                document.getElementById('chatWidget').style.height = '60px';
+                minimizeMaximizeButton.textContent = '+';
+                isMinimized = true;
+            } else {
+                chatBody.style.display = 'flex';
+                chatInput.style.display = 'flex';
+                document.getElementById('chatWidget').style.height = '430px';
+                minimizeMaximizeButton.textContent = '-';
+                isMinimized = false;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) {
+                return;
+            }
             addMessage('user', userMessage);
             input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -600,247 +1008,150 @@ html, body {height:auto !important; min-height:100% !important; overflow-y:auto 
                 addMessage('bot', 'Greška u konekciji: ' + error.message);
             }
         }
-    }
-    function addMessage(sender, message) {
-        const chatBody = document.getElementById('chatBody');
-        const wrap = document.createElement('div');
-        wrap.classList.add('message', sender);
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.textContent = message;
-        wrap.appendChild(bubble);
-        chatBody.appendChild(wrap);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
+
+        function addMessage(sender, message) {
+            const chatBody = document.getElementById('chatBody');
+            const wrap = document.createElement('div');
+            wrap.classList.add('message', sender);
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            wrap.appendChild(bubble);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
     </script>
-<script>
-(function(){
-  const icons = document.getElementById('socialIcons');
-  const footer = document.querySelector('footer');
-  if (!icons || !footer) return;
-  const margin = 20; // space above footer
 
-  function update(){
-    const rect = footer.getBoundingClientRect();
-    const footerTopDoc = rect.top + window.scrollY;
-    const iconsH = icons.offsetHeight;
-    const stopTop = footerTopDoc - margin - iconsH;
-
-    // Current bottom position of icons if fixed:
-    const currentBottomDoc = window.scrollY + window.innerHeight - margin;
-
-    if (currentBottomDoc >= footerTopDoc) {
-      // Switch to absolute and freeze above footer
-      icons.style.position = 'absolute';
-      icons.style.bottom = 'auto';
-      icons.style.left = (window.innerWidth <= 768 ? '12px' : '20px');
-      icons.style.top = stopTop + 'px';
-    } else {
-      // Keep fixed at bottom-left
-      icons.style.position = 'fixed';
-      icons.style.top = 'auto';
-      icons.style.left = (window.innerWidth <= 768 ? '12px' : '20px');
-      icons.style.bottom = (window.innerWidth <= 768 ? '16px' : '20px');
-    }
-  }
-
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
-  document.addEventListener('DOMContentLoaded', update);
-  update();
-})();
-</script>
-<script>
-    async function loadProductData() {
-        const res = await fetch('/mnt/data/products_data.json');  // Fetch the JSON file with product categories
-        if (!res.ok) throw new Error('Ne mogu da učitam products_data.json');
-        const products = await res.json();  // Parse the JSON data
-        
-        const productId = new URLSearchParams(window.location.search).get('id');  // Get product ID from the URL
-        const product = products.find(p => String(p.id) === productId);  // Find the product by ID
-
-        if (product) {
-            // Insert the category into the new panel
-            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: ' + product.category + '</span>';
-        } else {
-            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: Nema podataka</span>';
-        }
-    }
-    
-    // Load product data on page load
-    window.onload = loadProductData;
-</script>
-<script>
-    async function loadProductData() {
-        const res = await fetch('/mnt/data/catalog.xlsx');  // Fetch the Excel file containing product categories
-        if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
-        const buf = await res.arrayBuffer();
-        const wb = XLSX.read(buf, { type: 'array' });
-        const products = XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''});
-        
-        const productId = new URLSearchParams(window.location.search).get('id');  // Get product ID from the URL
-        const product = products.find(p => String(p.id) === productId);  // Find the product by ID
-
-        if (product) {
-            // Insert the category into the new panel
-            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: ' + product.category + '</span>';
-        } else {
-            document.getElementById('productCategoryPanel').innerHTML = '<span id="categoryLabel">Kategorija: Nema podataka</span>';
-        }
-    }
-    
-    // Load product data on page load
-    window.onload = loadProductData;
-</script>
-
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
-
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
-
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
-
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
-
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
-
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
-
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
-
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
-
-<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
-<script>
-(function(){
-  try {
-    // Avoid ReferenceError in legacy code
-    if (typeof window.apiKey === 'undefined') {
-      window.apiKey = 'proxied';
-    }
-
-    const ORIG_FETCH = window.fetch.bind(window);
-    window.fetch = async function(input, init){
-      try{
-        const url = (typeof input === 'string') ? input : (input && input.url) || '';
-        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
-        if (!isModelApi) {
-          return ORIG_FETCH(input, init);
+    <script>
+        function qs(key) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(key);
         }
 
-        // Try to extract user's message from the original body if present
-        let userMsg = '';
-        try {
-          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          if (bodyStr) {
-            const payload = JSON.parse(bodyStr);
-            userMsg = payload?.message 
-                   || payload?.prompt 
-                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
-          }
-        } catch(e){ /* ignore parse errors */ }
+        function fmtPrice(n) {
+            return Number.isFinite(n) ? `${n}€` : 'Na upit';
+        }
 
-        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg || '' })
-        });
-        return resp;
-      }catch(err){
-        // Fallback to original fetch if anything goes wrong
-        return ORIG_FETCH(input, init);
-      }
-    };
-  } catch(e) {
-    console.error('Proxy bootstrap error:', e);
-  }
-})();
-</script>
+        async function loadXlsx() {
+            const res = await fetch('catalog.xlsx');
+            if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
+            const buf = await res.arrayBuffer();
+            const wb = XLSX.read(buf, { type: 'array' });
+            return {
+                PRODUCTS: XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, { defval: '' }),
+                DIMENSIONS: XLSX.utils.sheet_to_json(wb.Sheets['Dimensions'] || {}, { defval: '' }),
+                IMAGES: XLSX.utils.sheet_to_json(wb.Sheets['Images'] || {}, { defval: '' }),
+                REFERENCES: XLSX.utils.sheet_to_json(wb.Sheets['References'] || {}, { defval: '' }),
+            };
+        }
 
+        function render(product, dims, imgs, refs) {
+            document.title = `${product.name || 'Proizvod'} – Balkan Mining · Mermer Invest`;
+            document.getElementById('pName').textContent = product.name || 'Proizvod';
+            const summary = (product.summary || product.subtitle || product.highlight || product.description || '').trim();
+            document.getElementById('pSummary').textContent = summary || 'Ovaj materijal je deo selekcije Plavi tok – kontaktirajte nas za više informacija.';
+            document.getElementById('pDesc').textContent = (product.description || product.summary || '').trim() || 'Opis proizvoda je trenutno nedostupan. Javite nam se kako bismo poslali detaljne informacije.';
+
+            const metaList = document.getElementById('pMetaList');
+            metaList.innerHTML = '';
+            const metaItems = [
+                { icon: 'fa-droplet', label: 'Boja', value: product.color || 'Na upit' },
+                { icon: 'fa-sparkles', label: 'Obrade', value: product.finishes || 'Na upit' },
+                { icon: 'fa-layer-group', label: 'Program', value: product.category || 'Kamen' },
+            ];
+            metaItems.forEach(meta => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fa-solid ${meta.icon}"></i><span>${meta.label}: ${meta.value}</span>`;
+                metaList.appendChild(li);
+            });
+
+            document.getElementById('chipColor').textContent = 'Boja: ' + (product.color || 'Na upit');
+            document.getElementById('chipFinish').textContent = 'Obrade: ' + (product.finishes || 'Na upit');
+            document.getElementById('chipCategory').textContent = 'Program: ' + (product.category || 'Kamen');
+            document.getElementById('chipStock').textContent = 'Dostupnost: ' + (product.availability || product.stock || 'Na upit');
+
+            const mainImg = document.getElementById('mainImg');
+            const thumbs = document.getElementById('thumbs');
+            thumbs.innerHTML = '';
+            const allImages = imgs.length ? imgs.map(i => i.image_url).filter(Boolean) : (product.base_image ? [product.base_image] : []);
+            if (allImages.length) {
+                mainImg.src = allImages[0];
+            } else {
+                mainImg.src = 'https://via.placeholder.com/800x600?text=Nema+fotografije';
+            }
+            allImages.forEach((src, idx) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = product.name || '';
+                if (idx === 0) img.classList.add('active');
+                img.addEventListener('click', () => {
+                    mainImg.src = src;
+                    document.querySelectorAll('.thumbs img').forEach(el => el.classList.remove('active'));
+                    img.classList.add('active');
+                });
+                thumbs.appendChild(img);
+            });
+
+            const tbody = document.querySelector('#dimTable tbody');
+            tbody.innerHTML = '';
+            if (dims.length) {
+                dims.forEach(d => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${d.dimension || '-'}</td><td>${fmtPrice(Number(d.price_eur || d.price))}</td>`;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td colspan="2">Dimenzije su dostupne na zahtev.</td>';
+                tbody.appendChild(tr);
+            }
+
+            const min = dims.length ? Math.min(...dims.map(d => Number(d.price_eur || d.price || Infinity)).filter(Number.isFinite)) : null;
+            document.getElementById('pMinPrice').textContent = min != null && Number.isFinite(min) ? `${min}€` : 'Na upit';
+            document.getElementById('pLeadTime').textContent = product.lead_time || product.lead || '14 dana';
+
+            const refLinks = document.getElementById('refLinks');
+            refLinks.innerHTML = '';
+            if (refs.length) {
+                refs.forEach(r => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = r.ref_url || 'references.html';
+                    a.innerHTML = `<i class="fa-regular fa-building"></i>${r.ref_name || 'Referenca'}`;
+                    li.appendChild(a);
+                    refLinks.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Reference će biti dodate uskoro.';
+                refLinks.appendChild(li);
+            }
+        }
+
+        (async function () {
+            const id = qs('id');
+            if (!id) {
+                document.getElementById('productLayout').innerHTML = '<p>Proizvod nije pronađen.</p>';
+                return;
+            }
+            try {
+                const db = await loadXlsx();
+                const product = db.PRODUCTS.find(x => String(x.id) === String(id));
+                if (!product) {
+                    document.getElementById('productLayout').innerHTML = '<p>Proizvod nije pronađen ili je uklonjen iz ponude.</p>';
+                    return;
+                }
+                const dims = db.DIMENSIONS.filter(d => String(d.product_id || d.productId) === String(id));
+                const imgs = db.IMAGES.filter(i => String(i.product_id || i.productId) === String(id));
+                const refs = db.REFERENCES.filter(r => String(r.product_id || r.productId) === String(id));
+                render(product, dims, imgs, refs);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('productLayout').innerHTML = '<p>Došlo je do greške pri učitavanju podataka. Molimo pokušajte ponovo kasnije.</p>';
+            }
+        })();
+    </script>
 </body>
 </html>

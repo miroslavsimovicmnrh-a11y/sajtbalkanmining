@@ -1,535 +1,309 @@
 <!DOCTYPE html>
-
 <html lang="sr">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Detalj vesti — BALKAN MINING</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-    :root { --bg:#f2f3f5; --paper:#ffffff; --ink:#101214; --muted:#6b7280; --line:#e5e7eb; --accent:#3f3f46; --chip:#f4f4f5; --chip-ink:#0f172a; --radius:14px; }
-    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--ink); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vest – Balkan Mining · Mermer Invest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg: #0e141f;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
+        }
 
-    /* NAV clone (logo + burger identical positions) */
-    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
-    .nav-left img { height: 64px; width: auto; display: block; }
-    @media (max-width: 768px) { .nav-left img { height: 50px; } }
-    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
-    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
-    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
-    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
-    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
-    .nav-overlay.open { display: flex; }
-    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
-    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
-    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
-    .nav-links a:hover { opacity: 1; }
-    @media (max-width: 768px) {
-      .nav { left: 16px; right: 16px; top: 18px; }
-      .nav-left { font-size: 10px; letter-spacing: .14em; }
-      .nav-burger, .nav-close { width: 46px; height: 46px; }
-      .nav-links a { font-size: 22px; }
-    }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        main { flex: 1; }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        h1, h2, h3 { margin: 0; line-height: 1.2; }
+        h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 3.5rem); letter-spacing: -0.02em; }
+        h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem); margin-top: 2.2rem; }
+        h3 { font-size: clamp(1.2rem, 2.4vw, 1.6rem); margin-top: 2rem; }
+        p { margin: 0 0 1.4rem; color: var(--muted); }
+        ul { margin: 1rem 0 1.4rem 1.2rem; color: var(--muted); }
+        blockquote { margin: 2rem 0; padding: 1.5rem 2rem; border-left: 4px solid rgba(212,160,23,0.6); background: rgba(148,163,184,0.1); border-radius: var(--radius-md); color: #fff; }
+        .container { width: min(900px, calc(100% - 48px)); margin: 0 auto; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; color: var(--accent-soft); }
+        .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--accent-soft); opacity: 0.8; }
 
-    /* Social icons (same place/size as on index) */
-    .social-icons { 
-    position: sticky; 
-    bottom: 20px; 
-    left: auto;              /* do not rely on left with sticky */
-    margin-left: 20px;       /* keeps constant 20px from left edge */
-    z-index: 100; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-}
-    .social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; }
-    .social-icons a:hover { opacity: 1; }
+        .site-header { position: relative; z-index: 40; }
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
+        .nav-left { display: flex; align-items: center; gap: 16px; }
+        .nav-left a { display: inline-flex; align-items: center; background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 14px; border: 1px solid rgba(148,163,184,0.18); }
+        .nav-left img { height: 58px; width: auto; }
+        .nav-tagline { font-size: 0.72rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+        .nav-right { display: flex; align-items: center; gap: 18px; }
+        .nav-inline { display: none; align-items: center; gap: 22px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; }
+        .nav-inline a { color: var(--muted); padding-bottom: 6px; border-bottom: 2px solid transparent; transition: color .3s ease, border-color .3s ease; }
+        .nav-inline a:hover, .nav-inline a:focus-visible { color: var(--text); border-bottom-color: var(--accent); }
+        .nav-inline .nav-cta { color: var(--accent-soft); }
+        .nav-burger { width: 50px; height: 50px; border-radius: 16px; border: 1px solid rgba(148,163,184,0.22); background: rgba(255,255,255,0.06); display: grid; place-items: center; cursor: pointer; }
+        .nav-burger span { display: block; width: 22px; height: 2px; background: #fff; margin: 3px 0; }
+        .nav-overlay { position: fixed; inset: 0; background: rgba(5,9,18,0.92); display: none; z-index: 60; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .nav-overlay.open { display: flex; }
+        .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border-radius: 18px; border: 1px solid rgba(148,163,184,0.3); background: rgba(255,255,255,0.1); font-size: 28px; color: #fff; cursor: pointer; }
+        .nav-links { display: flex; flex-direction: column; gap: 18px; align-items: center; }
+        .nav-links a { font-size: 2rem; font-weight: 700; letter-spacing: 0.08em; color: #fff; }
+        .nav-links a:hover { color: var(--accent-soft); }
+        @media (min-width:900px){ .nav-inline{display:flex;} .nav-burger{display:none;} }
+        @media (max-width:640px){ .nav{width:calc(100% - 24px); padding:12px 16px;} .nav-left img{height:48px;} .nav-tagline{display:none;} }
 
-    .page { min-height: 100vh; padding-top: 120px; }
-    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 80px; }
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.95rem 1.8rem; border-radius:999px; border:1px solid transparent; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.22em; transition:transform .3s ease, background .3s ease, color .3s ease, box-shadow .3s ease; }
+        .btn:hover,.btn:focus-visible{ transform:translateY(-3px); }
+        .btn-primary{ background:linear-gradient(135deg,#f8e29c,#d4a017); color:#1d1b14; box-shadow:0 18px 32px rgba(212,160,23,0.35); }
+        .btn-light{ background:rgba(255,255,255,0.12); color:var(--text); border:1px solid rgba(255,255,255,0.22); }
+        .btn-ghost{ background:rgba(255,255,255,0.04); color:var(--text); border:1px solid rgba(148,163,184,0.18); }
 
-    .topbar { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 40px; margin-bottom: 18px; }
-    .filters { display: grid; grid-template-columns: 1.4fr .9fr .9fr .9fr auto; gap: 10px; }
-    @media (max-width: 980px){ .filters { display: grid; grid-template-columns: 1.4fr .9fr .9fr .9fr auto; gap: 10px; } }
-    .search input, .filters select, .filters input { width: 100%; padding: 12px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); }
-    .btn-clear { padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
+        .article-page { padding: clamp(6rem, 12vw, 8rem) 0 clamp(4rem, 10vw, 6rem); }
+        .back-link { display:inline-flex; align-items:center; gap:0.6rem; font-size:0.85rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:1.5rem; }
+        .back-link i { color: var(--accent-soft); }
+        .article-header { display:grid; gap:1rem; margin-bottom:2.4rem; }
+        .article-meta { display:flex; gap:0.9rem; flex-wrap:wrap; font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+        .article-hero { border-radius: var(--radius-lg); border:1px solid var(--line); overflow:hidden; box-shadow:var(--shadow-card); margin-bottom:2.4rem; background:rgba(148,163,184,0.12); }
+        .article-hero img { width:100%; height: clamp(320px, 50vw, 520px); object-fit:cover; }
+        .article-body { color: var(--muted); font-size:1.02rem; }
+        .article-body a { color: var(--accent-soft); text-decoration: underline; }
+        .article-gallery { display:grid; gap:1rem; margin: 2.8rem 0; }
+        @media (min-width:640px){ .article-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .article-gallery img { border-radius: var(--radius-md); border:1px solid rgba(148,163,184,0.22); box-shadow: var(--shadow-card); }
+        .article-video { margin: 2.8rem 0; }
+        .article-video iframe { width:100%; aspect-ratio:16/9; border:0; border-radius:var(--radius-lg); box-shadow:var(--shadow-card); }
 
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-    @media (){ .grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-    @media (max-width: 640px){ .grid { grid-template-columns: 1fr; } }
+        .share-card { margin: 2.8rem 0; padding:2rem; border-radius:var(--radius-lg); border:1px solid var(--line); background:rgba(148,163,184,0.12); display:grid; gap:1rem; }
+        .share-buttons { display:flex; flex-wrap:wrap; gap:0.8rem; }
+        .share-buttons a { padding:0.6rem 1.2rem; border-radius:999px; border:1px solid rgba(212,160,23,0.35); background:rgba(212,160,23,0.16); color:var(--accent-soft); font-size:0.75rem; letter-spacing:0.18em; text-transform:uppercase; }
 
-    .card { background: var(--paper); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); display: flex; flex-direction: column; }
-    .card a { color: inherit; text-decoration: none; display: block; }
-    .card .ph { position: relative; height: 220px; background: #d1d5db; }
-    .card .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .card .body { padding: 12px 14px; }
-    .card h3 { margin: 0 0 6px; font-size: 18px; }
-    .card .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { background: var(--chip); color: var(--chip-ink); border-radius: 999px; padding: 6px 10px; font-size: 12px; }
+        .related-section { margin-top:3.6rem; }
+        .related-grid { display:grid; gap:1.6rem; margin-top:1.6rem; }
+        @media (min-width:960px){ .related-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .related-card { background: var(--surface); border-radius: var(--radius-lg); border:1px solid var(--line); box-shadow:var(--shadow-card); overflow:hidden; display:grid; }
+        .related-thumb { position:relative; padding-top:56%; background:rgba(148,163,184,0.12); overflow:hidden; }
+        .related-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .4s ease; }
+        .related-thumb:hover img { transform:scale(1.05); }
+        .related-body { padding:1.6rem; display:grid; gap:0.6rem; }
+        .related-body h3 { font-size:1.1rem; color:#fff; }
+        .related-body span { font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
 
-    .empty { color: var(--muted); margin-top: 20px; }
+        footer { padding:1.8rem; text-align:center; font-size:0.85rem; color:var(--muted); border-top:1px solid rgba(148,163,184,0.12); background:rgba(5,10,18,0.65); }
+        footer a { color: var(--accent-soft); }
 
-    .footer-spacer { height: 60px; } /* to keep content away from fixed icons */
-  
-    /* Dark top band behind logo & hamburger */
-    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: 120px; background: #1c1c1e; z-index: 120; }
-    @media (max-width: 768px){ .nav-band { height: 100px; } }
-    /* lift nav above the band */
-    .nav { z-index: 200; }
+        .social-icons { position:fixed; left:28px; bottom:28px; display:flex; flex-direction:column; gap:12px; z-index:30; }
+        .social-icons a { width:42px; height:42px; border-radius:14px; background:rgba(17,27,42,0.88); border:1px solid rgba(148,163,184,0.18); display:grid; place-items:center; color:var(--muted); transition:transform .3s ease, color .3s ease, border-color .3s ease; }
+        .social-icons a:hover { transform:translateY(-4px); color:var(--accent-soft); border-color:rgba(212,160,23,0.45); }
+        @media (max-width:720px){ .social-icons{left:16px; bottom:18px;} .social-icons a{width:36px; height:36px;} }
 
-  
-    /* Add space below the dark top band */
-    .topbar { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 40px; margin-bottom: 18px; }
-    @media (max-width: 768px){ .topbar { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 40px; margin-bottom: 18px; } }
-
-  
-    /* ===== Footer V9: CTA Bar Minimal ===== */
-    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:40px; border-top:1px solid #1f2937; }
-    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
-    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    .cta h3 { margin:0; color:#f9fafb; }
-    .cta p { margin:0; color:#9ca3af; }
-    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
-    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
-    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px;  grid-template-columns:1fr 1fr; gap:28px; }
-    .links { display:flex; gap:18px; flex-wrap:wrap; }
-    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
-    .links a:hover { opacity:1; text-decoration:underline; }
-    .bottom { border-top:1px solid #1f2937; }
-    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
-    @media(max-width:800px){ .wrap{ grid-template-columns:1fr; } }
-
-  
-    /* === CHAT WIDGET (copied from homepage) === */
-    .chat-widget {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        height: 400px;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-        flex-direction: column;
-    }
-    .chat-header {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        text-align: center;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .chat-header button {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 10px;
-    }
-    .chat-body {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .chat-input {
-        display: flex;
-        padding: 10px;
-        border-top: 1px solid #ccc;
-    }
-    .chat-input input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 5px;
-    }
-    .chat-input button {
-        padding: 8px 12px;
-        background-color: #d4a017;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .message { margin-bottom: 0; }
-    .message.user { text-align: right; display:flex; justify-content:flex-end; }
-    .message.bot { text-align: left; display:flex; justify-content:flex-start; }
-    .message .bubble {
-        padding: 10px 14px;
-        border-radius: 16px;
-        max-width: 80%;
-        line-height: 1.35;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    }
-    .message.user .bubble { background: #f0f0f0; color: #111; }
-    .message.bot .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
-    @media (max-width: 768px) {
-        .chat-widget { width: 250px; height: 300px; }
-    }
-    
-  </style>
-
-<style id="thumbs-scroll-gallery">
-/* Hide old bottom gallery */
-#gallery { display: none !important; }
-/* New horizontal thumbs under hero */
-.gallery-window{ margin-top:18px; margin-bottom:18px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; padding:10px 16px; }
-.gallery-window .thumbs-strip{ display:flex; gap:12px; flex-wrap:nowrap; padding:2px 0; }
-.gallery-window .thumbs-strip img{ width:120px; height:80px; object-fit:cover; border-radius:10px; border:1px solid #e5e7eb; cursor:pointer; flex:0 0 auto; transition:transform .15s ease; }
-.gallery-window .thumbs-strip img:hover{ transform:scale(1.03); }
-.gallery-window .thumbs-strip img.is-active{ outline:2px solid #111827; box-shadow:0 2px 10px rgba(0,0,0,.08); }
-@media (max-width:640px){
-  .gallery-window .thumbs-strip img{ width:28vw; height:19vw; }
-}
-</style>
-
+        .chat-widget { position:fixed; bottom:24px; right:24px; width:320px; height:430px; background:rgba(11,18,29,0.94); border-radius:24px; border:1px solid rgba(148,163,184,0.22); box-shadow:var(--shadow-lg); display:none; flex-direction:column; overflow:hidden; backdrop-filter:blur(18px); z-index:80; }
+        .chat-header { padding:1rem 1.4rem; display:flex; align-items:center; justify-content:space-between; background:rgba(17,27,42,0.88); color:#fff; font-weight:600; }
+        .chat-header button { background:rgba(255,255,255,0.08); border:1px solid rgba(148,163,184,0.18); border-radius:999px; width:34px; height:34px; color:#fff; cursor:pointer; }
+        .chat-body { flex:1; padding:1.1rem; display:flex; flex-direction:column; gap:0.8rem; overflow-y:auto; }
+        .message { display:flex; }
+        .message .bubble { padding:0.85rem 1.1rem; border-radius:18px; border:1px solid rgba(148,163,184,0.2); background:rgba(255,255,255,0.06); color:var(--text); font-size:0.88rem; line-height:1.4; max-width:80%; }
+        .message.user { justify-content:flex-end; }
+        .message.user .bubble { background:rgba(212,160,23,0.2); color:var(--accent-soft); border-color:rgba(212,160,23,0.35); }
+        .chat-input { padding:1rem; display:flex; gap:0.6rem; border-top:1px solid rgba(148,163,184,0.18); background:rgba(11,18,29,0.88); }
+        .chat-input input { flex:1; padding:0.75rem 1rem; border-radius:14px; border:1px solid rgba(148,163,184,0.26); background:rgba(4,9,18,0.4); color:#fff; }
+        .chat-input button { padding:0.75rem 1.4rem; border-radius:14px; border:none; font-weight:600; background:linear-gradient(135deg,#f8e29c,#d4a017); color:#1d1b14; cursor:pointer; }
+        @media (max-width:520px){ .chat-widget{width:calc(100% - 32px); right:16px; bottom:16px;} }
+    </style>
 </head>
-<!-- Blog/Post specific assets -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-      :root { --container: 1200px; }
-      body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-      .container { max-width: var(--container); margin: 0 auto; padding: 0 16px; }
-      .page-title { font-size: 32px; font-weight: 700; margin: 24px 0; }
-      .toolbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
-      .toolbar input, .toolbar select { padding:10px 12px; border:1px solid #ddd; border-radius:10px; }
-      .grid { display:grid; grid-template-columns: 1fr; gap: 16px; }
-      @media (min-width: 900px) { .grid { grid-template-columns: 2fr 1fr; gap: 24px; } }
-      .card { display:flex; gap:16px; padding:16px; border:1px solid #eee; border-radius:16px; background:#fff; transition: box-shadow .2s; }
-      .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-      .thumb { width: 220px; height: 140px; border-radius:12px; object-fit: cover; background:#f4f4f4; flex: 0 0 220px; }
-      .meta { display:flex; gap:10px; color:#666; font-size: 12px; margin: 6px 0; flex-wrap: wrap; }
-      .tag { background:#f2f6ff; color:#2b5cff; padding:4px 8px; border-radius:999px; font-size:11px; }
-      .sidebar .widget { border:1px solid #eee; border-radius:16px; padding:16px; background:#fff; }
-      .sidebar h3 { font-size:16px; margin:0 0 12px; }
-      .pagination { display:flex; gap:8px; justify-content:center; margin: 24px 0 48px; }
-      .pagination button { padding:10px 14px; border:1px solid #ddd; background:#fff; border-radius:10px; cursor:pointer; }
-      .article { max-width: 900px; margin: 0 auto; }
-      .article h1 { font-size:40px; margin: 12px 0 8px; line-height:1.1; }
-      .article .lead { color:#555; font-size:18px; }
-      .article .byline { color:#666; font-size: 14px; margin: 12px 0 16px; }
-      .article .hero { width:100%; border-radius:16px; aspect-ratio:16/9; object-fit:cover; background:#f5f5f5; }
-      .article .content { font-size:18px; line-height:1.7; margin-top: 20px; }
-      .gallery { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin: 20px 0; }
-      .gallery img { width:100%; border-radius:12px; aspect-ratio:4/3; object-fit:cover; }
-      .video { margin: 20px 0; aspect-ratio:16/9; width:100%; border:0; border-radius:16px; }
-      .breadcrumbs { font-size:13px; color:#666; margin: 16px 0; }
-      a {text-decoration: none; color: inherit;}
-      .title-link:hover {text-decoration: underline;}
-    
-/* === Breadcrumbs odmah ispod headera & sadržaj bliže gore === */
-main { 
-  padding-top: 120px !important; /* smanjeno da ne ostavlja prazan prostor */
-}
-.breadcrumbs {
-  margin-top: 12px !important; /* breadcrumbs odmah ispod headera */
-}
-.article {
-  margin-top: 0 !important; /* uklanja dodatni razmak iznad sadržaja */
-}
-</style>
-<body><div class="nav-band"></div><div class="nav">
-<div class="nav-left"><a href="https://ibb.co/QGRBCQd"><img alt="Logo" border="0" src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png"/></a></div>
-<button aria-label="Open menu" class="nav-burger" id="navBurger">
-<span></span><span></span><span></span>
-</button>
-</div><div class="nav-overlay" id="navOverlay">
-<button aria-label="Close menu" class="nav-close" id="navClose">×</button>
-<nav class="nav-links">
-<a href="index.html">Početna</a>
-<a href="about.html">O nama</a>
-<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-<a href="contact.html">Kontakt</a>
-</nav>
-</div>
-
-<main>
-<section class="container article">
-<nav class="breadcrumbs"><a href="blog.html">Vesti</a> / <span id="bcTitle">Detalj</span></nav>
-<article>
-<h1 id="title">Naslov</h1>
-<p class="lead" id="subtitle"></p>
-<div class="byline"><span id="date"></span> • <span id="author"></span> • <span id="tags"></span></div>
-<img alt="" class="hero" id="hero"/>
-<div class="gallery-window"><div id="thumbs" class="thumbs-strip"></div></div>
-
-<div id="videoWrap"></div>
-<div class="content" id="content"></div>
-<div class="gallery" id="gallery"></div>
-</article>
-</section>
-<script>
-const EXCEL_FILE = 'news.xlsx';
-function qs(k){ return new URLSearchParams(location.search).get(k); }
-function fmtDate(d){ try{const x=new Date(d); return x.toLocaleDateString('sr-RS', {day:'2-digit', month:'2-digit', year:'numeric'});}catch{return d;} }
-async function load(){
-  const slug = qs('slug');
-  const res = await fetch(EXCEL_FILE);
-  const buf = await res.arrayBuffer();
-  const wb = XLSX.read(buf, {type:'array'});
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
-  let post = rows.find(r => (r.slug||'').toString() === slug);
-  if(!post){ post = rows.find(r => (r.id+'') === slug) || rows[0]; }
-  document.title = post.title + " — BALKAN MINING";
-  document.getElementById('bcTitle').textContent = post.title;
-  document.getElementById('title').textContent = post.title;
-  document.getElementById('subtitle').textContent = post.subtitle;
-  document.getElementById('date').textContent = fmtDate(post.date);
-  document.getElementById('author').textContent = post.author || 'BALKAN MINING';
-  document.getElementById('tags').innerHTML = (post.tags||'').split(',').filter(Boolean).map(t=>`<span class="tag">${t.trim()}</span>`).join(' ');
-  const hero = document.getElementById('hero');
-  hero.src = post.hero_image || '';
-  hero.alt = post.title;
-  const vwrap = document.getElementById('videoWrap');
-  if(post.video_url){
-     if(/youtube|vimeo/.test(post.video_url)){
-       vwrap.innerHTML = `<iframe class="video" src="${post.video_url}" allowfullscreen></iframe>`;
-     } else if(/\.mp4(\?|$)/.test(post.video_url)){
-       vwrap.innerHTML = `<video class="video" controls src="${post.video_url}"></video>`;
-     }
-  }
-  const content = document.getElementById('content');
-  content.innerHTML = post.body_html || post.summary || '';
-
-const thumbs = document.getElementById('thumbs');
-thumbs.innerHTML = '';
-const arr = (post.gallery||'').split(';').map(s=>s.trim()).filter(Boolean);
-arr.forEach((src) => {
-  const t = document.createElement('img');
-  t.src = src; t.alt = post.title||'';
-  t.addEventListener('click', () => {
-    const heroEl = document.getElementById('hero');
-    heroEl.src = src;
-    thumbs.querySelectorAll('img').forEach(i=>i.classList.remove('is-active'));
-    t.classList.add('is-active');
-  });
-  thumbs.appendChild(t);
-});
-// init hero if empty
-const heroElInit = document.getElementById('hero');
-if(!heroElInit.src && arr.length){ heroElInit.src = arr[0]; }
-// mark active thumb for current hero
-Array.from(thumbs.querySelectorAll('img')).forEach(i=>{ if(i.src===heroElInit.src){ i.classList.add('is-active'); } });
-
-  const gal = document.getElementById('gallery');
-  (post.gallery||'').split(';').map(s=>s.trim()).filter(Boolean).forEach(src=>{
-    const img = document.createElement('img');
-    img.src = src; img.alt = post.title;
-    gal.appendChild(img);
-  });
-}
-load();
-</script>
-</main>
-<script>// Hamburger behavior (same as on index)
-    const navBurger = document.getElementById('navBurger');
-    const navOverlay = document.getElementById('navOverlay');
-    const navClose  = document.getElementById('navClose');
-    if (navBurger && navOverlay && navClose) {
-      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
-      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
-      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
-    }
-
-    // Data loading from Excel
-    async function loadXlsx() {
-      const res = await fetch('catalog.xlsx');
-      if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, { type: 'array' });
-      return {
-        PRODUCTS: XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''}),
-        DIMENSIONS: XLSX.utils.sheet_to_json(wb.Sheets['Dimensions'] || {}, {defval: ''}),
-        IMAGES: XLSX.utils.sheet_to_json(wb.Sheets['Images'] || {}, {defval: ''}),
-      };
-    }
-
-    function minPrice(dims){
-      const arr = dims.map(d => Number(d.price_eur || d.price || NaN)).filter(n => isFinite(n));
-      return arr.length ? Math.min(...arr) : null;
-    }
-
-    function unique(arr) { return [...new Set(arr.filter(Boolean))]; }
-
-    function card(p, price, img){
-      const url = 'product.html?id=' + encodeURIComponent(p.id);
-      return `<div class="card">
-        <a href="${url}">
-          <div class="ph">${img ? `<img src="${img}" alt="${p.name||''}" />` : ''}</div>
-        </a>
-        <div class="body">
-          <a href="${url}"><h3>${p.name||''}</h3></a>
-          <div class="meta">Boja: ${p.color||'-'} · Obrade: ${p.finishes||'-'}</div>
-          <div class="chips">
-            <span class="chip">${price!=null ? ('Od ' + price + '€') : 'Cena na upit'}</span>
-          </div>
+<body>
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo"></a>
+                <span class="nav-tagline">Mermer Invest</span>
+            </div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni"><span></span><span></span><span></span></button>
+            </div>
         </div>
-      </div>`;
-    }
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
+    </div>
 
-    (async function(){
-      const db = await loadXlsx();
+    <main>
+        <article class="article-page" id="article">
+            <div class="container">
+                <a href="blog.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Nazad na vesti</a>
+                <header class="article-header">
+                    <span class="eyebrow" id="articleTagline">Saopštenje</span>
+                    <h1 id="articleTitle">Učitavanje...</h1>
+                    <p id="articleLead">Vest se učitava. Molimo sačekajte trenutak.</p>
+                    <div class="article-meta">
+                        <span id="articleDate">—</span>
+                        <span id="articleAuthor">Balkan Mining</span>
+                        <span id="articleTags"></span>
+                    </div>
+                </header>
+                <figure class="article-hero" id="articleHeroWrapper" style="display:none;">
+                    <img id="articleHero" alt="Hero vizual vesti">
+                </figure>
+                <div class="article-body" id="articleContent">
+                    <p>Članak nije učitan.</p>
+                </div>
+                <div class="article-gallery" id="articleGallery" style="display:none;"></div>
+                <div class="article-video" id="articleVideo" style="display:none;"></div>
+                <div class="share-card">
+                    <h3>Podelite vest</h3>
+                    <div class="share-buttons">
+                        <a href="#" id="shareLinkedIn" target="_blank" rel="noopener">LinkedIn</a>
+                        <a href="#" id="shareFacebook" target="_blank" rel="noopener">Facebook</a>
+                        <a href="#" id="shareMail">Email</a>
+                    </div>
+                </div>
+                <section class="related-section">
+                    <h2>Još iz naše arhive</h2>
+                    <div class="related-grid" id="relatedPosts"></div>
+                </section>
+            </div>
+        </article>
+    </main>
 
-      // Build fast lookups
-      const imagesByProduct = {};
-      db.IMAGES.forEach(i => {
-        const k = String(i.product_id || i.productId || '');
-        if (!imagesByProduct[k]) imagesByProduct[k] = [];
-        imagesByProduct[k].push(i.image_url);
-      });
-      const dimsByProduct = {};
-      db.DIMENSIONS.forEach(d => {
-        const k = String(d.product_id || d.productId || '');
-        if (!dimsByProduct[k]) dimsByProduct[k] = [];
-        dimsByProduct[k].push(d);
-      });
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>
+    </footer>
 
-      // Populate color/finish filters
-      const colors = unique(db.PRODUCTS.map(p=>p.color));
-      const finishes = unique(db.PRODUCTS.flatMap(p => (String(p.finishes||'').split(',').map(s=>s.trim()).filter(Boolean))));
-      const fColor = document.getElementById('fColor');
-      colors.forEach(c => fColor.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`));
-      const fFinish = document.getElementById('fFinish');
-      finishes.forEach(f => fFinish.insertAdjacentHTML('beforeend', `<option value="${f}">${f}</option>`));
+    <div class="social-icons" aria-label="Društvene mreže">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
 
-      const grid = document.getElementById('grid');
-      const empty = document.getElementById('empty');
-      const q = document.getElementById('q');
-      const fMin = document.getElementById('fMin');
-      const fMax = document.getElementById('fMax');
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">Chat sa Grok-om
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Postavi pitanje...">
+            <button onclick="sendMessage()">Pošalji</button>
+        </div>
+    </div>
 
-      function apply(){
-        const qv = (q.value||'').toLowerCase();
-        const cv = fColor.value;
-        const fv = fFinish.value;
-        const minv = Number(fMin.value||NaN);
-        const maxv = Number(fMax.value||NaN);
+    <script>
+        const apiKey = window.GROK_API_KEY || '';
+        const endpoint = 'https://api.x.ai/v1/chat/completions';
+        let chatOpen = false;
+        let isMinimized = false;
 
-        const items = db.PRODUCTS.filter(p => {
-          // search
-          const txt = (p.name + ' ' + p.description + ' ' + p.color + ' ' + p.finishes).toLowerCase();
-          if (qv && !txt.includes(qv)) return false;
-          if (cv && p.color !== cv) return false;
-          if (fv && !String(p.finishes||'').split(',').map(s=>s.trim()).includes(fv)) return false;
-          // price range
-          const mp = minPrice(dimsByProduct[String(p.id)] || []);
-          if (isFinite(minv) && (mp==null || mp < minv)) return false;
-          if (isFinite(maxv) && (mp==null || mp > maxv)) return false;
-          return true;
-        }).map(p => {
-          const pid = String(p.id);
-          const img = (imagesByProduct[pid] && imagesByProduct[pid][0]) || p.base_image || '';
-          const price = minPrice(dimsByProduct[pid] || []);
-          return card(p, price, img);
-        });
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
 
-        grid.innerHTML = items.join('');
-        empty.style.display = items.length ? 'none' : 'block';
-      }
-
-      q.addEventListener('input', apply);
-      fColor.addEventListener('change', apply);
-      fFinish.addEventListener('change', apply);
-      fMin.addEventListener('input', apply);
-      fMax.addEventListener('input', apply);
-      document.getElementById('clear').addEventListener('click', () => {
-        q.value=''; fColor.value=''; fFinish.value=''; fMin.value=''; fMax.value=''; apply();
-      });
-
-      apply();
-    })();</script><footer class="site-footer">
-<div class="cta">
-<div class="inner">
-<div>
-<h3>Spremni za ponudu?</h3>
-<p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
-</div>
-<div class="row"><a class="btn-primary" href="contact.html">Kontakt</a><a class="btn-secondary" download="" href="catalog.xlsx">Preuzmi cenovnik</a><a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a></div>
-</div>
-</div>
-<div class="wrap">
-<div class="links">
-<a href="about.html">O nama</a>
-<a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-<a href="contact.html">Kontakt</a>
-</div>
-<div class="links" style="justify-content:flex-end;">
-<a href="privacy.html">Politika privatnosti</a>
-<a href="terms.html">Uslovi korišćenja</a>
-</div>
-</div>
-<div class="bottom"><div class="inner"><div>© 2025 Plavi tok</div><div></div></div></div>
-</footer><div class="chat-widget" id="chatWidget">
-<div class="chat-header">Chat sa Grok-om
-            <button id="minimizeMaximizeButton" onclick="minimizeMaximizeChatWidget()">-</button>
-<button onclick="closeChatWidget()">X</button>
-</div>
-<div class="chat-body" id="chatBody"></div>
-<div class="chat-input">
-<input id="chatInput" placeholder="Postavi pitanje..." type="text"/>
-<button onclick="sendMessage()">Pošalji</button>
-</div>
-</div><script>/* removed apiKey */
-    const endpoint = 'https://api.x.ai/v1/chat/completions';
-    let chatOpen = false;
-    let isMinimized = false;
-
-    function openChatWidget() {
-        const chatWidget = document.getElementById('chatWidget');
-        chatOpen = !chatOpen;
-        chatWidget.style.display = chatOpen ? 'flex' : 'none';
-        if (chatOpen && isMinimized) {
-            minimizeMaximizeChatWidget();
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => navOverlay.classList.add('open'));
+            navClose.addEventListener('click', () => navOverlay.classList.remove('open'));
+            navOverlay.addEventListener('click', e => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
         }
-    }
-    function closeChatWidget() {
-        document.getElementById('chatWidget').style.display = 'none';
-        chatOpen = false;
-    }
-    function minimizeMaximizeChatWidget() {
-        const chatBody = document.getElementById('chatBody');
-        const chatInput = document.querySelector('.chat-input');
-        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
-        if (!isMinimized) {
-            chatBody.style.display = 'none';
-            chatInput.style.display = 'none';
-            document.getElementById('chatWidget').style.height = '50px';
-            minimizeMaximizeButton.textContent = '+';
-            isMinimized = true;
-        } else {
-            chatBody.style.display = 'block';
-            chatInput.style.display = 'flex';
-            document.getElementById('chatWidget').style.height = '400px';
-            minimizeMaximizeButton.textContent = '-';
-            isMinimized = false;
+
+        function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatOpen = !chatOpen;
+            chatWidget.style.display = chatOpen ? 'flex' : 'none';
+            if (chatOpen && isMinimized) minimizeMaximizeChatWidget();
         }
-    }
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const userMessage = input.value.trim();
-        if (userMessage) {
+
+        function closeChatWidget() {
+            document.getElementById('chatWidget').style.display = 'none';
+            chatOpen = false;
+        }
+
+        function minimizeMaximizeChatWidget() {
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.querySelector('.chat-input');
+            const toggle = document.getElementById('minimizeMaximizeButton');
+            if (!isMinimized) {
+                chatBody.style.display = 'none';
+                chatInput.style.display = 'none';
+                document.getElementById('chatWidget').style.height = '60px';
+                toggle.textContent = '+';
+                isMinimized = true;
+            } else {
+                chatBody.style.display = 'flex';
+                chatInput.style.display = 'flex';
+                document.getElementById('chatWidget').style.height = '430px';
+                toggle.textContent = '-';
+                isMinimized = false;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
             addMessage('user', userMessage);
             input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -557,166 +331,151 @@ load();
                 addMessage('bot', 'Greška u konekciji: ' + error.message);
             }
         }
-    }
-    function addMessage(sender, message) {
-        const chatBody = document.getElementById('chatBody');
-        const wrap = document.createElement('div');
-        wrap.classList.add('message', sender);
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.textContent = message;
-        wrap.appendChild(bubble);
-        chatBody.appendChild(wrap);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }</script>
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
 
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
-
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
-
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
-
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
-
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
-
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
-
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
-
-<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
-<script>
-(function(){
-  try {
-    // Avoid ReferenceError in legacy code
-    if (typeof window.apiKey === 'undefined') {
-      window.apiKey = 'proxied';
-    }
-
-    const ORIG_FETCH = window.fetch.bind(window);
-    window.fetch = async function(input, init){
-      try{
-        const url = (typeof input === 'string') ? input : (input && input.url) || '';
-        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
-        if (!isModelApi) {
-          return ORIG_FETCH(input, init);
+        function addMessage(sender, message) {
+            const chatBody = document.getElementById('chatBody');
+            const wrap = document.createElement('div');
+            wrap.classList.add('message', sender);
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            wrap.appendChild(bubble);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        // Try to extract user's message from the original body if present
-        let userMsg = '';
-        try {
-          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          if (bodyStr) {
-            const payload = JSON.parse(bodyStr);
-            userMsg = payload?.message 
-                   || payload?.prompt 
-                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
-          }
-        } catch(e){ /* ignore parse errors */ }
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 
-        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg || '' })
-        });
-        return resp;
-      }catch(err){
-        // Fallback to original fetch if anything goes wrong
-        return ORIG_FETCH(input, init);
-      }
-    };
-  } catch(e) {
-    console.error('Proxy bootstrap error:', e);
-  }
-})();
-</script>
+    <script>
+        const EXCEL_FILE = 'news.xlsx';
 
+        function getSlug(){
+            const url = new URL(window.location.href);
+            return url.searchParams.get('slug');
+        }
+
+        function fmtDate(d){
+            try {
+                const x = new Date(d);
+                return x.toLocaleDateString('sr-RS', { day:'2-digit', month:'2-digit', year:'numeric' });
+            } catch { return d; }
+        }
+
+        function slugify(s){
+            return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+        }
+
+        async function loadArticle(){
+            const res = await fetch(EXCEL_FILE);
+            if (!res.ok) throw new Error('Ne mogu da učitam news.xlsx');
+            const buf = await res.arrayBuffer();
+            const wb = XLSX.read(buf, { type:'array' });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
+            return rows.map(r => ({
+                id: r.id || '',
+                slug: r.slug || slugify(r.title || r.id || ''),
+                title: r.title || '(bez naslova)',
+                subtitle: r.subtitle || '',
+                author: r.author || 'Balkan Mining',
+                date: r.date || new Date().toISOString(),
+                tags: r.tags || '',
+                hero_image: r.hero_image || '',
+                gallery: r.gallery || '',
+                video_url: r.video_url || '',
+                summary: r.summary || '',
+                body_html: r.body_html || '',
+                views: Number(r.views || 0)
+            }));
+        }
+
+        function renderArticle(article, all){
+            document.title = `${article.title} – Balkan Mining · Mermer Invest`;
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleLead').textContent = article.summary || article.subtitle || 'Vest iz naše arhive.';
+            document.getElementById('articleDate').textContent = fmtDate(article.date);
+            document.getElementById('articleAuthor').textContent = article.author || 'Balkan Mining';
+            const tags = (article.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+            document.getElementById('articleTags').textContent = tags.length ? tags.join(' • ') : 'Bez tagova';
+            document.getElementById('articleTagline').textContent = tags[0] || 'Saopštenje';
+
+            const heroWrapper = document.getElementById('articleHeroWrapper');
+            if (article.hero_image) {
+                heroWrapper.style.display = 'block';
+                document.getElementById('articleHero').src = article.hero_image;
+                document.getElementById('articleHero').alt = article.title;
+            }
+
+            const content = document.getElementById('articleContent');
+            content.innerHTML = article.body_html || '<p>Tekst će uskoro biti dostupan.</p>';
+
+            const galleryContainer = document.getElementById('articleGallery');
+            const gallery = (article.gallery || '').split(',').map(u => u.trim()).filter(Boolean);
+            if (gallery.length) {
+                galleryContainer.style.display = 'grid';
+                gallery.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.alt = article.title;
+                    galleryContainer.appendChild(img);
+                });
+            }
+
+            const videoContainer = document.getElementById('articleVideo');
+            if (article.video_url) {
+                videoContainer.style.display = 'block';
+                videoContainer.innerHTML = `<iframe src="${article.video_url}" title="Video" allowfullscreen loading="lazy"></iframe>`;
+            }
+
+            const currentUrl = window.location.href;
+            document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(currentUrl)}&title=${encodeURIComponent(article.title)}`;
+            document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+            document.getElementById('shareMail').href = `mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(currentUrl)}`;
+
+            const related = document.getElementById('relatedPosts');
+            related.innerHTML = '';
+            const relatedItems = all.filter(it => it.slug !== article.slug).filter(it => {
+                if (!tags.length) return true;
+                const itemTags = (it.tags || '').split(',').map(t => t.trim());
+                return itemTags.some(t => tags.includes(t));
+            }).slice(0,3);
+            relatedItems.forEach(item => {
+                const card = document.createElement('article');
+                card.className = 'related-card';
+                card.innerHTML = `
+                    <a class="related-thumb" href="post.html?slug=${encodeURIComponent(item.slug)}">
+                        ${item.hero_image ? `<img src="${item.hero_image}" alt="${item.title}">` : ''}
+                    </a>
+                    <div class="related-body">
+                        <span>${fmtDate(item.date)}</span>
+                        <h3><a href="post.html?slug=${encodeURIComponent(item.slug)}">${item.title}</a></h3>
+                    </div>
+                `;
+                related.appendChild(card);
+            });
+        }
+
+        (async function(){
+            const slug = getSlug();
+            const container = document.getElementById('article');
+            if (!slug) {
+                container.innerHTML = '<div class="container"><p>Vest nije pronađena.</p></div>';
+                return;
+            }
+            try {
+                const all = await loadArticle();
+                const article = all.find(a => a.slug === slug);
+                if (!article) {
+                    container.innerHTML = '<div class="container"><p>Vest nije pronađena ili je uklonjena.</p></div>';
+                    return;
+                }
+                renderArticle(article, all);
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="container"><p>Došlo je do greške pri učitavanju vesti. Pokušajte ponovo.</p></div>';
+            }
+        })();
+    </script>
 </body>
 </html>

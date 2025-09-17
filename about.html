@@ -1,787 +1,1127 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>O nama – Plavi tok</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    :root { 
-      --bg:#ffffff; 
-      --ink:#0f1115; 
-      --muted:#4b5563; 
-      --line:#e5e7eb; 
-      --accent:#d4af37;
-      --nav-h:120px;
-    }
-    * { box-sizing: border-box; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--ink); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O nama – Balkan Mining · Mermer Invest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0e141f;
+            --bg-soft: #111b2a;
+            --surface: rgba(14, 22, 35, 0.86);
+            --surface-strong: rgba(18, 28, 41, 0.94);
+            --surface-light: rgba(148, 163, 184, 0.12);
+            --text: #f8fafc;
+            --muted: #9aa5b5;
+            --accent: #d4a017;
+            --accent-soft: #f1c96b;
+            --line: rgba(148, 163, 184, 0.18);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 32px 90px rgba(4, 9, 20, 0.55);
+            --shadow-card: 0 18px 40px rgba(6, 11, 22, 0.45);
+            --font-sans: 'Montserrat', 'Inter', sans-serif;
+            --font-display: 'Playfair Display', 'Times New Roman', serif;
+        }
 
-    /* ===== NAV (kao na katalogu) ===== */
-    .nav-left a { display: inline-block; background: #ffffff; padding: 6px 10px; border-radius: 10px; }
-    .nav-left img { height: 64px; width: auto; display: block; }
-    @media (max-width: 768px) { .nav-left img { height: 50px; } }
-    .nav { position: fixed; top: 28px; left: 40px; right: 40px; z-index: 200; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
-    .nav-left { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; opacity: .9; pointer-events: auto; user-select: none; }
-    .nav-burger { width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); display: grid; place-items: center; cursor: pointer; pointer-events: auto; }
-    .nav-burger span { display: block; width: 22px; height: 2px; background: #111; margin: 3px 0; transition: transform .25s ease, opacity .25s ease; }
-    .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; z-index: 300; }
-    .nav-overlay.open { display: flex; }
-    .nav-close { position: absolute; top: 28px; right: 40px; width: 54px; height: 54px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.96); font-size: 28px; line-height: 1; cursor: pointer; }
-    .nav-links { margin: auto; display: flex; flex-direction: column; gap: 18px; align-items: center; }
-    .nav-links a { color: #fff; text-decoration: none; font-size: 28px; font-weight: 700; letter-spacing: .02em; opacity: .95; }
-    .nav-links a:hover { opacity: 1; }
-    @media (max-width: 768px) {
-      .nav { left: 16px; right: 16px; top: 18px; }
-      .nav-left { font-size: 10px; letter-spacing: .14em; }
-      .nav-burger, .nav-close { width: 46px; height: 46px; }
-      .nav-links a { font-size: 22px; }
-    }
-    .nav-band { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: #0b0d12; z-index: 120; }
-    @media (max-width: 768px){ :root{ --nav-h:100px; } }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-    /* Social icons */
-    .social-icons { position: sticky; bottom: 20px; left: auto; margin-left: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
-    .social-icons a { color: #1c1c1e; font-size: 1.7rem; opacity: 0.9; transition: opacity 0.3s; }
-    .social-icons a:hover { opacity: 1; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .page { min-height: 100vh; padding-top: var(--nav-h); }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top, rgba(28, 46, 70, 0.35), transparent 60%), var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-    /* ===== HERO edge-to-edge ===== */
-    .hero-bleed { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);  margin-top: calc(var(--nav-h) * -1); }
-    .hero-bleed img { width: 100%; height: min(72vh, 880px); object-fit: cover; display: block; filter: saturate(1.05) contrast(1.03); }
-    .hero-shadow { height: 24px; background: linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+        main {
+            flex: 1;
+        }
 
-    /* ===== CONTENT GRID: head spans, then text + stats aligned ===== */
-    .wrap { max-width: 1280px; margin: 0 auto; padding: 40px 24px 120px; }
-    .content-grid{
-      display: grid;
-      grid-template-columns: minmax(0,1fr) 320px;
-      grid-template-areas:
-        "head head"
-        "copy stats";
-      column-gap: 36px;
-      row-gap: 16px;
-      align-items: start;
-    }
-    @media (max-width: 1100px){
-      .content-grid{ grid-template-columns: 1fr; grid-template-areas: "head" "copy" "stats"; }
-    }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
-    .about-head { grid-area: head; }
-    .copy { grid-area: copy; }
-    .stats-rail { grid-area: stats; position: relative; display: flex; flex-direction: column; gap: 12px; align-self: start; }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-    /* H1 exactly like index: 3rem, 800, 1.05 */
-    .about-head h1 { font-size: 3rem; line-height: 1.05; font-weight: 800; margin: 4px 0 10px;  color:#0f1115; }
-    .gold-rule { width: 120px; height: 2px; background: var(--accent); margin: 12px 0 18px; border-radius: 2px; }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
-    .lead { color: var(--muted); font-size: clamp(16px, 1.25vw, 20px); line-height: 1.8; max-width: 920px; }
+        h1, h2, h3 {
+            margin: 0;
+            line-height: 1.2;
+        }
 
-    .rail-item { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 12px; padding: 12px 16px 12px 12px; border-left: 2px solid var(--accent); background: rgba(12,13,16,0.6); backdrop-filter: blur(6px); border-radius: 14px; box-shadow: 0 2px 14px rgba(0,0,0,.25); }
-    .rail-item i { font-size: 20px; color: var(--accent); }
-    .rail-item .k { font-weight: 800; font-size: 18px; letter-spacing: .02em; color: #f9fafb; }
-    .rail-item .l { color:#f9fafb; font-size: 12px; }
-    @media (max-width: 640px){ .rail-item { grid-template-columns: 28px 1fr; border-radius: 12px; } .rail-item .k { font-size: 16px; } }
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 5vw, 3.8rem);
+            letter-spacing: -0.02em;
+        }
 
-    /* ===== Footer ===== */
-    .site-footer { background:#0b0d12; color:#e5e7eb; margin-top:0; border-top:1px solid #1f2937; }
-    .cta { background:linear-gradient(90deg, #111827, #0b0d12); border-bottom:1px solid #1f2937; }
-    .cta .inner { max-width:1280px; margin:0 auto; padding:28px 20px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-    .cta h3 { margin:0; color:#f9fafb; }
-    .cta p { margin:0; color:#9ca3af; }
-    .cta .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .btn-primary { background:#ffffff; color:#0f1115; border:0; padding:12px 16px; border-radius:10px; font-weight:700; cursor:pointer; text-decoration:none; }
-    .btn-secondary { background:#111827; color:#f9fafb; border:1px solid #1f2937; padding:12px 16px; border-radius:10px; font-weight:700; text-decoration:none; }
-    .site-footer .wrap { max-width:1280px; margin:0 auto; padding:18px 20px;  grid-template-columns:1fr 1fr; gap:28px; }
-    .links { display:flex; gap:18px; flex-wrap:wrap; }
-    .links a { color:#e5e7eb; text-decoration:none; opacity:.92; }
-    .links a:hover { opacity:1; text-decoration:underline; }
-    .bottom { border-top:1px solid #1f2937; }
-    .bottom .inner { max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; color:#9ca3af; font-size:13px; }
-  
-        a, .copy a { color:#111827; }
-        a:hover, .copy a:hover { text-decoration: underline; }
-        
-.rail-item .l{color:#f9fafb;}
+        h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.1rem, 4vw, 3.2rem);
+        }
 
-/* === CHAT WIDGET (from catalog) === */
-.chat-widget {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        height: 400px;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-        flex-direction: column;
-    }
-    .chat-header {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        text-align: center;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .chat-header button {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-left: 10px;
-    }
-    .chat-body {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .chat-input {
-        display: flex;
-        padding: 10px;
-        border-top: 1px solid #ccc;
-    }
-    .chat-input input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 5px;
-    }
-    .chat-input button {
-        padding: 8px 12px;
-        background-color: #d4a017;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .message { margin-bottom: 0; }
-    .message.user { text-align: right; display:flex; justify-content:flex-end; }
-    .message.bot { text-align: left; display:flex; justify-content:flex-start; }
-    .message .bubble {
-        padding: 10px 14px;
-        border-radius: 16px;
-        max-width: 80%;
-        line-height: 1.35;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    }
-    .message.user .bubble { background: #f0f0f0; color: #111; }
-    .message.bot .bubble { background: #fff; color: #111; border: 1px solid rgba(0,0,0,0.08); }
-    @media (max-width: 768px) {
-        .chat-widget { width: 250px; height: 300px; }
-    }
+        h3 {
+            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+            font-weight: 700;
+        }
 
-    /* Placeholder hero when no image */
-    .hero-bleed.is-empty{ background:#f3f4f6; height: min(72vh, 880px); }
-    .hero-bleed.is-empty .hero-shadow{ display:block; }
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
 
-/* Extra space below each quarry section */
-.hero-bleed + .wrap { margin-bottom: 172px; }
-@media (max-width: 768px){
-  /* Make full image visible on mobile and keep hero equal to image height */
-  .hero-bleed img { height: auto; max-height: 100vh; width: 100%; object-fit: contain; }
-  .hero-bleed.is-empty{ height: min(60vh, 600px); } /* keep placeholder reasonable on mobile */
-  .hero-shadow { display: none; } /* section height = image height */
-}
-@media (max-width: 768px){
-  /* Ensure first hero starts exactly below header on mobile */
-  .hero-bleed:first-of-type { margin-top: 0; }
-  /* Keep smaller titles on mobile */
-  .about-head h1 { font-size: 2rem; line-height: 1.12; }
-}
-  /* Make section titles a bit smaller on mobile */
-  .about-head h1 { font-size: 2rem; line-height: 1.12; }
-}
-</style>
+        .container {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+        }
 
-        
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--accent-soft);
+            opacity: 0.8;
+        }
+
+        /* === Navigacija === */
+        .site-header {
+            position: relative;
+            z-index: 40;
+        }
+
+        .nav {
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1120px, calc(100% - 32px));
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(140deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-left a {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .nav-left img {
+            height: 58px;
+            width: auto;
+        }
+
+        .nav-tagline {
+            font-size: 0.72rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-inline {
+            display: none;
+            align-items: center;
+            gap: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        .nav-inline a {
+            color: var(--muted);
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-inline a:hover,
+        .nav-inline a:focus-visible {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-inline .nav-cta {
+            color: var(--accent-soft);
+        }
+
+        .nav-burger {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
+
+        .nav-burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 9, 18, 0.92);
+            display: none;
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-overlay.open {
+            display: flex;
+        }
+
+        .nav-close {
+            position: absolute;
+            top: 28px;
+            right: 40px;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #fff;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-soft);
+        }
+
+        @media (min-width: 900px) {
+            .nav-inline {
+                display: flex;
+            }
+            .nav-burger {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav {
+                width: calc(100% - 24px);
+                padding: 12px 16px;
+            }
+            .nav-left img {
+                height: 48px;
+            }
+            .nav-tagline {
+                display: none;
+            }
+        }
+
+        /* === Dugmad === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.95rem 1.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            box-shadow: 0 18px 32px rgba(212, 160, 23, 0.35);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            box-shadow: 0 26px 46px rgba(212, 160, 23, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.36);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus-visible {
+            background: rgba(212, 160, 23, 0.12);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            border-color: rgba(148, 163, 184, 0.18);
+        }
+
+        .btn-ghost:hover,
+        .btn-ghost:focus-visible {
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .btn-light {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text);
+            border-color: rgba(255, 255, 255, 0.22);
+        }
+
+        .btn-light:hover,
+        .btn-light:focus-visible {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn + .btn {
+            margin-left: 0.5rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        /* === Struktura sekcija === */
+        .section {
+            padding: clamp(4rem, 10vw, 6.5rem) 0;
+        }
+
+        .section-heading {
+            max-width: 720px;
+            margin: 0 auto 3.2rem;
+            text-align: center;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .glass-grid {
+            display: grid;
+            gap: 1.8rem;
+        }
+
+        @media (min-width: 860px) {
+            .glass-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .glass-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 2.2rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .glass-card i {
+            font-size: 1.8rem;
+            color: var(--accent-soft);
+        }
+
+        .stat-grid {
+            display: grid;
+            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 1.8rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .stat-card span {
+            font-size: 0.75rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .stat-card strong {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+
+        .stat-card p {
+            color: var(--muted);
+        }
+
+        /* === Hero === */
+        .page-hero {
+            padding: clamp(6rem, 12vw, 8rem) 0 clamp(3rem, 8vw, 5rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(212, 160, 23, 0.18), transparent 55%);
+            pointer-events: none;
+        }
+
+        .page-hero > .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (min-width: 960px) {
+            .hero-grid {
+                grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+            }
+        }
+
+        .hero-intro {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .hero-note {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1rem 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: rgba(148, 163, 184, 0.08);
+            color: var(--muted);
+        }
+
+        .hero-note i {
+            color: var(--accent-soft);
+        }
+
+        .hero-stats {
+            display: grid;
+            gap: 1rem;
+        }
+
+        /* === Vrednosti === */
+        .value-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            background: rgba(212, 160, 23, 0.16);
+            color: var(--accent-soft);
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+        }
+
+        .value-list {
+            display: grid;
+            gap: 1.1rem;
+        }
+
+        .value-list li {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            color: var(--muted);
+        }
+
+        .value-list i {
+            color: var(--accent-soft);
+        }
+
+        /* === Hronologija === */
+        .timeline {
+            position: relative;
+            margin-top: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 18px;
+            width: 2px;
+            background: rgba(148, 163, 184, 0.24);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 72px;
+            margin-bottom: 2.4rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: var(--surface-light);
+            border: 1px solid var(--line);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: var(--accent-soft);
+        }
+
+        .timeline-item h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            color: var(--muted);
+        }
+
+        /* === Tim i infrastruktura === */
+        .split-layout {
+            display: grid;
+            gap: 2.4rem;
+        }
+
+        @media (min-width: 960px) {
+            .split-layout {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .split-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
+            display: grid;
+            gap: 1.4rem;
+        }
+
+        .profile-list {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .profile-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(212, 160, 23, 0.16);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: var(--accent-soft);
+        }
+
+        .profile-item strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .badge {
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.12);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .media-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            padding: 1.6rem;
+            box-shadow: var(--shadow-card);
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .media-card ul {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .media-card li {
+            display: flex;
+            gap: 0.9rem;
+            align-items: center;
+            color: var(--muted);
+        }
+
+        .media-card i {
+            color: var(--accent-soft);
+        }
+
+        /* === CTA === */
+        .cta-section {
+            padding: clamp(4rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 5rem);
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(17, 27, 42, 0.92), rgba(12, 19, 30, 0.78));
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: var(--shadow-lg);
+            padding: clamp(2.4rem, 6vw, 3.4rem);
+            display: grid;
+            gap: 1.6rem;
+        }
+
+        @media (min-width: 860px) {
+            .cta-card {
+                grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+                align-items: center;
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        /* === Footer === */
+        footer {
+            padding: 1.8rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(5, 10, 18, 0.65);
+        }
+
+        footer a {
+            color: var(--accent-soft);
+        }
+
+        /* === Social icons === */
+        .social-icons {
+            position: fixed;
+            left: 28px;
+            bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 30;
+        }
+
+        .social-icons a {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: rgba(17, 27, 42, 0.88);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-4px);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.45);
+        }
+
+        @media (max-width: 720px) {
+            .social-icons {
+                left: 16px;
+                bottom: 18px;
+            }
+            .social-icons a {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        /* === Chat widget === */
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 320px;
+            height: 430px;
+            background: rgba(11, 18, 29, 0.94);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            z-index: 80;
+        }
+
+        .chat-header {
+            padding: 1rem 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(17, 27, 42, 0.88);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .chat-header button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 999px;
+            width: 34px;
+            height: 34px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+        }
+
+        .message .bubble {
+            padding: 0.85rem 1.1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            font-size: 0.88rem;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .bubble {
+            background: rgba(212, 160, 23, 0.2);
+            color: var(--accent-soft);
+            border-color: rgba(212, 160, 23, 0.35);
+        }
+
+        .chat-input {
+            padding: 1rem;
+            display: flex;
+            gap: 0.6rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(11, 18, 29, 0.88);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(4, 9, 18, 0.4);
+            color: #fff;
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.4rem;
+            border-radius: 14px;
+            border: none;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f8e29c, #d4a017);
+            color: #1d1b14;
+            cursor: pointer;
+        }
+
+        @media (max-width: 520px) {
+            .chat-widget {
+                width: calc(100% - 32px);
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+
+        @media (max-width: 960px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .cta-buttons {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .badge-row {
+                gap: 0.4rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="nav-band"></div>
-  <!-- NAV + Overlay -->
-  <div class="nav">
-    <div class="nav-left">
-      <a href="https://ibb.co/QGRBCQd"><img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Logo" border="0"></a>
-    </div>
-    <button class="nav-burger" id="navBurger" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="nav-overlay" id="navOverlay">
-    <button class="nav-close" id="navClose" aria-label="Close menu">×</button>
-    <nav class="nav-links">
-      <a href="index.html">Početna</a>
-      <a href="about.html">O nama</a>
-      <a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-      <a href="contact.html">Kontakt</a>
-    </nav>
-  </div>
-
-  <div class="page">
-    <!-- HERO edge-to-edge -->
-    <figure class="hero-bleed">
-      <img id="heroImg" src="images/o nama/hero 1.png" alt="Trešnjica – Plavi tok, hero slika" />
-      <div class="hero-shadow"></div>
-    </figure>
-
-    <!-- CONTENT GRID -->
-    <div class="wrap">
-      <div class="content-grid">
-        <header class="about-head">
-          <div class="gold-rule"></div>
-          <h1 id="qName">Trešnjica – Plavi tok</h1>
-        </header>
-
-        <div class="copy">
-          <p class="lead" id="qDesc">
-            Kamenolom Trešnjica – Plavi tok obeležava 70 godina tradicije u vađenju i obradi autohtonog srpskog mermera.
-            Ovaj odsek posluje sa savremenom opremom i standardima kvaliteta, uz fokus na stabilne isporuke i preciznu obradu.
-          </p>
+    <header class="site-header">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="https://ibb.co/QGRBCQd" aria-label="Balkan Mining logo">
+                    <img src="https://i.ibb.co/8Vp3dsc/Screenshot-1.png" alt="Balkan Mining logo">
+                </a>
+                <span class="nav-tagline">Mermer Invest</span>
+            </div>
+            <div class="nav-right">
+                <nav class="nav-inline" aria-label="Glavna navigacija">
+                    <a href="index.html">Početna</a>
+                    <a href="about.html">O nama</a>
+                    <a href="catalog.html" class="nav-cta">Katalog</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Kontakt</a>
+                </nav>
+                <button class="nav-burger" id="navBurger" aria-label="Otvori meni">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-
-        
-        <aside class="stats-rail" aria-label="Statistika kamenoloma">
-          <div class="rail-item">
-            <i class="fa-solid fa-mountain"></i>
-            <div>
-              <div class="k" id="stExtraction">5.000 m³</div>
-              <div class="l">Danas stvaramo za vas</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-ruler-combined"></i>
-            <div>
-              <div class="k" id="stSlabs">20.000 m²</div>
-              <div class="l">Isporučujemo kvalitet bez kompromisa</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-award"></i>
-            <div>
-              <div class="k" id="stTradition">70 godina</div>
-              <div class="l">tradicije</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-vector-square"></i>
-            <div>
-              <div class="k" id="stLegacy">1.500.000 m²</div>
-              <div class="l">Sedam decenija stvaranja</div>
-            </div>
-          </div>
-        </aside>
-
-      </div>
-    </div>
-  </div>
-
-
-    <!-- HERO 2 edge-to-edge (placeholder until Excel provides image) -->
-    <figure class="hero-bleed is-empty" id="heroFig2">
-      <img id="heroImg2" src="" alt="" style="display:none" />
-      <div class="hero-shadow"></div>
-    </figure>
-
-    <!-- CONTENT GRID 2 -->
-    <div class="wrap">
-      <div class="content-grid">
-        <header class="about-head">
-          <div class="gold-rule"></div>
-          <h1 id="qName2"></h1>
-        </header>
-
-        <div class="copy">
-          <p class="lead" id="qDesc2"></p>
-        </div>
-
-        <aside class="stats-rail" id="stats2" aria-label="Statistika kamenoloma">
-          <div class="rail-item">
-            <i class="fa-solid fa-mountain"></i>
-            <div>
-              <div class="k" id="stExtraction2"></div>
-              <div class="l">Danas stvaramo za vas</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-ruler-combined"></i>
-            <div>
-              <div class="k" id="stSlabs2"></div>
-              <div class="l">Isporučujemo kvalitet bez kompromisa</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-award"></i>
-            <div>
-              <div class="k" id="stTradition2"></div>
-              <div class="l">tradicije</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-vector-square"></i>
-            <div>
-              <div class="k" id="stLegacy2"></div>
-              <div class="l">Sedam decenija stvaranja</div>
-            </div>
-          </div>
-        </aside>
-      </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Zatvori meni">×</button>
+        <nav class="nav-links" aria-label="Meni">
+            <a href="index.html">Početna</a>
+            <a href="about.html">O nama</a>
+            <a href="catalog.html">Katalog</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Kontakt</a>
+        </nav>
     </div>
 
-
-
-    <!-- HERO 3 edge-to-edge (placeholder until Excel provides image) -->
-    <figure class="hero-bleed is-empty" id="heroFig3">
-      <img id="heroImg3" src="" alt="" style="display:none" />
-      <div class="hero-shadow"></div>
-    </figure>
-
-    <!-- CONTENT GRID 3 -->
-    <div class="wrap">
-      <div class="content-grid">
-        <header class="about-head">
-          <div class="gold-rule"></div>
-          <h1 id="qName3"></h1>
-        </header>
-
-        <div class="copy">
-          <p class="lead" id="qDesc3"></p>
-        </div>
-
-        <aside class="stats-rail" id="stats3" aria-label="Statistika kamenoloma">
-          <div class="rail-item">
-            <i class="fa-solid fa-mountain"></i>
-            <div>
-              <div class="k" id="stExtraction3"></div>
-              <div class="l">Danas stvaramo za vas</div>
+    <main>
+        <section class="page-hero about-hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-intro">
+                        <span class="eyebrow">Naša priča</span>
+                        <h1>Mermer iz srca Srbije, isporučen sa preciznošću svetske klase</h1>
+                        <p>Više od dve decenije gradimo most između plavog toka mermera i najzahtevnijih arhitektonskih projekata. Balkan Mining upravlja celim lancem – od kamenoloma, obrade i digitalne evidencije do logistike koja isporučuje blokove, ploče i elemente tačno prema dinamici gradilišta.</p>
+                        <div class="hero-actions">
+                            <a href="catalog.html" class="btn btn-primary">Pogledaj katalog</a>
+                            <a href="references.html" class="btn btn-outline">Reference</a>
+                            <a href="contact.html" class="btn btn-ghost">Kontakt tim</a>
+                        </div>
+                        <div class="hero-note">
+                            <i class="fa-solid fa-shield-heart"></i>
+                            <p>Sve ploče prolaze kroz 3 faze kontrole kvaliteta, uz digitalni dosije koji obezbeđuje trasiranje svake isporuke.</p>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <article class="stat-card">
+                            <span>Godine iskustva</span>
+                            <strong>24+</strong>
+                            <p>Od prvog isečenog bloka do međunarodnih projekata širom Evrope, Azije i Bliskog istoka.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Projekti godišnje</span>
+                            <strong>80</strong>
+                            <p>Hoteli, javne zgrade, wellness centri i privatne rezidencije koje zahtevaju konzistentnost u tonu i teksturi.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span>Logistička tačnost</span>
+                            <strong>98%</strong>
+                            <p>Isporuke u okvirima ugovorenih rokova zahvaljujući sopstvenim skladištima i partnerima u transportu.</p>
+                        </article>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-ruler-combined"></i>
-            <div>
-              <div class="k" id="stSlabs3"></div>
-              <div class="l">Isporučujemo kvalitet bez kompromisa</div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Vrednosti</span>
+                    <h2>Tri stuba na kojima gradimo poverenje</h2>
+                    <p>Klijenti biraju Balkan Mining jer kombinujemo proizvodnju u Srbiji, digitalnu transparentnost i tim posvećen rezultatima. Svaka ploča ima svoju priču, a naš zadatak je da je ispričamo kroz arhitektonsku viziju.</p>
+                </div>
+                <div class="glass-grid">
+                    <article class="glass-card">
+                        <div class="value-icon"><i class="fa-solid fa-globe"></i></div>
+                        <h3>Kontrolisana eksploatacija</h3>
+                        <p>Kamenolom Plavi tok pruža jedinstvenu plavu tonalnu skalu mermera. Svaki blok označavamo geološkim i vizuelnim parametrima kako bismo održali konzistentnost kroz serije.</p>
+                        <ul class="value-list">
+                            <li><i class="fa-solid fa-circle-check"></i>Geo-referencirani blokovi i ploče</li>
+                            <li><i class="fa-solid fa-circle-check"></i>Održivo upravljanje otpadom i vodom</li>
+                            <li><i class="fa-solid fa-circle-check"></i>Certifikovana eksploatacija i zaštita okoline</li>
+                        </ul>
+                    </article>
+                    <article class="glass-card">
+                        <div class="value-icon"><i class="fa-solid fa-laptop"></i></div>
+                        <h3>Digitalna transparentnost</h3>
+                        <p>3D skeniranje i fotodokumentacija svakog panela omogućavaju arhitektama i izvođačima da planiraju složene enterijere bez iznenađenja na gradilištu.</p>
+                        <ul class="value-list">
+                            <li><i class="fa-solid fa-circle-check"></i>Online pregled raspoloživih ploča u realnom vremenu</li>
+                            <li><i class="fa-solid fa-circle-check"></i>BIM biblioteka sa materijalnim uzorcima</li>
+                            <li><i class="fa-solid fa-circle-check"></i>Automatski izvoz pak lista i sertifikata</li>
+                        </ul>
+                    </article>
+                    <article class="glass-card">
+                        <div class="value-icon"><i class="fa-solid fa-people-group"></i></div>
+                        <h3>Operativna podrška</h3>
+                        <p>Naš tim prati projekat od prve specifikacije do montaže. Radimo rame uz rame sa izvođačima, pružajući logistiku, rezervne količine i onsite koordinaciju.</p>
+                        <ul class="value-list">
+                            <li><i class="fa-solid fa-circle-check"></i>Dedicated project manager za svaku isporuku</li>
+                            <li><i class="fa-solid fa-circle-check"></i>Tehnička podrška za ugradnju i održavanje</li>
+                            <li><i class="fa-solid fa-circle-check"></i>Globalna mreža transportnih partnera</li>
+                        </ul>
+                    </article>
+                </div>
             </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-award"></i>
-            <div>
-              <div class="k" id="stTradition3"></div>
-              <div class="l">tradicije</div>
+        </section>
+
+        <section class="section" id="proces">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Proces</span>
+                    <h2>Kako pretvaramo plavi mermer u prepoznatljive prostore</h2>
+                    <p>Od prvog uzorka do završne pločice, proces je modularan i prilagođen brzini modernog građenja. Transparentnost i agilna logistika omogućavaju arhitektama da upravljaju budžetom i rizicima.</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">01</div>
+                        <h3>Selektovanje i rezervacija blokova</h3>
+                        <p>Investitor dobija kompletan set uzoraka, HD fotografija i 3D scan blokova. Rezervacija se potvrđuje digitalno uz praćenje statusa eksploatacije.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">02</div>
+                        <h3>Precizna obrada i obeležavanje ploča</h3>
+                        <p>Svaka ploča dobija QR kod, podatke o venama i preporučenoj orijentaciji. Na ovaj način izvođač može planirati sečenje prema arhitektonskom planu.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">03</div>
+                        <h3>Pakovanje i kontrola kvaliteta</h3>
+                        <p>Finalni pregled se obavlja zajedno sa klijentom preko live video sesije ili na licu mesta. U pak liste se uključuju rezerve i dodatne ploče za završne radove.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker">04</div>
+                        <h3>Logistika bez zastoja</h3>
+                        <p>Organizujemo transport drumom ili morem, sa praćenjem isporuke i koordinacijom carinskih procedura. Na gradilištu asistira naš nadzorni tim.</p>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-vector-square"></i>
-            <div>
-              <div class="k" id="stLegacy3"></div>
-              <div class="l">Sedam decenija stvaranja</div>
+        </section>
+
+        <section class="section" id="team">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="eyebrow">Tim</span>
+                    <h2>Ljudi i infrastruktura koji garantuju kontinuitet</h2>
+                    <p>Više od 120 stručnjaka pokriva sve faze – od geologije i rudarskih inženjera, preko tehnologa obrade kamena, do logistike i savetnika za projekte.</p>
+                </div>
+                <div class="split-layout">
+                    <div class="split-card">
+                        <h3>Upoznajte ključne ljude</h3>
+                        <div class="profile-list">
+                            <div class="profile-item">
+                                <div class="profile-avatar">AP</div>
+                                <div>
+                                    <strong>Aleksandar Petrović</strong>
+                                    <p>Osnivač i direktor kompanije. Zadužen za strateška partnerstva, razvoj novih tržišta i nadzor eksploatacije.</p>
+                                </div>
+                            </div>
+                            <div class="profile-item">
+                                <div class="profile-avatar">MJ</div>
+                                <div>
+                                    <strong>Milica Jovanović</strong>
+                                    <p>Direktorka operacija. Vodi integraciju digitalnih alata, optimizaciju procesa obrade i kontrolu kvaliteta.</p>
+                                </div>
+                            </div>
+                            <div class="profile-item">
+                                <div class="profile-avatar">IS</div>
+                                <div>
+                                    <strong>Ivan Savić</strong>
+                                    <p>Logistički menadžer. Koordinira međunarodni transport, skladištenje i lokalnu podršku prilikom montaže.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="badge-row">
+                            <span class="badge">Rudarski inženjering</span>
+                            <span class="badge">Digitalni katalozi</span>
+                            <span class="badge">Logističke operacije</span>
+                        </div>
+                    </div>
+                    <div class="media-card">
+                        <h3>Naša infrastruktura</h3>
+                        <p>Uz sopstveni kamenolom i fabriku ploča u Požegi, posedujemo logističke centre u Beogradu i Solunu. To nam omogućava fleksibilno planiranje isporuka za projekte širom sveta.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-warehouse"></i> 8.500 m² skladišnog prostora sa kontrolisanom klimom</li>
+                            <li><i class="fa-solid fa-route"></i> 3 logistička koridora (drumski, železnički, kontejnerski)</li>
+                            <li><i class="fa-solid fa-certificate"></i> ISO 9001 i ISO 14001 sertifikacije</li>
+                            <li><i class="fa-solid fa-cubes"></i> Automatizovana linija za rezanje i poliranje ploča</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-          </div>
-        </aside>
-      </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-card">
+                    <div>
+                        <span class="eyebrow">Spremni za saradnju</span>
+                        <h2>Rezervišite termin za video obilazak skladišta ili posetu kamenolomu</h2>
+                        <p>Naš tim priprema personalizovan izbor ploča, uz logistički plan i okvirnu kalkulaciju u roku od 24 sata od upita.</p>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="contact.html" class="btn btn-primary">Zakažite sastanak</a>
+                        <a href="catalog.html" class="btn btn-light">Preuzmite katalog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="currentYear"></span> Balkan Mining – Mermer Invest. <a href="mailto:office@balkanmining.rs">office@balkanmining.rs</a>
+    </footer>
+
+    <div class="social-icons" aria-label="Društvene mreže">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
 
-    <!-- HERO 4 edge-to-edge (placeholder until Excel provides image) -->
-    <figure class="hero-bleed is-empty" id="heroFig4">
-      <img id="heroImg4" src="" alt="" style="display:none" />
-      <div class="hero-shadow"></div>
-    </figure>
-
-    <!-- CONTENT GRID 4 -->
-    <div class="wrap">
-      <div class="content-grid">
-        <header class="about-head">
-          <div class="gold-rule"></div>
-          <h1 id="qName4"></h1>
-        </header>
-
-        <div class="copy">
-          <p class="lead" id="qDesc4"></p>
-        </div>
-
-        <aside class="stats-rail" id="stats4" aria-label="Statistika kamenoloma">
-          <div class="rail-item">
-            <i class="fa-solid fa-mountain"></i>
-            <div>
-              <div class="k" id="stExtraction4"></div>
-              <div class="l">Danas stvaramo za vas</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-ruler-combined"></i>
-            <div>
-              <div class="k" id="stSlabs4"></div>
-              <div class="l">Isporučujemo kvalitet bez kompromisa</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-award"></i>
-            <div>
-              <div class="k" id="stTradition4"></div>
-              <div class="l">tradicije</div>
-            </div>
-          </div>
-          <div class="rail-item">
-            <i class="fa-solid fa-vector-square"></i>
-            <div>
-              <div class="k" id="stLegacy4"></div>
-              <div class="l">Sedam decenija stvaranja</div>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-
-
-  <!-- Social -->
-  <div class="social-icons">
-    <a href="#"><i class="fab fa-instagram"></i></a>
-    <a href="#"><i class="fab fa-facebook-f"></i></a>
-    <a href="#"><i class="fab fa-tiktok"></i></a>
-    <a href="#"><i class="fab fa-youtube"></i></a>
-    <a href="#"><i class="fab fa-x-twitter"></i></a>
-    <a href="#"><i class="fab fa-whatsapp"></i></a>
-  </div>
-
-  <!-- Footer -->
-  
-
-  <script>
-    // Hamburger behavior
-    const navBurger = document.getElementById('navBurger');
-    const navOverlay = document.getElementById('navOverlay');
-    const navClose  = document.getElementById('navClose');
-    if (navBurger && navOverlay && navClose) {
-      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
-      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
-      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
-    }
-
-    // Excel-driven content
-    async function loadAboutXlsx() {
-      try {
-        const res = await fetch('about.xlsx');
-        if (!res.ok) throw new Error('about.xlsx nije pronađen');
-        const buf = await res.arrayBuffer();
-        const wb = XLSX.read(buf, { type: 'array' });
-        const Q = XLSX.utils.sheet_to_json(wb.Sheets['QUARRIES'] || {}, {defval: ''});
-        return { QUARRIES: Q };
-      } catch (e) { return null; }
-    }
-    function fmtNum(n, suffix) {
-      if (n === '' || n == null) return '';
-      const num = Number(String(n).replace(/[^0-9.]/g,''));
-      if (!isFinite(num)) return String(n);
-      return new Intl.NumberFormat('sr-RS').format(num) + (suffix||'');
-    }
-    (async function(){
-      const data = await loadAboutXlsx();
-      const q = data && data.QUARRIES && data.QUARRIES[0];
-      if (!q) return;
-      const hero = document.getElementById('heroImg');
-      if (q.hero1_image) hero.src = q.hero1_image;
-      const qName = document.getElementById('qName');
-      const qDesc = document.getElementById('qDesc');
-      if (q.name) qName.textContent = q.name;
-      if (q.description) qDesc.textContent = q.description;
-      const stExtraction = document.getElementById('stExtraction');
-      const stSlabs = document.getElementById('stSlabs');
-      const stTradition = document.getElementById('stTradition');
-      const stLegacy = document.getElementById('stLegacy');
-      const stEmployees = document.getElementById('stEmployees');
-      const stProjects = document.getElementById('stProjects');
-      if (stExtraction && q.annual_extraction_m3 !== undefined) stExtraction.textContent = String(q.annual_extraction_m3).trim();
-      if (stSlabs && q.annual_slab_production_m2 !== undefined) stSlabs.textContent = String(q.annual_slab_production_m2).trim();
-      if (stTradition && q.tradition_years) stTradition.textContent = fmtNum(q.tradition_years, ' godina');
-      if (stLegacy && q.legacy_area_m2) stLegacy.textContent = fmtNum(q.legacy_area_m2, ' m²');
-      if (stEmployees && q.employees) stEmployees.textContent = fmtNum(q.employees, '');
-      if (stProjects && q.projects_since_2016) stProjects.textContent = fmtNum(q.projects_since_2016, '');
-      // ==== Row 2 (drugi kamenolom) ====
-      const q2 = data && data.QUARRIES && data.QUARRIES[1];
-      const hero2 = document.getElementById('heroImg2');
-      const heroFig2 = document.getElementById('heroFig2');
-      const qName2 = document.getElementById('qName2');
-      const qDesc2 = document.getElementById('qDesc2');
-      const stExtraction2 = document.getElementById('stExtraction2');
-      const stSlabs2 = document.getElementById('stSlabs2');
-      const stTradition2 = document.getElementById('stTradition2');
-      const stLegacy2 = document.getElementById('stLegacy2');
-      const stats2 = document.getElementById('stats2');
-
-      if (q2){
-        // Hero image for second quarry: prefer hero2_image, then hero_image
-        const src2 = (q2.hero2_image || q2.hero_image || '').trim();
-        if (src2){
-          hero2.src = src2;
-          hero2.style.display = 'block';
-          heroFig2.classList.remove('is-empty');
-        } else {
-          hero2.style.display = 'none';
-          heroFig2.classList.add('is-empty');
-        }
-
-        if (q2.name) qName2.textContent = q2.name;
-        if (q2.description) qDesc2.textContent = q2.description;
-
-        // Values: first two use raw strings from Excel (can include jedinice)
-        if (stExtraction2 && q2.annual_extraction_m3 !== undefined) stExtraction2.textContent = String(q2.annual_extraction_m3).trim();
-        if (stSlabs2 && q2.annual_slab_production_m2 !== undefined) stSlabs2.textContent = String(q2.annual_slab_production_m2).trim();
-        if (stTradition2 && q2.tradition_years) stTradition2.textContent = fmtNum(q2.tradition_years, ' godina');
-        if (stLegacy2 && q2.legacy_area_m2) stLegacy2.textContent = fmtNum(q2.legacy_area_m2, ' m²');
-
-        // Hide stats rail if all four values are empty
-        const allEmpty = (!stExtraction2.textContent.trim()) && (!stSlabs2.textContent.trim()) && (!stTradition2.textContent.trim()) && (!stLegacy2.textContent.trim());
-        if (stats2 && allEmpty) stats2.style.display = 'none';
-      } else {
-        // No second row yet: keep placeholder hero as empty block and hide empty stats
-        if (heroFig2) heroFig2.classList.add('is-empty');
-        if (hero2) hero2.style.display = 'none';
-        if (stats2) stats2.style.display = 'none';
-      }
-
-    
-      // ==== Row 3 (treći kamenolom) ====
-      const q3 = data && data.QUARRIES && data.QUARRIES[2];
-      const hero3 = document.getElementById('heroImg3');
-      const heroFig3 = document.getElementById('heroFig3');
-      const qName3 = document.getElementById('qName3');
-      const qDesc3 = document.getElementById('qDesc3');
-      const stExtraction3 = document.getElementById('stExtraction3');
-      const stSlabs3 = document.getElementById('stSlabs3');
-      const stTradition3 = document.getElementById('stTradition3');
-      const stLegacy3 = document.getElementById('stLegacy3');
-      const stats3 = document.getElementById('stats3');
-
-      if (q3){
-        const src3 = (q3.hero3_image || q3.hero_image || '').trim();
-        if (src3){ hero3.src = src3; hero3.style.display = 'block'; heroFig3.classList.remove('is-empty'); }
-        else { if (hero3) hero3.style.display = 'none'; if (heroFig3) heroFig3.classList.add('is-empty'); }
-        if (q3.name) qName3.textContent = q3.name;
-        if (q3.description) qDesc3.textContent = q3.description;
-        if (stExtraction3 && q3.annual_extraction_m3 !== undefined) stExtraction3.textContent = String(q3.annual_extraction_m3).trim();
-        if (stSlabs3 && q3.annual_slab_production_m2 !== undefined) stSlabs3.textContent = String(q3.annual_slab_production_m2).trim();
-        if (stTradition3 && q3.tradition_years) stTradition3.textContent = fmtNum(q3.tradition_years, ' godina');
-        if (stLegacy3 && q3.legacy_area_m2) stLegacy3.textContent = fmtNum(q3.legacy_area_m2, ' m²');
-        const allEmpty3 = (!stExtraction3?.textContent.trim()) && (!stSlabs3?.textContent.trim()) && (!stTradition3?.textContent.trim()) && (!stLegacy3?.textContent.trim());
-        if (stats3 && allEmpty3) stats3.style.display = 'none';
-      } else {
-        if (heroFig3) heroFig3.classList.add('is-empty');
-        if (hero3) hero3.style.display = 'none';
-        if (stats3) stats3.style.display = 'none';
-      }
-
-      // ==== Row 4 (četvrti kamenolom) ====
-      const q4 = data && data.QUARRIES && data.QUARRIES[3];
-      const hero4 = document.getElementById('heroImg4');
-      const heroFig4 = document.getElementById('heroFig4');
-      const qName4 = document.getElementById('qName4');
-      const qDesc4 = document.getElementById('qDesc4');
-      const stExtraction4 = document.getElementById('stExtraction4');
-      const stSlabs4 = document.getElementById('stSlabs4');
-      const stTradition4 = document.getElementById('stTradition4');
-      const stLegacy4 = document.getElementById('stLegacy4');
-      const stats4 = document.getElementById('stats4');
-
-      if (q4){
-        const src4 = (q4.hero4_image || q4.hero_image || '').trim();
-        if (src4){ hero4.src = src4; hero4.style.display = 'block'; heroFig4.classList.remove('is-empty'); }
-        else { if (hero4) hero4.style.display = 'none'; if (heroFig4) heroFig4.classList.add('is-empty'); }
-        if (q4.name) qName4.textContent = q4.name;
-        if (q4.description) qDesc4.textContent = q4.description;
-        if (stExtraction4 && q4.annual_extraction_m3 !== undefined) stExtraction4.textContent = String(q4.annual_extraction_m3).trim();
-        if (stSlabs4 && q4.annual_slab_production_m2 !== undefined) stSlabs4.textContent = String(q4.annual_slab_production_m2).trim();
-        if (stTradition4 && q4.tradition_years) stTradition4.textContent = fmtNum(q4.tradition_years, ' godina');
-        if (stLegacy4 && q4.legacy_area_m2) stLegacy4.textContent = fmtNum(q4.legacy_area_m2, ' m²');
-        const allEmpty4 = (!stExtraction4?.textContent.trim()) && (!stSlabs4?.textContent.trim()) && (!stTradition4?.textContent.trim()) && (!stLegacy4?.textContent.trim());
-        if (stats4 && allEmpty4) stats4.style.display = 'none';
-      } else {
-        if (heroFig4) heroFig4.classList.add('is-empty');
-        if (hero4) hero4.style.display = 'none';
-        if (stats4) stats4.style.display = 'none';
-      }
-})();
-  </script>
-
-<div class="chat-widget" id="chatWidget">
-        <div class="chat-header">Chat sa Grok-om
-            <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton">-</button>
-            <button onclick="closeChatWidget()">X</button>
-        </div>
-        <div class="chat-body" id="chatBody"></div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Postavi pitanje...">
-            <button onclick="sendMessage()">Pošalji</button>
-        </div>
-    </div>
-    
-
-    
-<script>
-    // Hamburger behavior (same as on index)
-    const navBurger = document.getElementById('navBurger');
-    const navOverlay = document.getElementById('navOverlay');
-    const navClose  = document.getElementById('navClose');
-    if (navBurger && navOverlay && navClose) {
-      navBurger.addEventListener('click', () => { navOverlay.classList.add('open'); });
-      navClose.addEventListener('click', () => { navOverlay.classList.remove('open'); });
-      navOverlay.addEventListener('click', (e) => { if (e.target === navOverlay) navOverlay.classList.remove('open'); });
-    }
-
-    // Data loading from Excel
-    async function loadXlsx() {
-      const res = await fetch('catalog.xlsx');
-      if (!res.ok) throw new Error('Ne mogu da učitam catalog.xlsx');
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, { type: 'array' });
-      return {
-        PRODUCTS: XLSX.utils.sheet_to_json(wb.Sheets['Products'] || {}, {defval: ''}),
-        DIMENSIONS: XLSX.utils.sheet_to_json(wb.Sheets['Dimensions'] || {}, {defval: ''}),
-        IMAGES: XLSX.utils.sheet_to_json(wb.Sheets['Images'] || {}, {defval: ''}),
-      };
-    }
-
-    function minPrice(dims){
-      const arr = dims.map(d => Number(d.price_eur || d.price || NaN)).filter(n => isFinite(n));
-      return arr.length ? Math.min(...arr) : null;
-    }
-
-    function unique(arr) { return [...new Set(arr.filter(Boolean))]; }
-
-    function card(p, price, img){
-      const url = 'product.html?id=' + encodeURIComponent(p.id);
-      return `<div class="card">
-        <a href="${url}">
-          <div class="ph">${img ? `<img src="${img}" alt="${p.name||''}" />` : ''}</div>
-        </a>
-        <div class="body">
-          <a href="${url}"><h3>${p.name||''}</h3></a>
-          <div class="meta">Boja: ${p.color||'-'} · Obrade: ${p.finishes||'-'}</div>
-          <div class="chips">
-            <span class="chip">${price!=null ? ('Od ' + price + '€') : 'Cena na upit'}</span>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    (async function(){
-      const db = await loadXlsx();
-
-      // Build fast lookups
-      const imagesByProduct = {};
-      db.IMAGES.forEach(i => {
-        const k = String(i.product_id || i.productId || '');
-        if (!imagesByProduct[k]) imagesByProduct[k] = [];
-        imagesByProduct[k].push(i.image_url);
-      });
-      const dimsByProduct = {};
-      db.DIMENSIONS.forEach(d => {
-        const k = String(d.product_id || d.productId || '');
-        if (!dimsByProduct[k]) dimsByProduct[k] = [];
-        dimsByProduct[k].push(d);
-      });
-
-      // Populate color/finish filters
-      const colors = unique(db.PRODUCTS.map(p=>p.color));
-      const finishes = unique(db.PRODUCTS.flatMap(p => (String(p.finishes||'').split(',').map(s=>s.trim()).filter(Boolean))));
-      const fColor = document.getElementById('fColor');
-      colors.forEach(c => fColor.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`));
-      const fFinish = document.getElementById('fFinish');
-      finishes.forEach(f => fFinish.insertAdjacentHTML('beforeend', `<option value="${f}">${f}</option>`));
-
-      const grid = document.getElementById('grid');
-      const empty = document.getElementById('empty');
-      const q = document.getElementById('q');
-      const fMin = document.getElementById('fMin');
-      const fMax = document.getElementById('fMax');
-
-      function apply(){
-        const qv = (q.value||'').toLowerCase();
-        const cv = fColor.value;
-        const fv = fFinish.value;
-        const minv = Number(fMin.value||NaN);
-        const maxv = Number(fMax.value||NaN);
-
-        const items = db.PRODUCTS.filter(p => {
-          // search
-          const txt = (p.name + ' ' + p.description + ' ' + p.color + ' ' + p.finishes).toLowerCase();
-          if (qv && !txt.includes(qv)) return false;
-          if (cv && p.color !== cv) return false;
-          if (fv && !String(p.finishes||'').split(',').map(s=>s.trim()).includes(fv)) return false;
-          // price range
-          const mp = minPrice(dimsByProduct[String(p.id)] || []);
-          if (isFinite(minv) && (mp==null || mp < minv)) return false;
-          if (isFinite(maxv) && (mp==null || mp > maxv)) return false;
-          return true;
-        }).map(p => {
-          const pid = String(p.id);
-          const img = (imagesByProduct[pid] && imagesByProduct[pid][0]) || p.base_image || '';
-          const price = minPrice(dimsByProduct[pid] || []);
-          return card(p, price, img);
-        });
-
-        grid.innerHTML = items.join('');
-        empty.style.display = items.length ? 'none' : 'block';
-      }
-
-      q.addEventListener('input', apply);
-      fColor.addEventListener('change', apply);
-      fFinish.addEventListener('change', apply);
-      fMin.addEventListener('input', apply);
-      fMax.addEventListener('input', apply);
-      document.getElementById('clear').addEventListener('click', () => {
-        q.value=''; fColor.value=''; fFinish.value=''; fMin.value=''; fMax.value=''; apply();
-      });
-
-      apply();
-    })();
-  </script>
-
-  <footer class="site-footer">
-    <div class="cta">
-      <div class="inner">
-        <div>
-          <h3>Spremni za ponudu?</h3>
-          <p>Pošaljite nacrt ili količine — odgovaramo istog dana.</p>
-        </div>
-        <div class="row"><a class="btn-primary" href="contact.html">Kontakt</a><a class="btn-secondary" href="catalog.xlsx" download>Preuzmi cenovnik</a><a class="btn-primary" href="javascript:void(0)" onclick="openChatWidget()">Postavi pitanje</a></div>
-      </div>
-    </div>
-    <div class="wrap">
-      <div class="links">
-        <a href="about.html">O nama</a>
-        <a href="catalog.html">Katalog</a><a href="blog.html">Blog</a>
-        <a href="contact.html">Kontakt</a>
-      </div>
-      <div class="links" style="justify-content:flex-end;">
-        <a href="privacy.html">Politika privatnosti</a>
-        <a href="terms.html">Uslovi korišćenja</a>
-      </div>
-    </div>
-    <div class="bottom"><div class="inner"><div>© 2025 Plavi tok</div><div></div></div></div>
-  </footer>
-
-
-    <!-- Chat widget (same behavior as na početnoj) -->
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header">Chat sa Grok-om
-            <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton">-</button>
-            <button onclick="closeChatWidget()">X</button>
+            <div>
+                <button onclick="minimizeMaximizeChatWidget()" id="minimizeMaximizeButton" aria-label="Minimizuj chat">-</button>
+                <button onclick="closeChatWidget()" aria-label="Zatvori chat">×</button>
+            </div>
         </div>
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-input">
@@ -789,50 +1129,78 @@
             <button onclick="sendMessage()">Pošalji</button>
         </div>
     </div>
-    
 
     <script>
-    /* removed apiKey */
-    const endpoint = 'https://api.x.ai/v1/chat/completions';
-    let chatOpen = false;
-    let isMinimized = false;
+        const apiKey = window.GROK_API_KEY || '';
+        const endpoint = 'https://api.x.ai/v1/chat/completions';
+        let chatOpen = false;
+        let isMinimized = false;
 
-    function openChatWidget() {
-        const chatWidget = document.getElementById('chatWidget');
-        chatOpen = !chatOpen;
-        chatWidget.style.display = chatOpen ? 'flex' : 'none';
-        if (chatOpen && isMinimized) {
-            minimizeMaximizeChatWidget();
+        const navBurger = document.getElementById('navBurger');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
+
+        if (navBurger && navOverlay && navClose) {
+            navBurger.addEventListener('click', () => {
+                navOverlay.classList.add('open');
+            });
+            navClose.addEventListener('click', () => {
+                navOverlay.classList.remove('open');
+            });
+            navOverlay.addEventListener('click', (e) => {
+                if (e.target === navOverlay) {
+                    navOverlay.classList.remove('open');
+                }
+            });
         }
-    }
-    function closeChatWidget() {
-        document.getElementById('chatWidget').style.display = 'none';
-        chatOpen = false;
-    }
-    function minimizeMaximizeChatWidget() {
-        const chatBody = document.getElementById('chatBody');
-        const chatInput = document.querySelector('.chat-input');
-        const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
-        if (!isMinimized) {
-            chatBody.style.display = 'none';
-            chatInput.style.display = 'none';
-            document.getElementById('chatWidget').style.height = '50px';
-            minimizeMaximizeButton.textContent = '+';
-            isMinimized = true;
-        } else {
-            chatBody.style.display = 'block';
-            chatInput.style.display = 'flex';
-            document.getElementById('chatWidget').style.height = '400px';
-            minimizeMaximizeButton.textContent = '-';
-            isMinimized = false;
+
+        function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatOpen = !chatOpen;
+            chatWidget.style.display = chatOpen ? 'flex' : 'none';
+            if (chatOpen && isMinimized) {
+                minimizeMaximizeChatWidget();
+            }
         }
-    }
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const userMessage = input.value.trim();
-        if (userMessage) {
+
+        function closeChatWidget() {
+            document.getElementById('chatWidget').style.display = 'none';
+            chatOpen = false;
+        }
+
+        function minimizeMaximizeChatWidget() {
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.querySelector('.chat-input');
+            const minimizeMaximizeButton = document.getElementById('minimizeMaximizeButton');
+            if (!isMinimized) {
+                chatBody.style.display = 'none';
+                chatInput.style.display = 'none';
+                document.getElementById('chatWidget').style.height = '60px';
+                minimizeMaximizeButton.textContent = '+';
+                isMinimized = true;
+            } else {
+                chatBody.style.display = 'flex';
+                chatInput.style.display = 'flex';
+                document.getElementById('chatWidget').style.height = '430px';
+                minimizeMaximizeButton.textContent = '-';
+                isMinimized = false;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) {
+                return;
+            }
             addMessage('user', userMessage);
             input.value = '';
+
+            if (!apiKey) {
+                addMessage('bot', 'Chat asistencija trenutno nije aktivna. Molimo kontaktirajte nas putem forme ili telefona.');
+                return;
+            }
+
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -860,168 +1228,20 @@
                 addMessage('bot', 'Greška u konekciji: ' + error.message);
             }
         }
-    }
-    function addMessage(sender, message) {
-        const chatBody = document.getElementById('chatBody');
-        const wrap = document.createElement('div');
-        wrap.classList.add('message', sender);
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        bubble.textContent = message;
-        wrap.appendChild(bubble);
-        chatBody.appendChild(wrap);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-    </script>
 
-<!-- XAPI Chat + Nav bootstrap (non-intrusive, no keys in front) -->
-<script>
-(function(){
-  const $ = (s, root=document)=>root.querySelector(s);
-  const $$ = (s, root=document)=>Array.from(root.querySelectorAll(s));
-  const endpoint = '/sajt/xapi/chat.php';
-
-  function ensureHamburger(){
-    const hamb = $('.hamburger');
-    const menu = $('.nav-menu');
-    const close = $('.close-btn');
-    if (hamb && menu){ hamb.addEventListener('click', ()=> menu.classList.add('active')); }
-    if (close && menu){ close.addEventListener('click', ()=> menu.classList.remove('active')); }
-  }
-
-  function getChatParts(){
-    const panel = $('.chat-widget') || $('#chatWidget') || $('.chat-panel') || $('.chat-container');
-    const body  = $('.chat-body') || $('.chat-messages') || $('#chatMessages') || panel;
-    const input = $('#chatInput') || (panel && panel.querySelector('.chat-input input')) || $('input#chat') || $('input[name=chat]');
-    const send  = $('#chatSend') || (panel && panel.querySelector('.chat-input button')) || $('button.send') || $('button#sendMessage');
-    return {panel, body, input, send};
-  }
-
-  function openChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    if (getComputedStyle(panel).display === 'none') {
-      panel.style.display = (panel.classList.contains('chat-widget') ? 'flex' : 'block');
-    }
-    panel.classList.add('open');
-  }
-  function closeChat(){
-    const {panel} = getChatParts();
-    if (!panel) return;
-    panel.classList.remove('open');
-    if (panel.classList.contains('chat-widget')) panel.style.display = 'none';
-  }
-  window.openChat = openChat;
-
-  function wireOpeners(){
-    const openers = $$('[data-open-chat], .chat-button, .open-chat, #openChat, a.chat-button, button.chat-button');
-    openers.forEach(el => el.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); }));
-    const closer = $('.chat-close, #chatClose, .chat-header button.close, .chat-header .close-btn');
-    if (closer) closer.addEventListener('click', (e)=>{ e.preventDefault(); closeChat(); });
-  }
-
-  function addMessage(role, text){
-    const {body} = getChatParts();
-    if (!body) return;
-    const row = document.createElement('div');
-    row.className = 'msg ' + role;
-    row.textContent = String(text ?? '');
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-  window.addMessage = window.addMessage || addMessage;
-
-  async function sendMessage(){
-    const {input} = getChatParts();
-    if (!input) return;
-    const msg = (input.value || '').trim();
-    if (!msg) return;
-    addMessage('user', msg);
-    input.value='';
-    try{
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message: msg })
-      });
-      let text = '';
-      try {
-        const data = await res.json();
-        text = data?.reply || data?.message || data?.choices?.[0]?.message?.content || JSON.stringify(data);
-      } catch(_) {
-        text = await res.text();
-      }
-      addMessage('bot', text || 'Prazan odgovor.');
-    }catch(err){
-      console.error(err);
-      addMessage('bot','Greška: server nije dostupan.');
-    }
-  }
-  window.sendMessage = window.sendMessage || sendMessage;
-
-  function wireSenders(){
-    const {input, send} = getChatParts();
-    const form = (input && input.closest('form'));
-    if (send) send.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    if (input) input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendMessage(); } });
-    if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); sendMessage(); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    ensureHamburger();
-    wireOpeners();
-    wireSenders();
-  });
-})();
-</script>
-
-
-<!-- MINIMAL PATCH: keep layout; proxy any model fetch to /sajt/xapi/chat.php -->
-<script>
-(function(){
-  try {
-    // Avoid ReferenceError in legacy code
-    if (typeof window.apiKey === 'undefined') {
-      window.apiKey = 'proxied';
-    }
-
-    const ORIG_FETCH = window.fetch.bind(window);
-    window.fetch = async function(input, init){
-      try{
-        const url = (typeof input === 'string') ? input : (input && input.url) || '';
-        const isModelApi = /api\.x\.ai|openai|anthropic|groq/i.test(url);
-        if (!isModelApi) {
-          return ORIG_FETCH(input, init);
+        function addMessage(sender, message) {
+            const chatBody = document.getElementById('chatBody');
+            const wrap = document.createElement('div');
+            wrap.classList.add('message', sender);
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            wrap.appendChild(bubble);
+            chatBody.appendChild(wrap);
+            chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        // Try to extract user's message from the original body if present
-        let userMsg = '';
-        try {
-          const bodyStr = init && init.body ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          if (bodyStr) {
-            const payload = JSON.parse(bodyStr);
-            userMsg = payload?.message 
-                   || payload?.prompt 
-                   || (Array.isArray(payload?.messages) ? (payload.messages.at(-1)?.content || '') : '');
-          }
-        } catch(e){ /* ignore parse errors */ }
-
-        const resp = await ORIG_FETCH('/sajt/xapi/chat.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userMsg || '' })
-        });
-        return resp;
-      }catch(err){
-        // Fallback to original fetch if anything goes wrong
-        return ORIG_FETCH(input, init);
-      }
-    };
-  } catch(e) {
-    console.error('Proxy bootstrap error:', e);
-  }
-})();
-</script>
-
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
